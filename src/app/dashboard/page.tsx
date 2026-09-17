@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
@@ -25,7 +26,10 @@ export default async function DashboardPage() {
     const org = await tx.query.organisations.findFirst({
       where: eq(organisations.id, profile.organisationId),
     });
-    return { profile, org };
+    const definitions = await tx.query.productDefinitions.findMany({
+      orderBy: (pd, { desc }) => [desc(pd.updatedAt)],
+    });
+    return { profile, org, definitions };
   });
 
   if (!data) {
@@ -44,7 +48,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col gap-6 p-8">
+    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-8">
       <header className="flex items-center justify-between border-b pb-4">
         <div>
           <h1 className="text-xl font-semibold">{data.org?.name}</h1>
@@ -56,10 +60,38 @@ export default async function DashboardPage() {
           <button className="rounded border px-3 py-2 text-sm">Sign out</button>
         </form>
       </header>
-      <p className="text-sm text-neutral-500">
-        No Product Definitions yet — the discovery conversation loop is next
-        on the build order (README, Stage 1).
-      </p>
+
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-medium text-neutral-500">Product Definitions</h2>
+        <Link
+          href="/product-definitions/new"
+          className="rounded bg-neutral-900 px-3 py-2 text-sm font-medium text-white"
+        >
+          New Product Definition
+        </Link>
+      </div>
+
+      {data.definitions.length === 0 ? (
+        <p className="rounded border border-dashed p-6 text-center text-sm text-neutral-500">
+          No Product Definitions yet — start with whatever idea you&apos;ve got.
+        </p>
+      ) : (
+        <ul className="divide-y rounded border">
+          {data.definitions.map((d) => (
+            <li key={d.id}>
+              <Link
+                href={`/product-definitions/${d.id}`}
+                className="flex items-center justify-between px-4 py-3 text-sm hover:bg-neutral-50"
+              >
+                <span className="font-medium">{d.title}</span>
+                <span className="text-xs uppercase tracking-wide text-neutral-400">
+                  {d.status.replace(/_/g, " ")}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </main>
   );
 }
