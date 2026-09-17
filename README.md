@@ -20,7 +20,7 @@ original wherever they conflict.
   Migrated against a real Supabase project — see `drizzle/0000` (initial
   schema) through `drizzle/0005` and `claude/rls-migration-notes.md` for
   the RLS work applied on top of it.
-- `src/lib/supabase/` — browser + server clients, plus `src/middleware.ts`
+- `src/lib/supabase/` — browser + server clients, plus `src/proxy.ts`
   (session refresh + route protection for `/dashboard`). Auth is wired up
   end to end: `/signup` and `/login` (password + magic link),
   `/auth/callback` (PKCE code exchange for both flows),
@@ -81,10 +81,11 @@ build all three stages half-functional in parallel.
 **Stage 1**
 ```
 Auth (Supabase, email/password + magic link) — done: /signup, /login,
-  /auth/callback, src/middleware.ts, first-login provisioning
-→ Create Product Definition (free-text idea input, Section 8) — next
+  /auth/callback, src/proxy.ts, first-login provisioning
+→ Create Product Definition (free-text idea input, Section 8) — done:
+  /product-definitions/new, org-scoped list on /dashboard
 → Discovery conversation loop (always-on pathways only: Discovery,
-  Problem/Value, User/Customer, Requirements/Behaviour — addendum #6)
+  Problem/Value, User/Customer, Requirements/Behaviour — addendum #6) — next
 → Structured state (persist Requirement + RequirementDimension rows as
   the conversation progresses, not just messages)
 → Assumptions, Open Questions, Evidence (first-class objects, Section
