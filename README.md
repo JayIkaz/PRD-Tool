@@ -16,11 +16,28 @@ original wherever they conflict.
 - Next.js 16 (App Router, TypeScript, Tailwind) — `pnpm create next-app` output.
 - Full Drizzle schema under `src/db/schema/` covering every entity in
   Section 32 plus the addendum's additions (Organisation,
-  ProductDefinitionParticipant, Notification, NotificationChannel). This
-  compiles and type-checks; it has not been migrated against a real
-  database yet.
-- `src/lib/supabase/` — browser + server clients, Auth not yet wired into
-  any route.
+  ProductDefinitionParticipant, Notification, NotificationChannel).
+  Migrated against a real Supabase project — see `drizzle/0000` (initial
+  schema) through `drizzle/0005` and `claude/rls-migration-notes.md` for
+  the RLS work applied on top of it.
+- `src/lib/supabase/` — browser + server clients, plus `src/middleware.ts`
+  (session refresh + route protection for `/dashboard`). Auth is wired up
+  end to end: `/signup` and `/login` (password + magic link),
+  `/auth/callback` (PKCE code exchange for both flows),
+  `src/lib/auth/provision.ts` (first-login Organisation + user
+  provisioning — deliberately service-role, see that file's comment and
+  addendum #3), and `/dashboard` as the first protected route.
+- `src/db/rls.ts` — `withRlsContext(userId, fn)`, which runs a query
+  inside a transaction impersonating the given user (`SET LOCAL ROLE
+  authenticated` + `request.jwt.claims`). This is what makes the RLS
+  policies in `drizzle/0001-0005` the actual tenant boundary for app
+  queries per addendum Section 36A ("the RLS policy is the actual
+  boundary, application checks are defence in depth") — the plain `db`
+  export from `src/db/client.ts` connects as a privileged role and
+  bypasses RLS entirely, so it must stay reserved for deliberately
+  service-level operations (signup provisioning, the seed script), never
+  per-request tenant queries. `/dashboard` is the first real example of
+  the RLS-scoped path in use.
 - `src/lib/ai/client.ts` — Anthropic client with a `generateStructured()`
   helper for the completeness engine's deterministic JSON needs.
 - `src/lib/storage/adapter.ts` — `StorageAdapter` interface per addendum
@@ -40,15 +57,21 @@ passes; there's no `.env.local` yet.
 ## Before writing any application code
 
 1. Create the Supabase project. Copy the four DB/API values into
-   `.env.local` (copy `.env.example` first).
-2. `pnpm db:generate` then `pnpm db:push` to create the schema in Supabase.
+   `.env.local` (copy `.env.example` first) — **done**, plus
+   `NEXT_PUBLIC_SITE_URL`, added for the auth email-redirect URLs.
+2. `pnpm db:generate` then `pnpm db:push` to create the schema in Supabase
+   — **done** (`drizzle/0000`).
 3. Enable Row Level Security on every tenant-scoped table and write the
-   policies scoped to `organisation_id` — the schema defines the column,
-   it does not define the policy. This is the actual tenant boundary per
-   addendum Section 11 (NFRs); application-level checks are defence in
-   depth, not the boundary itself.
-4. Add an Anthropic API key to `.env.local`.
-5. `pnpm db:seed`.
+   policies scoped to `organisation_id` — **done** (`drizzle/0001-0005`,
+   see `claude/rls-migration-notes.md`). Enforced for app queries via
+   `src/db/rls.ts`, not just declared in SQL — see above.
+4. Add an Anthropic API key to `.env.local` — **done**.
+5. `pnpm db:seed` — seeds product types and pathway configs. Still needs
+   running against this project if it hasn't been yet.
+6. In the Supabase dashboard, Auth → URL Configuration → Redirect URLs,
+   add `<NEXT_PUBLIC_SITE_URL>/auth/callback` (e.g.
+   `http://localhost:3000/auth/callback` for local dev) — magic links and
+   signup confirmation emails will fail without this.
 
 ## Build order (Section 44, as amended)
 
@@ -57,8 +80,9 @@ build all three stages half-functional in parallel.
 
 **Stage 1**
 ```
-Auth (Supabase, email/password + magic link)
-→ Create Product Definition (free-text idea input, Section 8)
+Auth (Supabase, email/password + magic link) — done: /signup, /login,
+  /auth/callback, src/middleware.ts, first-login provisioning
+→ Create Product Definition (free-text idea input, Section 8) — next
 → Discovery conversation loop (always-on pathways only: Discovery,
   Problem/Value, User/Customer, Requirements/Behaviour — addendum #6)
 → Structured state (persist Requirement + RequirementDimension rows as
