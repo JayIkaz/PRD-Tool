@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
@@ -39,11 +40,16 @@ export default async function ProductDefinitionPage({
         <h2 className="text-sm font-medium text-neutral-500">Original idea</h2>
         <p className="mt-1 whitespace-pre-wrap text-sm">{definition.idea}</p>
       </section>
+      <Link
+        href={`/product-definitions/${definition.id}/discovery`}
+        className="self-start rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+      >
+        {definition.status === "DISCOVERY" ? "Continue discovery" : "Open discovery"}
+      </Link>
       <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
-        The discovery conversation loop isn&apos;t built yet — this is as far
-        as Stage 1 goes for now. Next: an adaptive AI conversation that turns
-        this idea into structured requirements, assumptions and open
-        questions (README, Stage 1).
+        Requirements, assumptions and open questions aren&apos;t extracted from
+        the conversation yet — that&apos;s the next build-order item after the
+        discovery loop itself.
       </p>
     </main>
   );
