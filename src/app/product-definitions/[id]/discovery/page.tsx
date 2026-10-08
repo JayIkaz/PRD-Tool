@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
 import { productDefinitions, discoverySessions, messages as messagesTable } from "@/db/schema";
 import { ensureSessionStarted, sendDiscoveryMessage } from "./actions";
+import { MessageInput } from "./MessageInput";
 
 export default async function DiscoveryPage({
   params,
@@ -67,13 +68,7 @@ export default async function DiscoveryPage({
 
       <form action={sendDiscoveryMessage} className="flex gap-2">
         <input type="hidden" name="productDefinitionId" value={id} />
-        <textarea
-          name="content"
-          required
-          rows={2}
-          placeholder="Type your answer..."
-          className="flex-1 rounded border px-3 py-2 text-sm"
-        />
+        <MessageInput />
         <button
           type="submit"
           className="self-end rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
