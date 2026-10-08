@@ -85,12 +85,15 @@ Auth (Supabase, email/password + magic link) — done: /signup, /login,
 → Create Product Definition (free-text idea input, Section 8) — done:
   /product-definitions/new, org-scoped list on /dashboard
 → Discovery conversation loop (always-on pathways only: Discovery,
-  Problem/Value, User/Customer, Requirements/Behaviour — addendum #6) — next
+  Problem/Value, User/Customer, Requirements/Behaviour — addendum #6) —
+  done: /product-definitions/[id]/discovery, src/lib/ai/discovery.ts
 → Structured state (persist Requirement + RequirementDimension rows as
-  the conversation progresses, not just messages)
+  the conversation progresses, not just messages) — done:
+  src/lib/ai/extraction.ts, wired into sendDiscoveryMessage; visible on
+  /product-definitions/[id]
 → Assumptions, Open Questions, Evidence (first-class objects, Section
   15/16 — evidence upload can stay stubbed against StorageAdapter until
-  a real adapter is written)
+  a real adapter is written) — next
 → AI inference confirmation (end-of-session batch, Section 17 — confirm/
   edit/reject, nothing silently promoted)
 ```
