@@ -308,6 +308,10 @@ export async function sendDiscoveryMessage(formData: FormData) {
     }),
   ]);
 
+  // Temporary debug visibility while diagnosing currentTopic tracking —
+  // remove once confirmed working from real conversations.
+  console.log('[extraction result]', JSON.stringify(extraction, null, 2));
+
   await withRlsContext(user.id, async (tx) => {
     await tx.insert(messagesTable).values({
       discoverySessionId: context.session.id,

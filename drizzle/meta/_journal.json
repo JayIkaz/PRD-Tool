@@ -43,6 +43,13 @@
       "when": 1789597400580,
       "tag": "0005_revoke_anon_from_helper_function",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791576554154,
+      "tag": "0006_careless_blizzard",
+      "breakpoints": true
     }
   ]
 }
