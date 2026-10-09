@@ -76,6 +76,9 @@ async function applyExtractionResult(tx: Tx, productDefinitionId: string, result
     fieldUpdates.outcomes = result.outcomes.content;
     fieldUpdates.outcomesStatus = result.outcomes.state;
   }
+  if (result.currentTopic) {
+    fieldUpdates.currentTopic = result.currentTopic;
+  }
   if (Object.keys(fieldUpdates).length > 0) {
     fieldUpdates.updatedAt = new Date();
     await tx.update(productDefinitions).set(fieldUpdates).where(eq(productDefinitions.id, productDefinitionId));
@@ -297,6 +300,7 @@ export async function sendDiscoveryMessage(formData: FormData) {
         problem: context.definition.problem,
         users: context.definition.users,
         outcomes: context.definition.outcomes,
+        currentTopic: context.definition.currentTopic,
       },
       existingRequirements: context.requirementContexts,
       aiQuestion: context.lastAiMessage?.content ?? null,

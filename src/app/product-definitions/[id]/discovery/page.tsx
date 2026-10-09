@@ -65,7 +65,12 @@ export default async function DiscoveryPage({
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-4 p-8">
       <div>
         <p className="text-xs uppercase tracking-wide text-neutral-400">Discovery</p>
-        <h1 className="text-xl font-semibold">{data.definition.title}</h1>
+        <h1 className="text-xl font-semibold">
+          {data.definition.currentTopic ?? data.definition.title}
+        </h1>
+        {data.definition.currentTopic && data.definition.currentTopic !== data.definition.title && (
+          <p className="mt-0.5 text-xs text-neutral-400">Originally: {data.definition.title}</p>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col gap-6 lg:flex-row">

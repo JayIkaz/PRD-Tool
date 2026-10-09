@@ -33,6 +33,14 @@ export const productDefinitions = pgTable("product_definitions", {
   productTypeId: uuid("product_type_id").references(() => productTypes.id),
   title: text("title").notNull(),
   idea: text("idea").notNull(), // the original free-text idea (Section 8)
+  // What the discovery conversation is actually centred on right now —
+  // distinct from title/idea, which stay fixed at whatever was typed
+  // on creation. Kept in sync by extraction.ts as the conversation
+  // moves between capabilities, so the chat header reflects what the
+  // stakeholder is actually talking about today, not where they
+  // started. Null until the first exchange sets it; UI falls back to
+  // title.
+  currentTopic: text("current_topic"),
   status: productDefinitionStatusEnum("status").notNull().default("DISCOVERY"),
 
   // Section 6 fields not modelled as their own entities
