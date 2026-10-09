@@ -4,15 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
 import { productDefinitions, requirements as requirementsTable, requirementDimensions as requirementDimensionsTable } from "@/db/schema";
-
-const STATUS_ICON: Record<string, string> = {
-  MISSING: "🔴",
-  PARTIAL: "🟡",
-  DEFINED: "🟢",
-  CONFIRMED: "✅",
-};
-
-const DIMENSION_COUNT = 7;
+import { CompletenessSummary } from "@/components/CompletenessSummary";
 
 export default async function ProductDefinitionPage({
   params,
@@ -64,40 +56,7 @@ export default async function ProductDefinitionPage({
         <p className="mt-1 whitespace-pre-wrap text-sm">{definition.idea}</p>
       </section>
 
-      <section className="grid gap-3 rounded border p-4 text-sm">
-        <h2 className="text-sm font-medium text-neutral-500">Captured so far</h2>
-        <FieldRow label="Problem" status={definition.problemStatus} content={definition.problem} />
-        <FieldRow label="Users" status={definition.usersStatus} content={definition.users} />
-        <FieldRow label="Outcomes" status={definition.outcomesStatus} content={definition.outcomes} />
-      </section>
-
-      <section className="grid gap-3 rounded border p-4 text-sm">
-        <h2 className="text-sm font-medium text-neutral-500">Requirements ({reqs.length})</h2>
-        {reqs.length === 0 ? (
-          <p className="text-neutral-400">
-            None extracted yet — requirements appear here as the discovery conversation covers them.
-          </p>
-        ) : (
-          <ul className="grid gap-2">
-            {reqs.map((r) => {
-              const definedCount = dims.filter(
-                (d) => d.requirementId === r.id && (d.state === "DEFINED" || d.state === "CONFIRMED")
-              ).length;
-              return (
-                <li key={r.id} className="flex items-center justify-between gap-2 border-b pb-2 last:border-b-0">
-                  <span>
-                    <span className="mr-2 text-neutral-400">{r.displayCode}</span>
-                    {r.title}
-                  </span>
-                  <span className="whitespace-nowrap text-xs text-neutral-400">
-                    {STATUS_ICON[r.overallStatus]} {definedCount}/{DIMENSION_COUNT} dimensions defined
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+      <CompletenessSummary definition={definition} requirements={reqs} dimensions={dims} />
 
       <Link
         href={`/product-definitions/${definition.id}/discovery`}
@@ -111,27 +70,5 @@ export default async function ProductDefinitionPage({
         state.
       </p>
     </main>
-  );
-}
-
-function FieldRow({
-  label,
-  status,
-  content,
-}: {
-  label: string;
-  status: string;
-  content: string | null;
-}) {
-  return (
-    <div>
-      <p className="flex items-center gap-2 font-medium">
-        <span>{STATUS_ICON[status] ?? "🔴"}</span>
-        <span>{label}</span>
-      </p>
-      <p className="mt-0.5 whitespace-pre-wrap text-neutral-600">
-        {content ?? <span className="text-neutral-400">Not yet captured.</span>}
-      </p>
-    </div>
   );
 }
