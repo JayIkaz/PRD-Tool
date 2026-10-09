@@ -1,9 +1,13 @@
+import { addEvidence } from "@/app/product-definitions/[id]/evidence-actions";
+
 /**
  * Live summary of the structured state extracted so far for a Product
  * Definition — problem/users/outcomes with their completeness icons,
- * plus a requirement list with an N/7 dimensions-defined count. Shared
- * between the detail page and the discovery chat's sidebar so the two
- * views can't drift apart.
+ * a requirement list with an N/7 dimensions-defined count, open
+ * questions, assumptions (all PENDING — nothing here is reviewed yet,
+ * that's the next build-order item), and evidence. Shared between the
+ * detail page and the discovery chat's sidebar so the views can't
+ * drift apart.
  */
 
 const STATUS_ICON: Record<string, string> = {
@@ -16,6 +20,7 @@ const STATUS_ICON: Record<string, string> = {
 const DIMENSION_COUNT = 7;
 
 export interface CompletenessSummaryProps {
+  productDefinitionId: string;
   definition: {
     problem: string | null;
     problemStatus: string;
@@ -26,9 +31,25 @@ export interface CompletenessSummaryProps {
   };
   requirements: { id: string; displayCode: string; title: string; overallStatus: string }[];
   dimensions: { requirementId: string; state: string }[];
+  openQuestions: { id: string; question: string; whyItMatters: string | null; resolvedAt: Date | null }[];
+  assumptions: { id: string; displayCode: string; statement: string; reasoning: string | null; status: string }[];
+  evidence: { id: string; type: string; url: string | null; note: string | null }[];
+  showAddEvidenceForm?: boolean;
 }
 
-export function CompletenessSummary({ definition, requirements, dimensions }: CompletenessSummaryProps) {
+export function CompletenessSummary({
+  productDefinitionId,
+  definition,
+  requirements,
+  dimensions,
+  openQuestions,
+  assumptions,
+  evidence,
+  showAddEvidenceForm = false,
+}: CompletenessSummaryProps) {
+  const unresolvedQuestions = openQuestions.filter((q) => !q.resolvedAt);
+  const resolvedQuestions = openQuestions.filter((q) => q.resolvedAt);
+
   return (
     <div className="flex flex-col gap-4">
       <section className="grid gap-3 rounded border p-4 text-sm">
@@ -63,6 +84,95 @@ export function CompletenessSummary({ definition, requirements, dimensions }: Co
               );
             })}
           </ul>
+        )}
+      </section>
+
+      <section className="grid gap-3 rounded border p-4 text-sm">
+        <h2 className="text-sm font-medium text-neutral-500">
+          Open questions ({unresolvedQuestions.length})
+        </h2>
+        {unresolvedQuestions.length === 0 ? (
+          <p className="text-neutral-400">
+            None open — questions appear here when the stakeholder genuinely doesn&apos;t know something yet.
+          </p>
+        ) : (
+          <ul className="grid gap-2">
+            {unresolvedQuestions.map((q) => (
+              <li key={q.id} className="border-b pb-2 last:border-b-0">
+                <p>🔴 {q.question}</p>
+                {q.whyItMatters && <p className="mt-0.5 text-xs text-neutral-400">{q.whyItMatters}</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+        {resolvedQuestions.length > 0 && (
+          <p className="text-xs text-neutral-400">{resolvedQuestions.length} resolved</p>
+        )}
+      </section>
+
+      <section className="grid gap-3 rounded border p-4 text-sm">
+        <h2 className="text-sm font-medium text-neutral-500">Assumptions ({assumptions.length})</h2>
+        {assumptions.length === 0 ? (
+          <p className="text-neutral-400">
+            None yet — only added when the AI is inferring something rather than being told it directly.
+          </p>
+        ) : (
+          <ul className="grid gap-2">
+            {assumptions.map((a) => (
+              <li key={a.id} className="border-b pb-2 last:border-b-0">
+                <p>
+                  <span className="mr-2 text-neutral-400">{a.displayCode}</span>
+                  {a.statement}
+                  <span className="ml-2 whitespace-nowrap text-xs text-neutral-400">({a.status})</span>
+                </p>
+                {a.reasoning && <p className="mt-0.5 text-xs text-neutral-400">Why: {a.reasoning}</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="grid gap-3 rounded border p-4 text-sm">
+        <h2 className="text-sm font-medium text-neutral-500">Evidence ({evidence.length})</h2>
+        {evidence.length === 0 ? (
+          <p className="text-neutral-400">No supporting material attached yet.</p>
+        ) : (
+          <ul className="grid gap-2">
+            {evidence.map((e) => (
+              <li key={e.id} className="border-b pb-2 text-neutral-700 last:border-b-0">
+                {e.type === "URL" ? (
+                  <a href={e.url ?? "#"} target="_blank" rel="noreferrer" className="break-all text-blue-700 underline">
+                    {e.url}
+                  </a>
+                ) : (
+                  <span className="whitespace-pre-wrap">{e.note}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {showAddEvidenceForm && (
+          <form action={addEvidence} className="grid gap-2 border-t pt-3">
+            <input type="hidden" name="productDefinitionId" value={productDefinitionId} />
+            <label className="text-xs text-neutral-500" htmlFor="evidence-type">
+              Add evidence
+            </label>
+            <select id="evidence-type" name="type" defaultValue="FREE_TEXT_NOTE" className="rounded border px-2 py-1 text-sm">
+              <option value="FREE_TEXT_NOTE">Note</option>
+              <option value="URL">Link</option>
+            </select>
+            <textarea
+              name="value"
+              required
+              rows={2}
+              placeholder="Paste a link or write a note..."
+              className="rounded border px-2 py-1 text-sm"
+            />
+            <button type="submit" className="self-start rounded bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white">
+              Add
+            </button>
+          </form>
         )}
       </section>
     </div>

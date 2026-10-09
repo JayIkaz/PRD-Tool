@@ -3,7 +3,14 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
-import { productDefinitions, requirements as requirementsTable, requirementDimensions as requirementDimensionsTable } from "@/db/schema";
+import {
+  productDefinitions,
+  requirements as requirementsTable,
+  requirementDimensions as requirementDimensionsTable,
+  openQuestions as openQuestionsTable,
+  assumptions as assumptionsTable,
+  evidence as evidenceTable,
+} from "@/db/schema";
 import { CompletenessSummary } from "@/components/CompletenessSummary";
 
 export default async function ProductDefinitionPage({
@@ -33,15 +40,24 @@ export default async function ProductDefinitionPage({
         : await tx.query.requirementDimensions.findMany({
             where: inArray(requirementDimensionsTable.requirementId, reqs.map((r) => r.id)),
           });
+    const openQs = await tx.query.openQuestions.findMany({
+      where: eq(openQuestionsTable.productDefinitionId, id),
+    });
+    const assumptionsList = await tx.query.assumptions.findMany({
+      where: eq(assumptionsTable.productDefinitionId, id),
+    });
+    const evidenceList = await tx.query.evidence.findMany({
+      where: eq(evidenceTable.productDefinitionId, id),
+    });
 
-    return { definition, reqs, dims };
+    return { definition, reqs, dims, openQs, assumptionsList, evidenceList };
   });
 
   // A definition belonging to another organisation comes back as
   // undefined here, not a 403 — RLS makes the row invisible rather than
   // forbidden. notFound() is the right response to both cases.
   if (!data) notFound();
-  const { definition, reqs, dims } = data;
+  const { definition, reqs, dims, openQs, assumptionsList, evidenceList } = data;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-8">
@@ -56,7 +72,16 @@ export default async function ProductDefinitionPage({
         <p className="mt-1 whitespace-pre-wrap text-sm">{definition.idea}</p>
       </section>
 
-      <CompletenessSummary definition={definition} requirements={reqs} dimensions={dims} />
+      <CompletenessSummary
+        productDefinitionId={definition.id}
+        definition={definition}
+        requirements={reqs}
+        dimensions={dims}
+        openQuestions={openQs}
+        assumptions={assumptionsList}
+        evidence={evidenceList}
+        showAddEvidenceForm
+      />
 
       <Link
         href={`/product-definitions/${definition.id}/discovery`}
@@ -65,9 +90,8 @@ export default async function ProductDefinitionPage({
         {definition.status === "DISCOVERY" ? "Continue discovery" : "Open discovery"}
       </Link>
       <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
-        Assumptions, open questions and evidence aren&apos;t extracted as their
-        own objects yet — that&apos;s the next build-order item after structured
-        state.
+        Assumptions above are AI-generated and unreviewed — confirming, editing
+        or rejecting them is the next build-order item.
       </p>
     </main>
   );

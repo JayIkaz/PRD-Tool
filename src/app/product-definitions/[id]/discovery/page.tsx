@@ -8,6 +8,9 @@ import {
   messages as messagesTable,
   requirements as requirementsTable,
   requirementDimensions as requirementDimensionsTable,
+  openQuestions as openQuestionsTable,
+  assumptions as assumptionsTable,
+  evidence as evidenceTable,
 } from "@/db/schema";
 import { ensureSessionStarted, sendDiscoveryMessage } from "./actions";
 import { MessageInput } from "./MessageInput";
@@ -55,8 +58,17 @@ export default async function DiscoveryPage({
         : await tx.query.requirementDimensions.findMany({
             where: inArray(requirementDimensionsTable.requirementId, reqs.map((r) => r.id)),
           });
+    const openQs = await tx.query.openQuestions.findMany({
+      where: eq(openQuestionsTable.productDefinitionId, id),
+    });
+    const assumptionsList = await tx.query.assumptions.findMany({
+      where: eq(assumptionsTable.productDefinitionId, id),
+    });
+    const evidenceList = await tx.query.evidence.findMany({
+      where: eq(evidenceTable.productDefinitionId, id),
+    });
 
-    return { definition, messages: sessionMessages, reqs, dims };
+    return { definition, messages: sessionMessages, reqs, dims, openQs, assumptionsList, evidenceList };
   });
 
   if (!data) notFound();
@@ -103,7 +115,15 @@ export default async function DiscoveryPage({
         </div>
 
         <aside className="w-full flex-shrink-0 lg:w-80 lg:overflow-y-auto">
-          <CompletenessSummary definition={data.definition} requirements={data.reqs} dimensions={data.dims} />
+          <CompletenessSummary
+            productDefinitionId={id}
+            definition={data.definition}
+            requirements={data.reqs}
+            dimensions={data.dims}
+            openQuestions={data.openQs}
+            assumptions={data.assumptionsList}
+            evidence={data.evidenceList}
+          />
         </aside>
       </div>
     </main>

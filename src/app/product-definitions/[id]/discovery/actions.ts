@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, and, asc, inArray } from "drizzle-orm";
+import { eq, and, asc, inArray, isNull } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
@@ -11,6 +11,8 @@ import {
   messages as messagesTable,
   requirements as requirementsTable,
   requirementDimensions as requirementDimensionsTable,
+  openQuestions as openQuestionsTable,
+  assumptions as assumptionsTable,
 } from "@/db/schema";
 import { generateNextDiscoveryMessage } from "@/lib/ai/discovery";
 import {
@@ -57,10 +59,12 @@ function deriveOverallStatus(dimensionStates: string[]): "MISSING" | "PARTIAL" |
 
 /**
  * Applies one extracted exchange's result to the database: field
- * updates on ProductDefinition, and upserts into requirements /
- * requirementDimensions. Everything stays at version 1, updated in
- * place — versioning/baselining is a later build-order item
- * (Section 33), not this one.
+ * updates on ProductDefinition, upserts into requirements /
+ * requirementDimensions, new/resolved open questions, and new
+ * assumptions. Everything stays at version 1, updated in place —
+ * versioning/baselining is a later build-order item (Section 33), not
+ * this one. Assumptions are inserted PENDING and left untouched here —
+ * confirming/editing/rejecting them is the next build-order item.
  */
 async function applyExtractionResult(tx: Tx, productDefinitionId: string, result: ExtractionResult) {
   const fieldUpdates: Record<string, unknown> = {};
@@ -82,6 +86,39 @@ async function applyExtractionResult(tx: Tx, productDefinitionId: string, result
   if (Object.keys(fieldUpdates).length > 0) {
     fieldUpdates.updatedAt = new Date();
     await tx.update(productDefinitions).set(fieldUpdates).where(eq(productDefinitions.id, productDefinitionId));
+  }
+
+  for (const oq of result.openQuestions) {
+    if (oq.resolvesOpenQuestionId) {
+      await tx
+        .update(openQuestionsTable)
+        .set({
+          resolvedAt: new Date(),
+          resolutionAnswerText: oq.resolutionAnswerText ?? null,
+        })
+        .where(eq(openQuestionsTable.id, oq.resolvesOpenQuestionId));
+    } else {
+      await tx.insert(openQuestionsTable).values({
+        productDefinitionId,
+        question: oq.question,
+        whyItMatters: oq.whyItMatters ?? null,
+      });
+    }
+  }
+
+  for (const a of result.assumptions) {
+    const existingCount = await tx.query.assumptions.findMany({
+      where: eq(assumptionsTable.productDefinitionId, productDefinitionId),
+    });
+    const displayCode = `ASSUMPTION-${String(existingCount.length + 1).padStart(3, "0")}`;
+    await tx.insert(assumptionsTable).values({
+      productDefinitionId,
+      displayCode,
+      statement: a.statement,
+      generatedByAi: true,
+      reasoning: a.reasoning,
+      status: "PENDING",
+    });
   }
 
   if (result.requirements.length === 0) return;
@@ -276,7 +313,24 @@ export async function sendDiscoveryMessage(formData: FormData) {
       ) as Partial<Record<DimensionKey, string>>,
     }));
 
-    return { definition, session, priorMessages, productType, library, requirementContexts, lastAiMessage };
+    const existingOpenQuestions = await tx.query.openQuestions.findMany({
+      where: and(eq(openQuestionsTable.productDefinitionId, productDefinitionId), isNull(openQuestionsTable.resolvedAt)),
+    });
+    const existingAssumptions = await tx.query.assumptions.findMany({
+      where: eq(assumptionsTable.productDefinitionId, productDefinitionId),
+    });
+
+    return {
+      definition,
+      session,
+      priorMessages,
+      productType,
+      library,
+      requirementContexts,
+      lastAiMessage,
+      existingOpenQuestions,
+      existingAssumptions,
+    };
   });
 
   const [reply, extraction] = await Promise.all([
@@ -303,6 +357,8 @@ export async function sendDiscoveryMessage(formData: FormData) {
         currentTopic: context.definition.currentTopic,
       },
       existingRequirements: context.requirementContexts,
+      existingOpenQuestions: context.existingOpenQuestions.map((q) => ({ id: q.id, question: q.question })),
+      existingAssumptions: context.existingAssumptions.map((a) => ({ id: a.id, statement: a.statement })),
       aiQuestion: context.lastAiMessage?.content ?? null,
       stakeholderAnswer: content,
     }),

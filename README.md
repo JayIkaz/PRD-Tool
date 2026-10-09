@@ -92,10 +92,14 @@ Auth (Supabase, email/password + magic link) — done: /signup, /login,
   src/lib/ai/extraction.ts, wired into sendDiscoveryMessage; visible on
   /product-definitions/[id]
 → Assumptions, Open Questions, Evidence (first-class objects, Section
-  15/16 — evidence upload can stay stubbed against StorageAdapter until
-  a real adapter is written) — next
+  15/16) — done: extraction.ts records open questions ('I don't know')
+  and AI-inferred assumptions (PENDING, reasoning required); evidence
+  has its own manual add action (URL / free-text note only — file
+  upload still stubbed pending a real StorageAdapter); all visible on
+  /product-definitions/[id] and the discovery sidebar
 → AI inference confirmation (end-of-session batch, Section 17 — confirm/
-  edit/reject, nothing silently promoted)
+  edit/reject, nothing silently promoted) — next
+
 ```
 
 At the end of Stage 1 you should be able to: log in, describe an idea,
