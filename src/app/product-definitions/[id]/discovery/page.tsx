@@ -15,6 +15,8 @@ import {
 import { ensureSessionStarted, sendDiscoveryMessage } from "./actions";
 import { MessageInput } from "./MessageInput";
 import { CompletenessSummary } from "@/components/CompletenessSummary";
+import { AppShell } from "@/components/AppShell";
+import { ProductDefinitionNav } from "@/components/ProductDefinitionNav";
 
 export default async function DiscoveryPage({
   params,
@@ -74,58 +76,68 @@ export default async function DiscoveryPage({
   if (!data) notFound();
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-4 p-8">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-neutral-400">Discovery</p>
-        <h1 className="text-xl font-semibold">
-          {data.definition.currentTopic ?? data.definition.title}
-        </h1>
-        {data.definition.currentTopic && data.definition.currentTopic !== data.definition.title && (
-          <p className="mt-0.5 text-xs text-neutral-400">Originally: {data.definition.title}</p>
-        )}
-      </div>
+    <AppShell
+      crumbs={[
+        { label: "Dashboard", href: "/dashboard" },
+        { label: data.definition.title, href: `/product-definitions/${id}` },
+        { label: "Discovery" },
+      ]}
+    >
+      <main className="mx-auto flex max-w-5xl flex-col gap-4 px-8 py-8">
+        <ProductDefinitionNav productDefinitionId={id} active="discovery" />
 
-      <div className="flex flex-1 flex-col gap-6 lg:flex-row">
-        <div className="flex min-h-[70vh] flex-1 flex-col gap-4">
-          <div className="flex flex-1 flex-col gap-3 overflow-y-auto rounded border p-4">
-            {data.messages.map((m) => (
-              <div
-                key={m.id}
-                className={`max-w-[85%] whitespace-pre-wrap rounded px-3 py-2 text-sm ${
-                  m.role === "AI"
-                    ? "self-start bg-neutral-100 text-neutral-900"
-                    : "self-end bg-neutral-900 text-white"
-                }`}
-              >
-                {m.content}
-              </div>
-            ))}
-          </div>
-
-          <form action={sendDiscoveryMessage} className="flex gap-2">
-            <input type="hidden" name="productDefinitionId" value={id} />
-            <MessageInput />
-            <button
-              type="submit"
-              className="self-end rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
-            >
-              Send
-            </button>
-          </form>
+        <div>
+          <p className="text-xs uppercase tracking-wide text-neutral-400">Discovery</p>
+          <h1 className="text-xl font-semibold">
+            {data.definition.currentTopic ?? data.definition.title}
+          </h1>
+          {data.definition.currentTopic && data.definition.currentTopic !== data.definition.title && (
+            <p className="mt-0.5 text-xs text-neutral-400">Originally: {data.definition.title}</p>
+          )}
         </div>
 
-        <aside className="w-full flex-shrink-0 lg:w-80 lg:overflow-y-auto">
-          <CompletenessSummary
-            productDefinitionId={id}
-            definition={data.definition}
-            requirements={data.reqs}
-            dimensions={data.dims}
-            openQuestions={data.openQs}
-            assumptions={data.assumptionsList}
-            evidence={data.evidenceList}
-          />
-        </aside>
-      </div>
-    </main>
+        <div className="flex flex-1 flex-col gap-6 lg:flex-row">
+          <div className="flex min-h-[65vh] flex-1 flex-col gap-4">
+            <div className="flex flex-1 flex-col gap-3 overflow-y-auto rounded border bg-white p-4">
+              {data.messages.map((m) => (
+                <div
+                  key={m.id}
+                  className={`max-w-[85%] whitespace-pre-wrap rounded px-3 py-2 text-sm ${
+                    m.role === "AI"
+                      ? "self-start bg-neutral-100 text-neutral-900"
+                      : "self-end bg-neutral-900 text-white"
+                  }`}
+                >
+                  {m.content}
+                </div>
+              ))}
+            </div>
+
+            <form action={sendDiscoveryMessage} className="flex gap-2">
+              <input type="hidden" name="productDefinitionId" value={id} />
+              <MessageInput />
+              <button
+                type="submit"
+                className="self-end rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+              >
+                Send
+              </button>
+            </form>
+          </div>
+
+          <aside className="w-full flex-shrink-0 lg:w-80 lg:overflow-y-auto">
+            <CompletenessSummary
+              productDefinitionId={id}
+              definition={data.definition}
+              requirements={data.reqs}
+              dimensions={data.dims}
+              openQuestions={data.openQs}
+              assumptions={data.assumptionsList}
+              evidence={data.evidenceList}
+            />
+          </aside>
+        </div>
+      </main>
+    </AppShell>
   );
 }

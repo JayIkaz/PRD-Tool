@@ -27,6 +27,14 @@ original wherever they conflict.
   `src/lib/auth/provision.ts` (first-login Organisation + user
   provisioning — deliberately service-role, see that file's comment and
   addendum #3), and `/dashboard` as the first protected route.
+- `src/components/AppShell.tsx` + `src/components/ProductDefinitionNav.tsx` —
+  shared chrome: every signed-in page (dashboard, new, and all three
+  views of a Product Definition) renders inside AppShell for a
+  consistent top bar (org, signed-in-as, sign out) and breadcrumb trail;
+  the three Product Definition views (Overview / Discovery / Review)
+  additionally share a tab strip so moving between them reads as one
+  record, not three disconnected pages. Auth pages (login/signup) stay
+  outside it on purpose — a centred card, no app chrome.
 - `src/db/rls.ts` — `withRlsContext(userId, fn)`, which runs a query
   inside a transaction impersonating the given user (`SET LOCAL ROLE
   authenticated` + `request.jwt.claims`). This is what makes the RLS

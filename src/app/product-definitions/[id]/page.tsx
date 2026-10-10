@@ -13,6 +13,8 @@ import {
   evidence as evidenceTable,
 } from "@/db/schema";
 import { CompletenessSummary } from "@/components/CompletenessSummary";
+import { AppShell } from "@/components/AppShell";
+import { ProductDefinitionNav } from "@/components/ProductDefinitionNav";
 import { submitForReview } from "./review-actions";
 
 export default async function ProductDefinitionPage({
@@ -73,63 +75,69 @@ export default async function ProductDefinitionPage({
   );
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-8">
-      <header>
-        <p className="text-xs uppercase tracking-wide text-neutral-400">
-          {definition.status.replace(/_/g, " ")}
-        </p>
-        <h1 className="text-xl font-semibold">{definition.title}</h1>
-      </header>
-      <section>
-        <h2 className="text-sm font-medium text-neutral-500">Original idea</h2>
-        <p className="mt-1 whitespace-pre-wrap text-sm">{definition.idea}</p>
-      </section>
+    <AppShell
+      crumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: definition.title }]}
+    >
+      <main className="mx-auto flex max-w-2xl flex-col gap-6 px-8 py-8">
+        <ProductDefinitionNav productDefinitionId={definition.id} active="overview" />
 
-      <CompletenessSummary
-        productDefinitionId={definition.id}
-        definition={definition}
-        requirements={reqs}
-        dimensions={dims}
-        openQuestions={openQs}
-        assumptions={assumptionsList}
-        evidence={evidenceList}
-        showAddEvidenceForm
-        showAssumptionReview
-      />
+        <header>
+          <p className="text-xs uppercase tracking-wide text-neutral-400">
+            {definition.status.replace(/_/g, " ")}
+          </p>
+          <h1 className="text-xl font-semibold">{definition.title}</h1>
+        </header>
+        <section>
+          <h2 className="text-sm font-medium text-neutral-500">Original idea</h2>
+          <p className="mt-1 whitespace-pre-wrap text-sm">{definition.idea}</p>
+        </section>
 
-      <div className="flex flex-wrap gap-3">
-        <Link
-          href={`/product-definitions/${definition.id}/discovery`}
-          className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
-        >
-          {definition.status === "DISCOVERY" ? "Continue discovery" : "Open discovery"}
-        </Link>
+        <CompletenessSummary
+          productDefinitionId={definition.id}
+          definition={definition}
+          requirements={reqs}
+          dimensions={dims}
+          openQuestions={openQs}
+          assumptions={assumptionsList}
+          evidence={evidenceList}
+          showAddEvidenceForm
+          showAssumptionReview
+        />
 
-        {definition.status === "DISCOVERY" && isActiveStakeholder && (
-          <form action={submitForReview}>
-            <input type="hidden" name="productDefinitionId" value={definition.id} />
-            <button className="rounded border px-4 py-2 text-sm font-medium">
-              Submit for PM review
-            </button>
-          </form>
-        )}
-
-        {definition.status !== "DISCOVERY" && (
+        <div className="flex flex-wrap gap-3">
           <Link
-            href={`/product-definitions/${definition.id}/review`}
-            className="rounded border px-4 py-2 text-sm font-medium"
+            href={`/product-definitions/${definition.id}/discovery`}
+            className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
           >
-            View PM review
+            {definition.status === "DISCOVERY" ? "Continue discovery" : "Open discovery"}
           </Link>
-        )}
-      </div>
 
-      {assumptionsList.some((a) => a.status === "PENDING") && (
-        <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
-          Some assumptions above are AI-generated and still need review —
-          confirm, edit or reject each one.
-        </p>
-      )}
-    </main>
+          {definition.status === "DISCOVERY" && isActiveStakeholder && (
+            <form action={submitForReview}>
+              <input type="hidden" name="productDefinitionId" value={definition.id} />
+              <button className="rounded border px-4 py-2 text-sm font-medium">
+                Submit for PM review
+              </button>
+            </form>
+          )}
+
+          {definition.status !== "DISCOVERY" && (
+            <Link
+              href={`/product-definitions/${definition.id}/review`}
+              className="rounded border px-4 py-2 text-sm font-medium"
+            >
+              View PM review
+            </Link>
+          )}
+        </div>
+
+        {assumptionsList.some((a) => a.status === "PENDING") && (
+          <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
+            Some assumptions above are AI-generated and still need review —
+            confirm, edit or reject each one.
+          </p>
+        )}
+      </main>
+    </AppShell>
   );
 }

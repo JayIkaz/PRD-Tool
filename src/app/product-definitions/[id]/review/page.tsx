@@ -14,6 +14,8 @@ import {
   evidence as evidenceTable,
 } from "@/db/schema";
 import { CompletenessSummary } from "@/components/CompletenessSummary";
+import { AppShell } from "@/components/AppShell";
+import { ProductDefinitionNav } from "@/components/ProductDefinitionNav";
 import { startReview, addDecision, approveDefinition, sendBackToDiscovery } from "../review-actions";
 
 export default async function ReviewPage({
@@ -78,13 +80,22 @@ export default async function ReviewPage({
   const canActAsReviewer = !isStakeholder;
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-8">
-      <header>
-        <p className="text-xs uppercase tracking-wide text-neutral-400">
-          PM review · {definition.status.replace(/_/g, " ")}
-        </p>
-        <h1 className="text-xl font-semibold">{definition.title}</h1>
-      </header>
+    <AppShell
+      crumbs={[
+        { label: "Dashboard", href: "/dashboard" },
+        { label: definition.title, href: `/product-definitions/${id}` },
+        { label: "Review" },
+      ]}
+    >
+      <main className="mx-auto flex max-w-2xl flex-col gap-6 px-8 py-8">
+        <ProductDefinitionNav productDefinitionId={id} active="review" />
+
+        <header>
+          <p className="text-xs uppercase tracking-wide text-neutral-400">
+            PM review · {definition.status.replace(/_/g, " ")}
+          </p>
+          <h1 className="text-xl font-semibold">{definition.title}</h1>
+        </header>
 
       {definition.status === "DISCOVERY" && (
         <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
@@ -216,9 +227,10 @@ export default async function ReviewPage({
         </p>
       )}
 
-      <Link href={`/product-definitions/${id}`} className="text-sm text-neutral-500 underline">
-        Back to definition
-      </Link>
-    </main>
+        <Link href={`/product-definitions/${id}`} className="text-sm text-neutral-500 underline">
+          Back to definition
+        </Link>
+      </main>
+    </AppShell>
   );
 }
