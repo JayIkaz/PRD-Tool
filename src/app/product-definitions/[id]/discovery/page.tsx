@@ -12,7 +12,7 @@ import {
   assumptions as assumptionsTable,
   evidence as evidenceTable,
 } from "@/db/schema";
-import { ensureSessionStarted, sendDiscoveryMessage } from "./actions";
+import { ensureSessionStarted, sendDiscoveryMessage, setCurrentTopic } from "./actions";
 import { MessageInput } from "./MessageInput";
 import { CompletenessSummary } from "@/components/CompletenessSummary";
 import { AppShell } from "@/components/AppShell";
@@ -88,9 +88,32 @@ export default async function DiscoveryPage({
 
         <div>
           <p className="text-xs uppercase tracking-wide text-neutral-400">Discovery</p>
-          <h1 className="text-xl font-semibold">
-            {data.definition.currentTopic ?? data.definition.title}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-semibold">
+              {data.definition.currentTopic ?? data.definition.title}
+            </h1>
+            <details className="group">
+              <summary className="cursor-pointer list-none text-xs text-neutral-400 underline hover:text-neutral-600">
+                Rename
+              </summary>
+              <form action={setCurrentTopic} className="mt-2 flex gap-2">
+                <input type="hidden" name="productDefinitionId" value={id} />
+                <input
+                  name="topic"
+                  defaultValue={data.definition.currentTopic ?? data.definition.title}
+                  required
+                  autoFocus
+                  className="rounded border px-2 py-1 text-sm"
+                />
+                <button
+                  type="submit"
+                  className="rounded bg-neutral-900 px-3 py-1 text-xs font-medium text-white"
+                >
+                  Save
+                </button>
+              </form>
+            </details>
+          </div>
           {data.definition.currentTopic && data.definition.currentTopic !== data.definition.title && (
             <p className="mt-0.5 text-xs text-neutral-400">Originally: {data.definition.title}</p>
           )}

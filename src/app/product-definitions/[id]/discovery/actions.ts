@@ -2,6 +2,7 @@
 
 import { eq, and, asc, inArray, isNull } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
 import {
@@ -245,6 +246,35 @@ export async function ensureSessionStarted(productDefinitionId: string) {
       content: opening,
     });
   });
+}
+
+/**
+ * Manual override for currentTopic (companion to extraction.ts's
+ * automatic drift tracking, rule #9): the stakeholder directly
+ * renaming what the conversation is about, taken at face value — no
+ * AI judgment call about whether the conversation has genuinely
+ * moved on, just a direct write, the same as renaming anything else.
+ */
+export async function setCurrentTopic(formData: FormData) {
+  const productDefinitionId = String(formData.get("productDefinitionId") ?? "");
+  const topic = String(formData.get("topic") ?? "").trim();
+
+  if (!topic) throw new Error("Topic can't be empty.");
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  await withRlsContext(user.id, async (tx) => {
+    await tx
+      .update(productDefinitions)
+      .set({ currentTopic: topic, updatedAt: new Date() })
+      .where(eq(productDefinitions.id, productDefinitionId));
+  });
+
+  revalidatePath(`/product-definitions/${productDefinitionId}/discovery`);
 }
 
 export async function sendDiscoveryMessage(formData: FormData) {
