@@ -1,8 +1,23 @@
 @import "tailwindcss";
 
+/*
+ * Locked to one light theme on purpose. The create-next-app template
+ * this started from auto-flips --background/--foreground on
+ * prefers-color-scheme: dark, but nothing in this app was actually
+ * built with dark-mode-aware (dark:) Tailwind classes -- every card,
+ * input and button is hardcoded to light colours (bg-white,
+ * bg-neutral-50, implied dark text). With the old media query left
+ * in, any element that didn't set its own text colour explicitly
+ * inherited the dark-mode foreground (#ededed, near white) while
+ * still sitting on a light-mode background -- invisible text on a
+ * white card. Removing the override is the correct fix until real
+ * dark mode is designed and every component gets dark: variants to
+ * match, not something to re-add piecemeal.
+ */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -10,13 +25,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
