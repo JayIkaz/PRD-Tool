@@ -11,6 +11,7 @@ import {
   productDefinitionParticipants,
   decisions as decisionsTable,
 } from "@/db/schema";
+import { logAuditEvent } from "@/lib/audit/log";
 
 /**
  * PM review workspace (Section 20): the human review loop between a
@@ -88,6 +89,13 @@ export async function submitForReview(formData: FormData) {
       .update(productDefinitions)
       .set({ status: "AWAITING_PM_REVIEW", updatedAt: new Date() })
       .where(eq(productDefinitions.id, productDefinitionId));
+
+    await logAuditEvent(tx, {
+      productDefinitionId,
+      eventType: "STATUS_CHANGED",
+      summary: "Submitted for PM review",
+      actorUserId: userId,
+    });
   });
 
   revalidatePath(`/product-definitions/${productDefinitionId}`);
@@ -136,6 +144,15 @@ export async function startReview(formData: FormData) {
         .set({ status: "PM_REVIEW", updatedAt: new Date() })
         .where(eq(productDefinitions.id, productDefinitionId));
     }
+
+    if (!existingPm) {
+      await logAuditEvent(tx, {
+        productDefinitionId,
+        eventType: "PARTICIPANT_JOINED",
+        summary: "Claimed as PM reviewer -- review started",
+        actorUserId: userId,
+      });
+    }
   });
 
   revalidatePath(`/product-definitions/${productDefinitionId}/review`);
@@ -156,6 +173,13 @@ export async function addDecision(formData: FormData) {
       statement,
       rationale: rationale || null,
       decidedByUserId: userId,
+    });
+
+    await logAuditEvent(tx, {
+      productDefinitionId,
+      eventType: "REVIEW_DECISION_RECORDED",
+      summary: statement,
+      actorUserId: userId,
     });
   });
 
@@ -185,6 +209,13 @@ export async function approveDefinition(formData: FormData) {
       productDefinitionId,
       statement: "Approved",
       decidedByUserId: userId,
+    });
+
+    await logAuditEvent(tx, {
+      productDefinitionId,
+      eventType: "STATUS_CHANGED",
+      summary: "Approved",
+      actorUserId: userId,
     });
   });
 
@@ -219,6 +250,13 @@ export async function sendBackToDiscovery(formData: FormData) {
       statement: "Sent back to discovery",
       rationale: reason,
       decidedByUserId: userId,
+    });
+
+    await logAuditEvent(tx, {
+      productDefinitionId,
+      eventType: "STATUS_CHANGED",
+      summary: `Sent back to discovery -- ${reason}`,
+      actorUserId: userId,
     });
   });
 

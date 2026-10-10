@@ -108,3 +108,14 @@ export const notificationChannelTypeEnum = pgEnum("notification_channel_type", [
   "SLACK",
   "TEAMS",
 ]);
+
+// --- Audit trail ---
+export const auditEventTypeEnum = pgEnum("audit_event_type", [
+  "STATUS_CHANGED",
+  "TOPIC_RENAMED",
+  "ASSUMPTION_CONFIRMED",
+  "ASSUMPTION_EDITED",
+  "ASSUMPTION_REJECTED",
+  "PARTICIPANT_JOINED",
+  "REVIEW_DECISION_RECORDED",
+]);

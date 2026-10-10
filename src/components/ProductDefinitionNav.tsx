@@ -11,6 +11,7 @@ const TABS = [
   { key: "overview", label: "Overview" },
   { key: "discovery", label: "Discovery" },
   { key: "review", label: "Review" },
+  { key: "history", label: "History" },
 ] as const;
 
 export function ProductDefinitionNav({

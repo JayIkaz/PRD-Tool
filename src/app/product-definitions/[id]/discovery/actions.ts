@@ -23,6 +23,7 @@ import {
   type ExtractionResult,
 } from "@/lib/ai/extraction";
 import type { Tx } from "@/db/rls";
+import { logAuditEvent } from "@/lib/audit/log";
 
 /**
  * Known limitation: no locking against two concurrent calls for the
@@ -268,10 +269,24 @@ export async function setCurrentTopic(formData: FormData) {
   if (!user) redirect("/login");
 
   await withRlsContext(user.id, async (tx) => {
+    const before = await tx.query.productDefinitions.findFirst({
+      where: eq(productDefinitions.id, productDefinitionId),
+    });
+
     await tx
       .update(productDefinitions)
       .set({ currentTopic: topic, updatedAt: new Date() })
       .where(eq(productDefinitions.id, productDefinitionId));
+
+    const previous = before?.currentTopic ?? before?.title;
+    await logAuditEvent(tx, {
+      productDefinitionId,
+      eventType: "TOPIC_RENAMED",
+      summary: previous && previous !== topic
+        ? `Renamed from "${previous}" to "${topic}"`
+        : `Renamed to "${topic}"`,
+      actorUserId: user.id,
+    });
   });
 
   revalidatePath(`/product-definitions/${productDefinitionId}/discovery`);

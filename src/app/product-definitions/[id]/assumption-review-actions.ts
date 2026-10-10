@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
 import { assumptions as assumptionsTable } from "@/db/schema";
+import { logAuditEvent } from "@/lib/audit/log";
 
 /**
  * AI inference confirmation (Section 16/17), simple variant: the
@@ -40,10 +41,19 @@ async function getCurrentUserId() {
 export async function confirmAssumption(assumptionId: string, productDefinitionId: string) {
   const userId = await getCurrentUserId();
   await withRlsContext(userId, async (tx) => {
+    const assumption = await tx.query.assumptions.findFirst({
+      where: eq(assumptionsTable.id, assumptionId),
+    });
     await tx
       .update(assumptionsTable)
       .set({ status: "CONFIRMED", confirmedByUserId: userId })
       .where(eq(assumptionsTable.id, assumptionId));
+    await logAuditEvent(tx, {
+      productDefinitionId,
+      eventType: "ASSUMPTION_CONFIRMED",
+      summary: `Confirmed ${assumption?.displayCode ?? "an assumption"}: ${assumption?.statement ?? ""}`,
+      actorUserId: userId,
+    });
   });
   revalidatePath(`/product-definitions/${productDefinitionId}`);
 }
@@ -51,10 +61,19 @@ export async function confirmAssumption(assumptionId: string, productDefinitionI
 export async function rejectAssumption(assumptionId: string, productDefinitionId: string) {
   const userId = await getCurrentUserId();
   await withRlsContext(userId, async (tx) => {
+    const assumption = await tx.query.assumptions.findFirst({
+      where: eq(assumptionsTable.id, assumptionId),
+    });
     await tx
       .update(assumptionsTable)
       .set({ status: "REJECTED", confirmedByUserId: userId })
       .where(eq(assumptionsTable.id, assumptionId));
+    await logAuditEvent(tx, {
+      productDefinitionId,
+      eventType: "ASSUMPTION_REJECTED",
+      summary: `Rejected ${assumption?.displayCode ?? "an assumption"}: ${assumption?.statement ?? ""}`,
+      actorUserId: userId,
+    });
   });
   revalidatePath(`/product-definitions/${productDefinitionId}`);
 }
@@ -69,10 +88,19 @@ export async function editAssumption(
 
   const userId = await getCurrentUserId();
   await withRlsContext(userId, async (tx) => {
+    const assumption = await tx.query.assumptions.findFirst({
+      where: eq(assumptionsTable.id, assumptionId),
+    });
     await tx
       .update(assumptionsTable)
       .set({ statement: trimmed, status: "EDITED", confirmedByUserId: userId })
       .where(eq(assumptionsTable.id, assumptionId));
+    await logAuditEvent(tx, {
+      productDefinitionId,
+      eventType: "ASSUMPTION_EDITED",
+      summary: `Edited and confirmed ${assumption?.displayCode ?? "an assumption"}: ${trimmed}`,
+      actorUserId: userId,
+    });
   });
   revalidatePath(`/product-definitions/${productDefinitionId}`);
 }
