@@ -81,6 +81,7 @@ export default async function ProductDefinitionPage({
         assumptions={assumptionsList}
         evidence={evidenceList}
         showAddEvidenceForm
+        showAssumptionReview
       />
 
       <Link
@@ -89,10 +90,12 @@ export default async function ProductDefinitionPage({
       >
         {definition.status === "DISCOVERY" ? "Continue discovery" : "Open discovery"}
       </Link>
-      <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
-        Assumptions above are AI-generated and unreviewed — confirming, editing
-        or rejecting them is the next build-order item.
-      </p>
+      {assumptionsList.some((a) => a.status === "PENDING") && (
+        <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
+          Some assumptions above are AI-generated and still need your review —
+          confirm, edit or reject each one before this definition goes to PM review.
+        </p>
+      )}
     </main>
   );
 }

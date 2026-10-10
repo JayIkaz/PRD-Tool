@@ -97,8 +97,15 @@ Auth (Supabase, email/password + magic link) — done: /signup, /login,
   has its own manual add action (URL / free-text note only — file
   upload still stubbed pending a real StorageAdapter); all visible on
   /product-definitions/[id] and the discovery sidebar
-→ AI inference confirmation (end-of-session batch, Section 17 — confirm/
-  edit/reject, nothing silently promoted) — next
+→ AI inference confirmation (Section 16/17 — confirm/edit/reject, nothing
+  silently promoted) — done: review controls on PENDING assumptions
+  directly on /product-definitions/[id] (src/app/product-definitions/[id]/
+  assumption-review-actions.ts, src/components/AssumptionReviewRow.tsx).
+  Scoped as reviewing the assumptions extraction.ts already creates live
+  during discovery, not the separate end-of-session ai_inferences staging
+  batch the schema also defines — that fuller version (covering inferred
+  requirements too, not just assumptions) is still open if it's ever
+  needed; see the comment on the ai_inferences table.
 
 ```
 

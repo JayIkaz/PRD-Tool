@@ -1,13 +1,15 @@
 import { addEvidence } from "@/app/product-definitions/[id]/evidence-actions";
+import { AssumptionReviewRow } from "@/components/AssumptionReviewRow";
 
 /**
  * Live summary of the structured state extracted so far for a Product
  * Definition — problem/users/outcomes with their completeness icons,
  * a requirement list with an N/7 dimensions-defined count, open
- * questions, assumptions (all PENDING — nothing here is reviewed yet,
- * that's the next build-order item), and evidence. Shared between the
- * detail page and the discovery chat's sidebar so the views can't
- * drift apart.
+ * questions, assumptions (confirm/edit/reject when showAssumptionReview
+ * is set — Section 16/17; read-only otherwise, e.g. in the discovery
+ * sidebar where that's not the stakeholder's call to make), and
+ * evidence. Shared between the detail page and the discovery chat's
+ * sidebar so the views can't drift apart.
  */
 
 const STATUS_ICON: Record<string, string> = {
@@ -35,6 +37,7 @@ export interface CompletenessSummaryProps {
   assumptions: { id: string; displayCode: string; statement: string; reasoning: string | null; status: string }[];
   evidence: { id: string; type: string; url: string | null; note: string | null }[];
   showAddEvidenceForm?: boolean;
+  showAssumptionReview?: boolean;
 }
 
 export function CompletenessSummary({
@@ -46,9 +49,11 @@ export function CompletenessSummary({
   assumptions,
   evidence,
   showAddEvidenceForm = false,
+  showAssumptionReview = false,
 }: CompletenessSummaryProps) {
   const unresolvedQuestions = openQuestions.filter((q) => !q.resolvedAt);
   const resolvedQuestions = openQuestions.filter((q) => q.resolvedAt);
+  const pendingAssumptions = assumptions.filter((a) => a.status === "PENDING");
 
   return (
     <div className="flex flex-col gap-4">
@@ -111,23 +116,30 @@ export function CompletenessSummary({
       </section>
 
       <section className="grid gap-3 rounded border p-4 text-sm">
-        <h2 className="text-sm font-medium text-neutral-500">Assumptions ({assumptions.length})</h2>
+        <h2 className="text-sm font-medium text-neutral-500">
+          Assumptions ({assumptions.length}
+          {showAssumptionReview && pendingAssumptions.length > 0 ? `, ${pendingAssumptions.length} to review` : ""})
+        </h2>
         {assumptions.length === 0 ? (
           <p className="text-neutral-400">
             None yet — only added when the AI is inferring something rather than being told it directly.
           </p>
         ) : (
           <ul className="grid gap-2">
-            {assumptions.map((a) => (
-              <li key={a.id} className="border-b pb-2 last:border-b-0">
-                <p>
-                  <span className="mr-2 text-neutral-400">{a.displayCode}</span>
-                  {a.statement}
-                  <span className="ml-2 whitespace-nowrap text-xs text-neutral-400">({a.status})</span>
-                </p>
-                {a.reasoning && <p className="mt-0.5 text-xs text-neutral-400">Why: {a.reasoning}</p>}
-              </li>
-            ))}
+            {assumptions.map((a) =>
+              showAssumptionReview ? (
+                <AssumptionReviewRow key={a.id} productDefinitionId={productDefinitionId} assumption={a} />
+              ) : (
+                <li key={a.id} className="border-b pb-2 last:border-b-0">
+                  <p>
+                    <span className="mr-2 text-neutral-400">{a.displayCode}</span>
+                    {a.statement}
+                    <span className="ml-2 whitespace-nowrap text-xs text-neutral-400">({a.status})</span>
+                  </p>
+                  {a.reasoning && <p className="mt-0.5 text-xs text-neutral-400">Why: {a.reasoning}</p>}
+                </li>
+              )
+            )}
           </ul>
         )}
       </section>
