@@ -1,10 +1,11 @@
-import { eq, inArray } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
 import {
   productDefinitions,
+  productDefinitionParticipants,
   requirements as requirementsTable,
   requirementDimensions as requirementDimensionsTable,
   openQuestions as openQuestionsTable,
@@ -12,6 +13,7 @@ import {
   evidence as evidenceTable,
 } from "@/db/schema";
 import { CompletenessSummary } from "@/components/CompletenessSummary";
+import { submitForReview } from "./review-actions";
 
 export default async function ProductDefinitionPage({
   params,
@@ -30,6 +32,13 @@ export default async function ProductDefinitionPage({
       where: eq(productDefinitions.id, id),
     });
     if (!definition) return null;
+
+    const participants = await tx.query.productDefinitionParticipants.findMany({
+      where: and(
+        eq(productDefinitionParticipants.productDefinitionId, id),
+        eq(productDefinitionParticipants.status, "ACTIVE")
+      ),
+    });
 
     const reqs = await tx.query.requirements.findMany({
       where: eq(requirementsTable.productDefinitionId, id),
@@ -50,14 +59,18 @@ export default async function ProductDefinitionPage({
       where: eq(evidenceTable.productDefinitionId, id),
     });
 
-    return { definition, reqs, dims, openQs, assumptionsList, evidenceList };
+    return { definition, participants, reqs, dims, openQs, assumptionsList, evidenceList };
   });
 
   // A definition belonging to another organisation comes back as
   // undefined here, not a 403 — RLS makes the row invisible rather than
   // forbidden. notFound() is the right response to both cases.
   if (!data) notFound();
-  const { definition, reqs, dims, openQs, assumptionsList, evidenceList } = data;
+  const { definition, participants, reqs, dims, openQs, assumptionsList, evidenceList } = data;
+
+  const isActiveStakeholder = participants.some(
+    (p) => p.role === "STAKEHOLDER" && p.userId === user.id
+  );
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-8">
@@ -84,16 +97,37 @@ export default async function ProductDefinitionPage({
         showAssumptionReview
       />
 
-      <Link
-        href={`/product-definitions/${definition.id}/discovery`}
-        className="self-start rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
-      >
-        {definition.status === "DISCOVERY" ? "Continue discovery" : "Open discovery"}
-      </Link>
+      <div className="flex flex-wrap gap-3">
+        <Link
+          href={`/product-definitions/${definition.id}/discovery`}
+          className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+        >
+          {definition.status === "DISCOVERY" ? "Continue discovery" : "Open discovery"}
+        </Link>
+
+        {definition.status === "DISCOVERY" && isActiveStakeholder && (
+          <form action={submitForReview}>
+            <input type="hidden" name="productDefinitionId" value={definition.id} />
+            <button className="rounded border px-4 py-2 text-sm font-medium">
+              Submit for PM review
+            </button>
+          </form>
+        )}
+
+        {definition.status !== "DISCOVERY" && (
+          <Link
+            href={`/product-definitions/${definition.id}/review`}
+            className="rounded border px-4 py-2 text-sm font-medium"
+          >
+            View PM review
+          </Link>
+        )}
+      </div>
+
       {assumptionsList.some((a) => a.status === "PENDING") && (
         <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
-          Some assumptions above are AI-generated and still need your review —
-          confirm, edit or reject each one before this definition goes to PM review.
+          Some assumptions above are AI-generated and still need review —
+          confirm, edit or reject each one.
         </p>
       )}
     </main>

@@ -116,8 +116,18 @@ or reject AI inferences. That's the whole stakeholder journey (Section 30).
 
 **Stage 2**
 ```
-PM review workspace (Section 20)
-→ AI Challenge mode (Section 21/22)
+PM review workspace (Section 20) — done: stakeholder submits from
+  /product-definitions/[id] (DISCOVERY -> AWAITING_PM_REVIEW); anyone
+  else on the org claims it at /product-definitions/[id]/review
+  (-> PM_REVIEW, inserts a PM participant row); from there, Approve
+  (-> APPROVED) or Send back to discovery (-> DISCOVERY) with a reason,
+  each logged as a Decision. Self-review is blocked by design — the
+  active STAKEHOLDER on a definition can't also become its PM, so
+  testing this solo needs a second account in the same organisation
+  (no invite flow exists yet; ask Claude to provision one by hand in
+  the meantime). src/app/product-definitions/[id]/review-actions.ts,
+  .../review/page.tsx
+→ AI Challenge mode (Section 21/22) — next
 → Requirement refinement
 → Notifications (hand-off, question-sent-to-stakeholder, review-requested
   — in-app first, then whichever of email/Slack/Teams you want live)
