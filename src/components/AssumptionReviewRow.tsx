@@ -34,14 +34,14 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
     return (
       <li className="border-b pb-2 last:border-b-0">
         <p>
-          <span className="mr-2 text-neutral-400">{assumption.displayCode}</span>
+          <span className="mr-2 text-neutral-500">{assumption.displayCode}</span>
           {assumption.statement}
-          <span className="ml-2 whitespace-nowrap text-xs text-neutral-400">
+          <span className="ml-2 whitespace-nowrap text-xs text-neutral-500">
             ({STATUS_LABEL[assumption.status] ?? assumption.status})
           </span>
         </p>
         {assumption.reasoning && (
-          <p className="mt-0.5 text-xs text-neutral-400">Why: {assumption.reasoning}</p>
+          <p className="mt-0.5 text-xs text-neutral-500">Why: {assumption.reasoning}</p>
         )}
       </li>
     );
@@ -50,11 +50,11 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
   return (
     <li className="border-b pb-2 last:border-b-0">
       <p>
-        <span className="mr-2 text-neutral-400">{assumption.displayCode}</span>
+        <span className="mr-2 text-neutral-500">{assumption.displayCode}</span>
         {editing ? null : assumption.statement}
       </p>
       {assumption.reasoning && !editing && (
-        <p className="mt-0.5 text-xs text-neutral-400">Why: {assumption.reasoning}</p>
+        <p className="mt-0.5 text-xs text-neutral-500">Why: {assumption.reasoning}</p>
       )}
 
       {editing ? (

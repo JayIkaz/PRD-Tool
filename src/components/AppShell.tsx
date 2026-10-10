@@ -70,7 +70,7 @@ export async function AppShell({
         </div>
 
         {crumbs && crumbs.length > 0 && (
-          <div className="mx-auto max-w-5xl px-8 pb-2.5 text-xs text-neutral-400">
+          <div className="mx-auto max-w-5xl px-8 pb-2.5 text-xs text-neutral-500">
             {crumbs.map((c, i) => (
               <span key={i}>
                 {i > 0 && <span className="mx-1.5">/</span>}

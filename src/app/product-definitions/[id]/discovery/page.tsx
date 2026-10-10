@@ -87,13 +87,13 @@ export default async function DiscoveryPage({
         <ProductDefinitionNav productDefinitionId={id} active="discovery" />
 
         <div>
-          <p className="text-xs uppercase tracking-wide text-neutral-400">Discovery</p>
+          <p className="text-xs uppercase tracking-wide text-neutral-500">Discovery</p>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-semibold">
               {data.definition.currentTopic ?? data.definition.title}
             </h1>
             <details className="group">
-              <summary className="cursor-pointer list-none text-xs text-neutral-400 underline hover:text-neutral-600">
+              <summary className="cursor-pointer list-none text-xs text-neutral-500 underline hover:text-neutral-600">
                 Rename
               </summary>
               <form action={setCurrentTopic} className="mt-2 flex gap-2">
@@ -115,7 +115,7 @@ export default async function DiscoveryPage({
             </details>
           </div>
           {data.definition.currentTopic && data.definition.currentTopic !== data.definition.title && (
-            <p className="mt-0.5 text-xs text-neutral-400">Originally: {data.definition.title}</p>
+            <p className="mt-0.5 text-xs text-neutral-500">Originally: {data.definition.title}</p>
           )}
         </div>
 

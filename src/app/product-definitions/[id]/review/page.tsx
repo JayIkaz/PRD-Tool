@@ -91,7 +91,7 @@ export default async function ReviewPage({
         <ProductDefinitionNav productDefinitionId={id} active="review" />
 
         <header>
-          <p className="text-xs uppercase tracking-wide text-neutral-400">
+          <p className="text-xs uppercase tracking-wide text-neutral-500">
             PM review · {definition.status.replace(/_/g, " ")}
           </p>
           <h1 className="text-xl font-semibold">{definition.title}</h1>
@@ -148,7 +148,7 @@ export default async function ReviewPage({
             Review decisions ({decisionsList.length})
           </h2>
           {decisionsList.length === 0 ? (
-            <p className="text-neutral-400">
+            <p className="text-neutral-500">
               Nothing recorded yet — anything the PM confirms, challenges or flags while
               reviewing goes here.
             </p>
@@ -157,7 +157,7 @@ export default async function ReviewPage({
               {decisionsList.map((d) => (
                 <li key={d.id} className="border-b pb-2 last:border-b-0">
                   <p>{d.statement}</p>
-                  {d.rationale && <p className="mt-0.5 text-xs text-neutral-400">{d.rationale}</p>}
+                  {d.rationale && <p className="mt-0.5 text-xs text-neutral-500">{d.rationale}</p>}
                 </li>
               ))}
             </ul>

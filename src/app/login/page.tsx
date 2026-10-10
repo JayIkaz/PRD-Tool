@@ -48,7 +48,7 @@ export default async function LoginPage({
           </button>
         </form>
 
-        <div className="flex items-center gap-2 text-xs text-neutral-400">
+        <div className="flex items-center gap-2 text-xs text-neutral-500">
           <div className="h-px flex-1 bg-neutral-200" />
           or
           <div className="h-px flex-1 bg-neutral-200" />

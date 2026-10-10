@@ -82,7 +82,7 @@ export default async function ProductDefinitionPage({
         <ProductDefinitionNav productDefinitionId={definition.id} active="overview" />
 
         <header>
-          <p className="text-xs uppercase tracking-wide text-neutral-400">
+          <p className="text-xs uppercase tracking-wide text-neutral-500">
             {definition.status.replace(/_/g, " ")}
           </p>
           <h1 className="text-xl font-semibold">{definition.title}</h1>

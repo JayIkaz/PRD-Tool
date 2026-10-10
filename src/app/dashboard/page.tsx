@@ -67,7 +67,7 @@ export default async function DashboardPage() {
                   className="flex items-center justify-between px-4 py-3 text-sm hover:bg-neutral-50"
                 >
                   <span className="font-medium">{d.title}</span>
-                  <span className="text-xs uppercase tracking-wide text-neutral-400">
+                  <span className="text-xs uppercase tracking-wide text-neutral-500">
                     {d.status.replace(/_/g, " ")}
                   </span>
                 </Link>

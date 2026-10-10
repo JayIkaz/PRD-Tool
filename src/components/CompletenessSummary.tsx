@@ -67,7 +67,7 @@ export function CompletenessSummary({
       <section className="grid gap-3 rounded border p-4 text-sm">
         <h2 className="text-sm font-medium text-neutral-500">Requirements ({requirements.length})</h2>
         {requirements.length === 0 ? (
-          <p className="text-neutral-400">
+          <p className="text-neutral-500">
             None extracted yet — requirements appear here as the discovery conversation covers them.
           </p>
         ) : (
@@ -79,10 +79,10 @@ export function CompletenessSummary({
               return (
                 <li key={r.id} className="flex items-center justify-between gap-2 border-b pb-2 last:border-b-0">
                   <span>
-                    <span className="mr-2 text-neutral-400">{r.displayCode}</span>
+                    <span className="mr-2 text-neutral-500">{r.displayCode}</span>
                     {r.title}
                   </span>
-                  <span className="whitespace-nowrap text-xs text-neutral-400">
+                  <span className="whitespace-nowrap text-xs text-neutral-500">
                     {STATUS_ICON[r.overallStatus]} {definedCount}/{DIMENSION_COUNT}
                   </span>
                 </li>
@@ -97,7 +97,7 @@ export function CompletenessSummary({
           Open questions ({unresolvedQuestions.length})
         </h2>
         {unresolvedQuestions.length === 0 ? (
-          <p className="text-neutral-400">
+          <p className="text-neutral-500">
             None open — questions appear here when the stakeholder genuinely doesn&apos;t know something yet.
           </p>
         ) : (
@@ -105,13 +105,13 @@ export function CompletenessSummary({
             {unresolvedQuestions.map((q) => (
               <li key={q.id} className="border-b pb-2 last:border-b-0">
                 <p>🔴 {q.question}</p>
-                {q.whyItMatters && <p className="mt-0.5 text-xs text-neutral-400">{q.whyItMatters}</p>}
+                {q.whyItMatters && <p className="mt-0.5 text-xs text-neutral-500">{q.whyItMatters}</p>}
               </li>
             ))}
           </ul>
         )}
         {resolvedQuestions.length > 0 && (
-          <p className="text-xs text-neutral-400">{resolvedQuestions.length} resolved</p>
+          <p className="text-xs text-neutral-500">{resolvedQuestions.length} resolved</p>
         )}
       </section>
 
@@ -121,7 +121,7 @@ export function CompletenessSummary({
           {showAssumptionReview && pendingAssumptions.length > 0 ? `, ${pendingAssumptions.length} to review` : ""})
         </h2>
         {assumptions.length === 0 ? (
-          <p className="text-neutral-400">
+          <p className="text-neutral-500">
             None yet — only added when the AI is inferring something rather than being told it directly.
           </p>
         ) : (
@@ -132,11 +132,11 @@ export function CompletenessSummary({
               ) : (
                 <li key={a.id} className="border-b pb-2 last:border-b-0">
                   <p>
-                    <span className="mr-2 text-neutral-400">{a.displayCode}</span>
+                    <span className="mr-2 text-neutral-500">{a.displayCode}</span>
                     {a.statement}
-                    <span className="ml-2 whitespace-nowrap text-xs text-neutral-400">({a.status})</span>
+                    <span className="ml-2 whitespace-nowrap text-xs text-neutral-500">({a.status})</span>
                   </p>
-                  {a.reasoning && <p className="mt-0.5 text-xs text-neutral-400">Why: {a.reasoning}</p>}
+                  {a.reasoning && <p className="mt-0.5 text-xs text-neutral-500">Why: {a.reasoning}</p>}
                 </li>
               )
             )}
@@ -147,7 +147,7 @@ export function CompletenessSummary({
       <section className="grid gap-3 rounded border p-4 text-sm">
         <h2 className="text-sm font-medium text-neutral-500">Evidence ({evidence.length})</h2>
         {evidence.length === 0 ? (
-          <p className="text-neutral-400">No supporting material attached yet.</p>
+          <p className="text-neutral-500">No supporting material attached yet.</p>
         ) : (
           <ul className="grid gap-2">
             {evidence.map((e) => (
@@ -207,7 +207,7 @@ function FieldRow({
         <span>{label}</span>
       </p>
       <p className="mt-0.5 whitespace-pre-wrap text-neutral-600">
-        {content ?? <span className="text-neutral-400">Not yet captured.</span>}
+        {content ?? <span className="text-neutral-500">Not yet captured.</span>}
       </p>
     </div>
   );
