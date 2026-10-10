@@ -221,10 +221,22 @@ Rules, all strict:
 
   const userContent = `The AI's most recent question was: ${params.aiQuestion ?? "(this was the opening message — no prior question)"}\n\nThe stakeholder's answer: ${params.stakeholderAnswer}`;
 
-  return generateStructured<ExtractionResult>({
+  const raw = await generateStructured<ExtractionResult>({
     mode: "STAKEHOLDER_DISCOVERY",
     systemPrompt,
     userContent,
     schemaDescription: SCHEMA_DESCRIPTION,
   });
+
+  // The model is told to "return an empty array when nothing qualifies",
+  // but in practice sometimes omits the key entirely instead of sending
+  // []. Normalise here rather than trusting every caller downstream to
+  // guard against undefined — applyExtractionResult iterates these
+  // directly with for...of.
+  return {
+    ...raw,
+    requirements: raw.requirements ?? [],
+    openQuestions: raw.openQuestions ?? [],
+    assumptions: raw.assumptions ?? [],
+  };
 }
