@@ -76,7 +76,7 @@ export default async function ProductDefinitionPage({
 
   return (
     <AppShell
-      crumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: definition.title }]}
+      crumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: definition.currentTopic ?? definition.title }]}
     >
       <main className="mx-auto flex max-w-2xl flex-col gap-6 px-8 py-8">
         <ProductDefinitionNav productDefinitionId={definition.id} active="overview" />
@@ -85,7 +85,7 @@ export default async function ProductDefinitionPage({
           <p className="text-xs uppercase tracking-wide text-neutral-500">
             {definition.status.replace(/_/g, " ")}
           </p>
-          <h1 className="text-xl font-semibold">{definition.title}</h1>
+          <h1 className="text-xl font-semibold">{definition.currentTopic ?? definition.title}</h1>
         </header>
         <section>
           <h2 className="text-sm font-medium text-neutral-500">Original idea</h2>

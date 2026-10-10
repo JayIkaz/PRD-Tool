@@ -83,7 +83,7 @@ export default async function ReviewPage({
     <AppShell
       crumbs={[
         { label: "Dashboard", href: "/dashboard" },
-        { label: definition.title, href: `/product-definitions/${id}` },
+        { label: definition.currentTopic ?? definition.title, href: `/product-definitions/${id}` },
         { label: "Review" },
       ]}
     >
@@ -94,7 +94,7 @@ export default async function ReviewPage({
           <p className="text-xs uppercase tracking-wide text-neutral-500">
             PM review · {definition.status.replace(/_/g, " ")}
           </p>
-          <h1 className="text-xl font-semibold">{definition.title}</h1>
+          <h1 className="text-xl font-semibold">{definition.currentTopic ?? definition.title}</h1>
         </header>
 
       {definition.status === "DISCOVERY" && (
