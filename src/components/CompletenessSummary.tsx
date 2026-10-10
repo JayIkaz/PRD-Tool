@@ -57,14 +57,14 @@ export function CompletenessSummary({
 
   return (
     <div className="flex flex-col gap-4">
-      <section className="grid gap-3 rounded border border-neutral-300 bg-white shadow-sm p-4 text-sm">
+      <section className="grid gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4 text-sm">
         <h2 className="text-sm font-medium text-neutral-600">Captured so far</h2>
         <FieldRow label="Problem" status={definition.problemStatus} content={definition.problem} />
         <FieldRow label="Users" status={definition.usersStatus} content={definition.users} />
         <FieldRow label="Outcomes" status={definition.outcomesStatus} content={definition.outcomes} />
       </section>
 
-      <section className="grid gap-3 rounded border border-neutral-300 bg-white shadow-sm p-4 text-sm">
+      <section className="grid gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4 text-sm">
         <h2 className="text-sm font-medium text-neutral-600">Requirements ({requirements.length})</h2>
         {requirements.length === 0 ? (
           <p className="text-neutral-600">
@@ -92,7 +92,7 @@ export function CompletenessSummary({
         )}
       </section>
 
-      <section className="grid gap-3 rounded border border-neutral-300 bg-white shadow-sm p-4 text-sm">
+      <section className="grid gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4 text-sm">
         <h2 className="text-sm font-medium text-neutral-600">
           Open questions ({unresolvedQuestions.length})
         </h2>
@@ -115,7 +115,7 @@ export function CompletenessSummary({
         )}
       </section>
 
-      <section className="grid gap-3 rounded border border-neutral-300 bg-white shadow-sm p-4 text-sm">
+      <section className="grid gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4 text-sm">
         <h2 className="text-sm font-medium text-neutral-600">
           Assumptions ({assumptions.length}
           {showAssumptionReview && pendingAssumptions.length > 0 ? `, ${pendingAssumptions.length} to review` : ""})
@@ -144,7 +144,7 @@ export function CompletenessSummary({
         )}
       </section>
 
-      <section className="grid gap-3 rounded border border-neutral-300 bg-white shadow-sm p-4 text-sm">
+      <section className="grid gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4 text-sm">
         <h2 className="text-sm font-medium text-neutral-600">Evidence ({evidence.length})</h2>
         {evidence.length === 0 ? (
           <p className="text-neutral-600">No supporting material attached yet.</p>
@@ -170,7 +170,7 @@ export function CompletenessSummary({
             <label className="text-xs text-neutral-600" htmlFor="evidence-type">
               Add evidence
             </label>
-            <select id="evidence-type" name="type" defaultValue="FREE_TEXT_NOTE" className="rounded border border-neutral-300 px-2 py-1 text-sm">
+            <select id="evidence-type" name="type" defaultValue="FREE_TEXT_NOTE" className="rounded-lg border border-neutral-300 px-2 py-1 text-sm">
               <option value="FREE_TEXT_NOTE">Note</option>
               <option value="URL">Link</option>
             </select>
@@ -179,9 +179,9 @@ export function CompletenessSummary({
               required
               rows={2}
               placeholder="Paste a link or write a note..."
-              className="rounded border border-neutral-300 px-2 py-1 text-sm"
+              className="rounded-lg border border-neutral-300 px-2 py-1 text-sm"
             />
-            <button type="submit" className="self-start rounded bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white">
+            <button type="submit" className="self-start rounded-lg bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white">
               Add
             </button>
           </form>

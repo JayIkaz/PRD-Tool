@@ -48,18 +48,18 @@ export default async function DashboardPage() {
           <h1 className="text-xl font-semibold">Product Definitions</h1>
           <Link
             href="/product-definitions/new"
-            className="rounded bg-neutral-900 px-3 py-2 text-sm font-medium text-white"
+            className="rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white"
           >
             New Product Definition
           </Link>
         </div>
 
         {data.definitions.length === 0 ? (
-          <p className="rounded border border-neutral-300 border-dashed p-6 text-center text-sm text-neutral-600">
+          <p className="rounded-lg border border-neutral-300 border-dashed p-6 text-center text-sm text-neutral-600">
             No Product Definitions yet — start with whatever idea you&apos;ve got.
           </p>
         ) : (
-          <ul className="divide-y rounded border border-neutral-300 bg-white shadow-sm">
+          <ul className="divide-y rounded-lg border border-neutral-300 bg-white shadow-sm">
             {data.definitions.map((d) => (
               <li key={d.id}>
                 <Link

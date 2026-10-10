@@ -27,7 +27,7 @@ export default async function NewProductDefinitionPage({
         </div>
 
         {params.error && (
-          <p className="rounded border border-red-300 bg-red-50 p-2 text-sm text-red-700">
+          <p className="rounded-lg border border-red-300 bg-red-50 p-2 text-sm text-red-700">
             {params.error}
           </p>
         )}
@@ -40,7 +40,7 @@ export default async function NewProductDefinitionPage({
               type="text"
               required
               placeholder="A short working name"
-              className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
             />
           </div>
           <div>
@@ -50,12 +50,12 @@ export default async function NewProductDefinitionPage({
               required
               rows={6}
               placeholder="Describe it however it currently exists in your head — it doesn't need to be polished."
-              className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
             />
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">Product type</label>
-            <select name="productTypeKey" className="w-full rounded border border-neutral-300 px-3 py-2 text-sm">
+            <select name="productTypeKey" className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm">
               <option value="">Not sure yet</option>
               {types.map((t) => (
                 <option key={t.key} value={t.key}>
@@ -66,7 +66,7 @@ export default async function NewProductDefinitionPage({
           </div>
           <button
             type="submit"
-            className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+            className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
           >
             Start discovery
           </button>

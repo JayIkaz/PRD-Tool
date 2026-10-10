@@ -63,7 +63,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={2}
-            className="rounded border border-neutral-300 px-2 py-1 text-sm"
+            className="rounded-lg border border-neutral-300 px-2 py-1 text-sm"
             autoFocus
           />
           {error && <p className="text-xs text-red-600">{error}</p>}
@@ -82,7 +82,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
                   }
                 });
               }}
-              className="rounded bg-neutral-900 px-2.5 py-1 text-xs font-medium text-white disabled:opacity-50"
+              className="rounded-lg bg-neutral-900 px-2.5 py-1 text-xs font-medium text-white disabled:opacity-50"
             >
               Save and confirm
             </button>
@@ -94,7 +94,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
                 setEditing(false);
                 setError(null);
               }}
-              className="rounded border border-neutral-300 px-2.5 py-1 text-xs font-medium"
+              className="rounded-lg border border-neutral-300 px-2.5 py-1 text-xs font-medium"
             >
               Cancel
             </button>
@@ -106,7 +106,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
             type="button"
             disabled={isPending}
             onClick={() => startTransition(() => confirmAssumption(assumption.id, productDefinitionId))}
-            className="rounded bg-neutral-900 px-2.5 py-1 text-xs font-medium text-white disabled:opacity-50"
+            className="rounded-lg bg-neutral-900 px-2.5 py-1 text-xs font-medium text-white disabled:opacity-50"
           >
             Confirm
           </button>
@@ -114,7 +114,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
             type="button"
             disabled={isPending}
             onClick={() => setEditing(true)}
-            className="rounded border border-neutral-300 px-2.5 py-1 text-xs font-medium disabled:opacity-50"
+            className="rounded-lg border border-neutral-300 px-2.5 py-1 text-xs font-medium disabled:opacity-50"
           >
             Edit
           </button>
@@ -122,7 +122,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
             type="button"
             disabled={isPending}
             onClick={() => startTransition(() => rejectAssumption(assumption.id, productDefinitionId))}
-            className="rounded border border-red-200 px-2.5 py-1 text-xs font-medium text-red-700 disabled:opacity-50"
+            className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-medium text-red-700 disabled:opacity-50"
           >
             Reject
           </button>

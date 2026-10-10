@@ -107,7 +107,7 @@ export default async function ProductDefinitionPage({
         <div className="flex flex-wrap gap-3">
           <Link
             href={`/product-definitions/${definition.id}/discovery`}
-            className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+            className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
           >
             {definition.status === "DISCOVERY" ? "Continue discovery" : "Open discovery"}
           </Link>
@@ -115,7 +115,7 @@ export default async function ProductDefinitionPage({
           {definition.status === "DISCOVERY" && isActiveStakeholder && (
             <form action={submitForReview}>
               <input type="hidden" name="productDefinitionId" value={definition.id} />
-              <button className="rounded border border-neutral-300 px-4 py-2 text-sm font-medium">
+              <button className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium">
                 Submit for PM review
               </button>
             </form>
@@ -124,7 +124,7 @@ export default async function ProductDefinitionPage({
           {definition.status !== "DISCOVERY" && (
             <Link
               href={`/product-definitions/${definition.id}/review`}
-              className="rounded border border-neutral-300 px-4 py-2 text-sm font-medium"
+              className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium"
             >
               View PM review
             </Link>
@@ -132,7 +132,7 @@ export default async function ProductDefinitionPage({
         </div>
 
         {assumptionsList.some((a) => a.status === "PENDING") && (
-          <p className="rounded border border-neutral-300 border-dashed p-4 text-sm text-neutral-600">
+          <p className="rounded-lg border border-neutral-300 border-dashed p-4 text-sm text-neutral-600">
             Some assumptions above are AI-generated and still need review —
             confirm, edit or reject each one.
           </p>

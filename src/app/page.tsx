@@ -8,12 +8,12 @@ export default function Home() {
         Turn a vague idea into a defined, traceable product requirement.
       </p>
       <div className="flex gap-3">
-        <Link href="/login" className="rounded border border-neutral-300 px-4 py-2 text-sm font-medium">
+        <Link href="/login" className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium">
           Log in
         </Link>
         <Link
           href="/signup"
-          className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+          className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
         >
           Sign up
         </Link>

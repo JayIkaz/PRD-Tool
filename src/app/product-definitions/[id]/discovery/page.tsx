@@ -103,11 +103,11 @@ export default async function DiscoveryPage({
                   defaultValue={data.definition.currentTopic ?? data.definition.title}
                   required
                   autoFocus
-                  className="rounded border border-neutral-300 px-2 py-1 text-sm"
+                  className="rounded-lg border border-neutral-300 px-2 py-1 text-sm"
                 />
                 <button
                   type="submit"
-                  className="rounded bg-neutral-900 px-3 py-1 text-xs font-medium text-white"
+                  className="rounded-lg bg-neutral-900 px-3 py-1 text-xs font-medium text-white"
                 >
                   Save
                 </button>
@@ -121,11 +121,11 @@ export default async function DiscoveryPage({
 
         <div className="flex flex-1 flex-col gap-6 lg:flex-row">
           <div className="flex min-h-[65vh] flex-1 flex-col gap-4">
-            <div className="flex flex-1 flex-col gap-3 overflow-y-auto rounded border border-neutral-300 bg-white p-4 shadow-sm">
+            <div className="flex flex-1 flex-col gap-3 overflow-y-auto rounded-lg border border-neutral-300 bg-white p-4 shadow-sm">
               {data.messages.map((m) => (
                 <div
                   key={m.id}
-                  className={`max-w-[85%] whitespace-pre-wrap rounded px-3 py-2 text-sm ${
+                  className={`max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm ${
                     m.role === "AI"
                       ? "self-start bg-neutral-100 text-neutral-900"
                       : "self-end bg-neutral-900 text-white"
@@ -141,7 +141,7 @@ export default async function DiscoveryPage({
               <MessageInput />
               <button
                 type="submit"
-                className="self-end rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+                className="self-end rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
               >
                 Send
               </button>

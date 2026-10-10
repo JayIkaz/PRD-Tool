@@ -14,12 +14,12 @@ export default async function LoginPage({
         <h1 className="text-xl font-semibold">Log in</h1>
 
         {params.error && (
-          <p className="rounded border border-red-300 bg-red-50 p-2 text-sm text-red-700">
+          <p className="rounded-lg border border-red-300 bg-red-50 p-2 text-sm text-red-700">
             {params.error}
           </p>
         )}
         {params.magicLinkSent && (
-          <p className="rounded border border-emerald-300 bg-emerald-50 p-2 text-sm text-emerald-700">
+          <p className="rounded-lg border border-emerald-300 bg-emerald-50 p-2 text-sm text-emerald-700">
             Magic link sent to {params.magicLinkSent} — check your inbox.
           </p>
         )}
@@ -31,18 +31,18 @@ export default async function LoginPage({
             type="email"
             required
             placeholder="Email"
-            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
           />
           <input
             name="password"
             type="password"
             required
             placeholder="Password"
-            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
           />
           <button
             type="submit"
-            className="w-full rounded bg-neutral-900 px-3 py-2 text-sm font-medium text-white"
+            className="w-full rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white"
           >
             Log in with password
           </button>
@@ -60,11 +60,11 @@ export default async function LoginPage({
             type="email"
             required
             placeholder="Email"
-            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
           />
           <button
             type="submit"
-            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm font-medium"
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium"
           >
             Send a magic link instead
           </button>
