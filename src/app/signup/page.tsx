@@ -13,7 +13,7 @@ export default async function SignupPage({
       <div className="w-full max-w-sm space-y-6">
         <div>
           <h1 className="text-xl font-semibold">Sign up</h1>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-neutral-600">
             Creates a new organisation with you as its first member.
           </p>
         </div>
@@ -30,20 +30,20 @@ export default async function SignupPage({
             type="text"
             required
             placeholder="Organisation name"
-            className="w-full rounded border px-3 py-2 text-sm"
+            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
           />
           <input
             name="displayName"
             type="text"
             placeholder="Your name"
-            className="w-full rounded border px-3 py-2 text-sm"
+            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
           />
           <input
             name="email"
             type="email"
             required
             placeholder="Email"
-            className="w-full rounded border px-3 py-2 text-sm"
+            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
           />
           <input
             name="password"
@@ -51,7 +51,7 @@ export default async function SignupPage({
             required
             minLength={8}
             placeholder="Password"
-            className="w-full rounded border px-3 py-2 text-sm"
+            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
           />
           <button
             type="submit"
@@ -61,7 +61,7 @@ export default async function SignupPage({
           </button>
         </form>
 
-        <p className="text-center text-sm text-neutral-500">
+        <p className="text-center text-sm text-neutral-600">
           Already have an account? <Link href="/login" className="underline">Log in</Link>
         </p>
       </div>

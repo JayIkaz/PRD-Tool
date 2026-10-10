@@ -47,13 +47,13 @@ export async function AppShell({
   });
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-neutral-100">
       <header className="border-b bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-8 py-3">
           <Link href="/dashboard" className="text-sm font-semibold tracking-tight text-neutral-900">
             Product Discovery
           </Link>
-          <div className="flex items-center gap-3 text-sm text-neutral-500">
+          <div className="flex items-center gap-3 text-sm text-neutral-600">
             {identity?.org && <span>{identity.org.name}</span>}
             {identity?.profile && (
               <>
@@ -62,7 +62,7 @@ export async function AppShell({
               </>
             )}
             <form action={signOut}>
-              <button className="rounded border px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-50">
+              <button className="rounded border border-neutral-300 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-100">
                 Sign out
               </button>
             </form>
@@ -70,7 +70,7 @@ export async function AppShell({
         </div>
 
         {crumbs && crumbs.length > 0 && (
-          <div className="mx-auto max-w-5xl px-8 pb-2.5 text-xs text-neutral-500">
+          <div className="mx-auto max-w-5xl px-8 pb-2.5 text-xs text-neutral-600">
             {crumbs.map((c, i) => (
               <span key={i}>
                 {i > 0 && <span className="mx-1.5">/</span>}

@@ -82,13 +82,13 @@ export default async function ProductDefinitionPage({
         <ProductDefinitionNav productDefinitionId={definition.id} active="overview" />
 
         <header>
-          <p className="text-xs uppercase tracking-wide text-neutral-500">
+          <p className="text-xs uppercase tracking-wide text-neutral-600">
             {definition.status.replace(/_/g, " ")}
           </p>
           <h1 className="text-xl font-semibold">{definition.currentTopic ?? definition.title}</h1>
         </header>
         <section>
-          <h2 className="text-sm font-medium text-neutral-500">Original idea</h2>
+          <h2 className="text-sm font-medium text-neutral-600">Original idea</h2>
           <p className="mt-1 whitespace-pre-wrap text-sm">{definition.idea}</p>
         </section>
 
@@ -115,7 +115,7 @@ export default async function ProductDefinitionPage({
           {definition.status === "DISCOVERY" && isActiveStakeholder && (
             <form action={submitForReview}>
               <input type="hidden" name="productDefinitionId" value={definition.id} />
-              <button className="rounded border px-4 py-2 text-sm font-medium">
+              <button className="rounded border border-neutral-300 px-4 py-2 text-sm font-medium">
                 Submit for PM review
               </button>
             </form>
@@ -124,7 +124,7 @@ export default async function ProductDefinitionPage({
           {definition.status !== "DISCOVERY" && (
             <Link
               href={`/product-definitions/${definition.id}/review`}
-              className="rounded border px-4 py-2 text-sm font-medium"
+              className="rounded border border-neutral-300 px-4 py-2 text-sm font-medium"
             >
               View PM review
             </Link>
@@ -132,7 +132,7 @@ export default async function ProductDefinitionPage({
         </div>
 
         {assumptionsList.some((a) => a.status === "PENDING") && (
-          <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
+          <p className="rounded border border-neutral-300 border-dashed p-4 text-sm text-neutral-600">
             Some assumptions above are AI-generated and still need review —
             confirm, edit or reject each one.
           </p>

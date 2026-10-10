@@ -91,14 +91,14 @@ export default async function ReviewPage({
         <ProductDefinitionNav productDefinitionId={id} active="review" />
 
         <header>
-          <p className="text-xs uppercase tracking-wide text-neutral-500">
+          <p className="text-xs uppercase tracking-wide text-neutral-600">
             PM review · {definition.status.replace(/_/g, " ")}
           </p>
           <h1 className="text-xl font-semibold">{definition.currentTopic ?? definition.title}</h1>
         </header>
 
       {definition.status === "DISCOVERY" && (
-        <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
+        <p className="rounded border border-neutral-300 border-dashed p-4 text-sm text-neutral-600">
           This hasn&apos;t been submitted for PM review yet.{" "}
           <Link href={`/product-definitions/${id}`} className="underline">
             Go back to the definition
@@ -124,7 +124,7 @@ export default async function ReviewPage({
       )}
 
       {canActAsReviewer && definition.status === "PM_REVIEW" && !isActivePm && activePm && (
-        <p className="rounded border border-dashed p-4 text-sm text-neutral-500">
+        <p className="rounded border border-neutral-300 border-dashed p-4 text-sm text-neutral-600">
           Someone else is already reviewing this one.
         </p>
       )}
@@ -143,12 +143,12 @@ export default async function ReviewPage({
       )}
 
       {definition.status !== "DISCOVERY" && (
-        <section className="grid gap-3 rounded border p-4 text-sm">
-          <h2 className="text-sm font-medium text-neutral-500">
+        <section className="grid gap-3 rounded border border-neutral-300 bg-white shadow-sm p-4 text-sm">
+          <h2 className="text-sm font-medium text-neutral-600">
             Review decisions ({decisionsList.length})
           </h2>
           {decisionsList.length === 0 ? (
-            <p className="text-neutral-500">
+            <p className="text-neutral-600">
               Nothing recorded yet — anything the PM confirms, challenges or flags while
               reviewing goes here.
             </p>
@@ -157,7 +157,7 @@ export default async function ReviewPage({
               {decisionsList.map((d) => (
                 <li key={d.id} className="border-b pb-2 last:border-b-0">
                   <p>{d.statement}</p>
-                  {d.rationale && <p className="mt-0.5 text-xs text-neutral-500">{d.rationale}</p>}
+                  {d.rationale && <p className="mt-0.5 text-xs text-neutral-600">{d.rationale}</p>}
                 </li>
               ))}
             </ul>
@@ -166,7 +166,7 @@ export default async function ReviewPage({
           {isActivePm && definition.status === "PM_REVIEW" && (
             <form action={addDecision} className="grid gap-2 border-t pt-3">
               <input type="hidden" name="productDefinitionId" value={id} />
-              <label className="text-xs text-neutral-500" htmlFor="decision-statement">
+              <label className="text-xs text-neutral-600" htmlFor="decision-statement">
                 Record a decision or challenge
               </label>
               <input
@@ -174,13 +174,13 @@ export default async function ReviewPage({
                 name="statement"
                 required
                 placeholder="e.g. Acceptance conditions for REQ-002 are too vague"
-                className="rounded border px-2 py-1 text-sm"
+                className="rounded border border-neutral-300 px-2 py-1 text-sm"
               />
               <textarea
                 name="rationale"
                 rows={2}
                 placeholder="Why (optional)"
-                className="rounded border px-2 py-1 text-sm"
+                className="rounded border border-neutral-300 px-2 py-1 text-sm"
               />
               <button
                 type="submit"
@@ -194,8 +194,8 @@ export default async function ReviewPage({
       )}
 
       {isActivePm && definition.status === "PM_REVIEW" && (
-        <section className="flex flex-col gap-3 rounded border p-4">
-          <h2 className="text-sm font-medium text-neutral-500">Decide</h2>
+        <section className="flex flex-col gap-3 rounded border border-neutral-300 bg-white shadow-sm p-4">
+          <h2 className="text-sm font-medium text-neutral-600">Decide</h2>
           <form action={approveDefinition}>
             <input type="hidden" name="productDefinitionId" value={id} />
             <button className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white">
@@ -209,7 +209,7 @@ export default async function ReviewPage({
               required
               rows={2}
               placeholder="Why is this going back to discovery?"
-              className="rounded border px-2 py-1 text-sm"
+              className="rounded border border-neutral-300 px-2 py-1 text-sm"
             />
             <button
               type="submit"
@@ -227,7 +227,7 @@ export default async function ReviewPage({
         </p>
       )}
 
-        <Link href={`/product-definitions/${id}`} className="text-sm text-neutral-500 underline">
+        <Link href={`/product-definitions/${id}`} className="text-sm text-neutral-600 underline">
           Back to definition
         </Link>
       </main>

@@ -19,7 +19,7 @@ export default async function NewProductDefinitionPage({
       <main className="mx-auto flex max-w-xl flex-col gap-6 px-8 py-8">
         <div>
           <h1 className="text-xl font-semibold">New Product Definition</h1>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-neutral-600">
             Start with whatever you&apos;ve got — a rough idea, a request from
             someone else, a problem you&apos;ve noticed. Discovery is what turns
             this into something defined.
@@ -40,7 +40,7 @@ export default async function NewProductDefinitionPage({
               type="text"
               required
               placeholder="A short working name"
-              className="w-full rounded border px-3 py-2 text-sm"
+              className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
             />
           </div>
           <div>
@@ -50,12 +50,12 @@ export default async function NewProductDefinitionPage({
               required
               rows={6}
               placeholder="Describe it however it currently exists in your head — it doesn't need to be polished."
-              className="w-full rounded border px-3 py-2 text-sm"
+              className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
             />
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">Product type</label>
-            <select name="productTypeKey" className="w-full rounded border px-3 py-2 text-sm">
+            <select name="productTypeKey" className="w-full rounded border border-neutral-300 px-3 py-2 text-sm">
               <option value="">Not sure yet</option>
               {types.map((t) => (
                 <option key={t.key} value={t.key}>

@@ -31,14 +31,14 @@ export default async function LoginPage({
             type="email"
             required
             placeholder="Email"
-            className="w-full rounded border px-3 py-2 text-sm"
+            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
           />
           <input
             name="password"
             type="password"
             required
             placeholder="Password"
-            className="w-full rounded border px-3 py-2 text-sm"
+            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
           />
           <button
             type="submit"
@@ -48,7 +48,7 @@ export default async function LoginPage({
           </button>
         </form>
 
-        <div className="flex items-center gap-2 text-xs text-neutral-500">
+        <div className="flex items-center gap-2 text-xs text-neutral-600">
           <div className="h-px flex-1 bg-neutral-200" />
           or
           <div className="h-px flex-1 bg-neutral-200" />
@@ -60,17 +60,17 @@ export default async function LoginPage({
             type="email"
             required
             placeholder="Email"
-            className="w-full rounded border px-3 py-2 text-sm"
+            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm"
           />
           <button
             type="submit"
-            className="w-full rounded border px-3 py-2 text-sm font-medium"
+            className="w-full rounded border border-neutral-300 px-3 py-2 text-sm font-medium"
           >
             Send a magic link instead
           </button>
         </form>
 
-        <p className="text-center text-sm text-neutral-500">
+        <p className="text-center text-sm text-neutral-600">
           No account? <Link href="/signup" className="underline">Sign up</Link>
         </p>
       </div>

@@ -18,7 +18,7 @@ export function MessageInput() {
       required
       rows={2}
       placeholder="Type your answer... (Enter to send, Shift+Enter for a new line)"
-      className="flex-1 rounded border px-3 py-2 text-sm"
+      className="flex-1 rounded border border-neutral-300 px-3 py-2 text-sm"
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();

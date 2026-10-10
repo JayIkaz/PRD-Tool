@@ -32,7 +32,7 @@ export default async function DashboardPage() {
   if (!data) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 text-center">
-        <p className="max-w-sm text-sm text-neutral-500">
+        <p className="max-w-sm text-sm text-neutral-600">
           Signed in, but no organisation is provisioned for this account yet.
           If you just signed up, confirm your email first — provisioning
           happens on that click.
@@ -55,19 +55,19 @@ export default async function DashboardPage() {
         </div>
 
         {data.definitions.length === 0 ? (
-          <p className="rounded border border-dashed p-6 text-center text-sm text-neutral-500">
+          <p className="rounded border border-neutral-300 border-dashed p-6 text-center text-sm text-neutral-600">
             No Product Definitions yet — start with whatever idea you&apos;ve got.
           </p>
         ) : (
-          <ul className="divide-y rounded border bg-white">
+          <ul className="divide-y rounded border border-neutral-300 bg-white shadow-sm">
             {data.definitions.map((d) => (
               <li key={d.id}>
                 <Link
                   href={`/product-definitions/${d.id}`}
-                  className="flex items-center justify-between px-4 py-3 text-sm hover:bg-neutral-50"
+                  className="flex items-center justify-between px-4 py-3 text-sm hover:bg-neutral-100"
                 >
                   <span className="font-medium">{d.currentTopic ?? d.title}</span>
-                  <span className="text-xs uppercase tracking-wide text-neutral-500">
+                  <span className="text-xs uppercase tracking-wide text-neutral-600">
                     {d.status.replace(/_/g, " ")}
                   </span>
                 </Link>

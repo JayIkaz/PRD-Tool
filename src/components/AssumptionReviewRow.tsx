@@ -34,14 +34,14 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
     return (
       <li className="border-b pb-2 last:border-b-0">
         <p>
-          <span className="mr-2 text-neutral-500">{assumption.displayCode}</span>
+          <span className="mr-2 text-neutral-600">{assumption.displayCode}</span>
           {assumption.statement}
-          <span className="ml-2 whitespace-nowrap text-xs text-neutral-500">
+          <span className="ml-2 whitespace-nowrap text-xs text-neutral-600">
             ({STATUS_LABEL[assumption.status] ?? assumption.status})
           </span>
         </p>
         {assumption.reasoning && (
-          <p className="mt-0.5 text-xs text-neutral-500">Why: {assumption.reasoning}</p>
+          <p className="mt-0.5 text-xs text-neutral-600">Why: {assumption.reasoning}</p>
         )}
       </li>
     );
@@ -50,11 +50,11 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
   return (
     <li className="border-b pb-2 last:border-b-0">
       <p>
-        <span className="mr-2 text-neutral-500">{assumption.displayCode}</span>
+        <span className="mr-2 text-neutral-600">{assumption.displayCode}</span>
         {editing ? null : assumption.statement}
       </p>
       {assumption.reasoning && !editing && (
-        <p className="mt-0.5 text-xs text-neutral-500">Why: {assumption.reasoning}</p>
+        <p className="mt-0.5 text-xs text-neutral-600">Why: {assumption.reasoning}</p>
       )}
 
       {editing ? (
@@ -63,7 +63,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={2}
-            className="rounded border px-2 py-1 text-sm"
+            className="rounded border border-neutral-300 px-2 py-1 text-sm"
             autoFocus
           />
           {error && <p className="text-xs text-red-600">{error}</p>}
@@ -94,7 +94,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
                 setEditing(false);
                 setError(null);
               }}
-              className="rounded border px-2.5 py-1 text-xs font-medium"
+              className="rounded border border-neutral-300 px-2.5 py-1 text-xs font-medium"
             >
               Cancel
             </button>
@@ -114,7 +114,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
             type="button"
             disabled={isPending}
             onClick={() => setEditing(true)}
-            className="rounded border px-2.5 py-1 text-xs font-medium disabled:opacity-50"
+            className="rounded border border-neutral-300 px-2.5 py-1 text-xs font-medium disabled:opacity-50"
           >
             Edit
           </button>
