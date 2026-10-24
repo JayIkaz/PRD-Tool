@@ -118,4 +118,37 @@ export const auditEventTypeEnum = pgEnum("audit_event_type", [
   "ASSUMPTION_REJECTED",
   "PARTICIPANT_JOINED",
   "REVIEW_DECISION_RECORDED",
+  "AI_CHALLENGE_RUN", // Section 21/22 -- one "Challenge this definition" run
+]);
+
+// --- AI Challenge mode (Section 21/22) ---
+// The full Section 21 critique taxonomy -- ten lenses the AI looks
+// through. The review UI groups these into Section 22's six display
+// headings (Critical questions / Potential gaps / Contradictions /
+// Assumptions requiring confirmation / Delivery risks / Suggested
+// improvements); the finer category stays on the row so findings
+// remain filterable and the display mapping can change without a
+// migration.
+export const challengeFindingCategoryEnum = pgEnum("challenge_finding_category", [
+  "GAP",
+  "CONTRADICTION",
+  "AMBIGUITY",
+  "WEAK_OUTCOME",
+  "WEAK_ACCEPTANCE_CONDITIONS",
+  "UNCONFIRMED_ASSUMPTION",
+  "DEPENDENCY",
+  "RISK",
+  "SCOPE_PROBLEM",
+  "QUESTION",
+  "SUGGESTION",
+]);
+
+// Section 22: the PM can accept, reject or act on each finding. "Act
+// on" isn't a stored status -- it's the PM going and making a change
+// elsewhere (editing a requirement, recording a decision) with this
+// finding as the reason, never something this app does automatically.
+export const challengeFindingStatusEnum = pgEnum("challenge_finding_status", [
+  "PENDING",
+  "ACCEPTED",
+  "REJECTED",
 ]);

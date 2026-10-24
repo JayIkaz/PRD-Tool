@@ -32,10 +32,11 @@ export async function generateStructured<T>(params: {
   systemPrompt: string;
   userContent: string;
   schemaDescription: string; // describe the expected JSON shape in the prompt itself
+  maxTokens?: number;
 }): Promise<T> {
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 2048,
+    max_tokens: params.maxTokens ?? 2048,
     system: `${params.systemPrompt}\n\nRespond with JSON only, matching this shape: ${params.schemaDescription}. No prose, no markdown fences.`,
     messages: [{ role: "user", content: params.userContent }],
   });

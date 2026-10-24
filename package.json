@@ -8,9 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
+    "db:push": "node -e \"console.error('BLOCKED: db:push will disable RLS and drop every hand-written index/policy that is not expressible in schema.ts (see drizzle/ 0001-0005, 0008, 0009 and claude/rls-migration-notes.md). It happened for real on 2026-10-10. Use db:generate, review the SQL it produces, and apply it by hand through the Supabase SQL editor instead.'); process.exit(1);\"",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "tsx --env-file=.env.local src/db/seed.ts"
+    "db:seed": "tsx --env-file=.env.local src/db/seed.ts",
+    "db:push:UNSAFE": "drizzle-kit push"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.126.0",

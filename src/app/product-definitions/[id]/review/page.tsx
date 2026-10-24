@@ -12,11 +12,15 @@ import {
   openQuestions as openQuestionsTable,
   assumptions as assumptionsTable,
   evidence as evidenceTable,
+  challengeReviews as challengeReviewsTable,
+  challengeFindings as challengeFindingsTable,
 } from "@/db/schema";
 import { CompletenessSummary } from "@/components/CompletenessSummary";
 import { AppShell } from "@/components/AppShell";
 import { ProductDefinitionNav } from "@/components/ProductDefinitionNav";
 import { startReview, addDecision, approveDefinition, sendBackToDiscovery } from "../review-actions";
+import { runChallenge, reviewFinding } from "../challenge-actions";
+import { CHALLENGE_DISPLAY_GROUPS, type ChallengeFindingCategory } from "@/lib/ai/challenge";
 
 export default async function ReviewPage({
   params,
@@ -67,17 +71,65 @@ export default async function ReviewPage({
       where: eq(evidenceTable.productDefinitionId, id),
     });
 
-    return { definition, participants, decisionsList, reqs, dims, openQs, assumptionsList, evidenceList };
+    const challengeReviewsList = await tx.query.challengeReviews.findMany({
+      where: eq(challengeReviewsTable.productDefinitionId, id),
+      orderBy: [desc(challengeReviewsTable.createdAt)],
+    });
+    const challengeFindingsList =
+      challengeReviewsList.length === 0
+        ? []
+        : await tx.query.challengeFindings.findMany({
+            where: inArray(
+              challengeFindingsTable.challengeReviewId,
+              challengeReviewsList.map((r) => r.id)
+            ),
+            orderBy: [desc(challengeFindingsTable.createdAt)],
+          });
+
+    return {
+      definition,
+      participants,
+      decisionsList,
+      reqs,
+      dims,
+      openQs,
+      assumptionsList,
+      evidenceList,
+      challengeReviewsList,
+      challengeFindingsList,
+    };
   });
 
   if (!data) notFound();
-  const { definition, participants, decisionsList, reqs, dims, openQs, assumptionsList, evidenceList } = data;
+  const {
+    definition,
+    participants,
+    decisionsList,
+    reqs,
+    dims,
+    openQs,
+    assumptionsList,
+    evidenceList,
+    challengeReviewsList,
+    challengeFindingsList,
+  } = data;
 
   const activeStakeholder = participants.find((p) => p.role === "STAKEHOLDER");
   const activePm = participants.find((p) => p.role === "PM");
   const isStakeholder = activeStakeholder?.userId === user.id;
   const isActivePm = activePm?.userId === user.id;
   const canActAsReviewer = !isStakeholder;
+
+  const latestChallengeReview = challengeReviewsList[0] ?? null;
+  const latestFindings = latestChallengeReview
+    ? challengeFindingsList.filter((f) => f.challengeReviewId === latestChallengeReview.id)
+    : [];
+  const findingsByCategory = new Map<ChallengeFindingCategory, typeof latestFindings>();
+  for (const f of latestFindings) {
+    const list = findingsByCategory.get(f.category as ChallengeFindingCategory) ?? [];
+    list.push(f);
+    findingsByCategory.set(f.category as ChallengeFindingCategory, list);
+  }
 
   return (
     <AppShell
@@ -140,6 +192,95 @@ export default async function ReviewPage({
           evidence={evidenceList}
           showAssumptionReview={isActivePm}
         />
+      )}
+
+      {definition.status !== "DISCOVERY" && (
+        <section className="flex flex-col gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-neutral-600">
+              AI Challenge
+              {challengeReviewsList.length > 0 &&
+                ` (${challengeReviewsList.length} run${challengeReviewsList.length === 1 ? "" : "s"})`}
+            </h2>
+            {isActivePm && definition.status === "PM_REVIEW" && (
+              <form action={runChallenge}>
+                <input type="hidden" name="productDefinitionId" value={id} />
+                <button className="rounded-lg border border-neutral-900 px-3 py-1.5 text-xs font-medium text-neutral-900">
+                  Challenge this definition
+                </button>
+              </form>
+            )}
+          </div>
+
+          {!latestChallengeReview ? (
+            <p className="text-sm text-neutral-600">
+              Not run yet. The AI will critique the whole definition for gaps, contradictions,
+              weak outcomes, unconfirmed assumptions, risks and more — more assertively than it
+              does during stakeholder discovery.
+            </p>
+          ) : (
+            <>
+              <p className="text-xs text-neutral-600">
+                Latest run: {new Date(latestChallengeReview.createdAt).toLocaleString("en-GB")}
+                {latestFindings.length === 0 && " — no substantive findings."}
+              </p>
+              <div className="grid gap-4">
+                {CHALLENGE_DISPLAY_GROUPS.map((group) => {
+                  const items = group.categories.flatMap((c) => findingsByCategory.get(c) ?? []);
+                  if (items.length === 0) return null;
+                  return (
+                    <div key={group.heading}>
+                      <h3 className="text-xs font-medium uppercase tracking-wide text-neutral-600">
+                        {group.heading}
+                      </h3>
+                      <ul className="mt-1 grid gap-2">
+                        {items.map((f) => (
+                          <li key={f.id} className="rounded-lg border border-neutral-200 p-3 text-sm">
+                            <p>
+                              {f.relatedTo && (
+                                <span className="font-medium">{f.relatedTo}: </span>
+                              )}
+                              {f.statement}
+                            </p>
+                            {f.status === "PENDING" ? (
+                              isActivePm ? (
+                                <div className="mt-2 flex gap-2">
+                                  <form action={reviewFinding}>
+                                    <input type="hidden" name="findingId" value={f.id} />
+                                    <input type="hidden" name="productDefinitionId" value={id} />
+                                    <input type="hidden" name="decision" value="ACCEPTED" />
+                                    <button className="rounded-lg border border-green-200 bg-green-50 px-2 py-1 text-xs text-green-800">
+                                      Accept
+                                    </button>
+                                  </form>
+                                  <form action={reviewFinding}>
+                                    <input type="hidden" name="findingId" value={f.id} />
+                                    <input type="hidden" name="productDefinitionId" value={id} />
+                                    <input type="hidden" name="decision" value="REJECTED" />
+                                    <button className="rounded-lg border border-neutral-300 px-2 py-1 text-xs text-neutral-600">
+                                      Reject
+                                    </button>
+                                  </form>
+                                </div>
+                              ) : (
+                                <p className="mt-1 text-xs text-neutral-600">Pending PM review</p>
+                              )
+                            ) : (
+                              <p className="mt-1 text-xs text-neutral-600">
+                                {f.status === "ACCEPTED" ? "Accepted" : "Rejected"}
+                                {f.pmNote && ` — ${f.pmNote}`}
+                              </p>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+        </section>
       )}
 
       {definition.status !== "DISCOVERY" && (

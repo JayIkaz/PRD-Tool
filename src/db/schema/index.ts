@@ -8,3 +8,4 @@ export * from "./delivery";
 export * from "./baseline";
 export * from "./notifications";
 export * from "./audit";
+export * from "./challenge";
