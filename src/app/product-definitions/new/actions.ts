@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
 import { db } from "@/db/client";
+import { suggestTitle } from "@/lib/ai/title";
 import {
   productDefinitions,
   productDefinitionParticipants,
@@ -19,15 +20,19 @@ export async function createProductDefinition(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const title = String(formData.get("title") ?? "").trim();
+  let title = String(formData.get("title") ?? "").trim();
   const idea = String(formData.get("idea") ?? "").trim();
   const productTypeKey = String(formData.get("productTypeKey") ?? "");
 
-  if (!title || !idea) {
+  if (!idea) {
     redirect(
-      `/product-definitions/new?error=${encodeURIComponent("Title and idea are both required.")}`
+      `/product-definitions/new?error=${encodeURIComponent("Please describe the idea.")}`
     );
   }
+
+  // Title is optional: if the stakeholder left it blank (or the form's
+  // suggestion never arrived), generate one here so it is never empty.
+  if (!title) title = await suggestTitle(idea);
 
   // product_types is global reference data with no RLS (addendum #6) —
   // reading it doesn't need user impersonation, the plain db client is
