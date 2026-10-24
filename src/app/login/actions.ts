@@ -2,11 +2,12 @@
 
 import { createClient } from "@/lib/supabase/server-client";
 import { redirect } from "next/navigation";
+import { safeRedirectPath } from "@/lib/auth/safe-redirect";
 
 export async function signInWithPassword(formData: FormData) {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/dashboard");
+  const next = safeRedirectPath(formData.get("next"));
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });

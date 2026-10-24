@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server-client";
 import { provisionOrganisationAndUser } from "@/lib/auth/provision";
+import { safeRedirectPath } from "@/lib/auth/safe-redirect";
 
 /**
  * Handles both flows that land here: an email-confirmation link from
@@ -12,7 +13,7 @@ import { provisionOrganisationAndUser } from "@/lib/auth/provision";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
+  const next = safeRedirectPath(searchParams.get("next"));
 
   if (code) {
     const supabase = await createClient();
