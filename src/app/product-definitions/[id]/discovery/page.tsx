@@ -20,10 +20,13 @@ import { ProductDefinitionNav } from "@/components/ProductDefinitionNav";
 
 export default async function DiscoveryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ aiError?: string }>;
 }) {
   const { id } = await params;
+  const { aiError } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -32,7 +35,8 @@ export default async function DiscoveryPage({
 
   // Lazily generates the AI's opening message on first visit — see
   // that function's own comment for why this isn't one transaction.
-  await ensureSessionStarted(id);
+  const { aiUnavailable } = await ensureSessionStarted(id);
+  const showAiBanner = aiUnavailable || aiError === "1";
 
   const data = await withRlsContext(user.id, async (tx) => {
     const definition = await tx.query.productDefinitions.findFirst({
@@ -118,6 +122,21 @@ export default async function DiscoveryPage({
             <p className="mt-0.5 text-xs text-neutral-600">Originally: {data.definition.title}</p>
           )}
         </div>
+
+        {showAiBanner && (
+          <div
+            role="alert"
+            className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900"
+          >
+            <p className="font-medium">The AI assistant is unavailable right now.</p>
+            <p className="mt-1">
+              {aiUnavailable
+                ? "Your definition is safe. Reload this page in a minute to try again."
+                : "Your message was saved, but the AI could not reply. Send another message in a minute and it will pick up from here."}{" "}
+              If this keeps happening, tell whoever runs this deployment.
+            </p>
+          </div>
+        )}
 
         <div className="flex flex-1 flex-col gap-6 lg:flex-row">
           <div className="flex min-h-[65vh] flex-1 flex-col gap-4">

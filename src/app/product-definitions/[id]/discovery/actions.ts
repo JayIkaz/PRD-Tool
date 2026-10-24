@@ -198,7 +198,15 @@ async function applyExtractionResult(tx: Tx, productDefinitionId: string, result
  * transaction open across an external HTTP request is the wrong shape
  * even though the RLS impersonation would technically still work.
  */
-export async function ensureSessionStarted(productDefinitionId: string) {
+/** Log-safe summary of an AI failure: status and type only, never keys or payloads. */
+function describeAiError(err: unknown): string {
+  const e = err as { status?: number; type?: string; message?: string };
+  return `status=${e?.status ?? "n/a"} type=${e?.type ?? "n/a"} ${String(e?.message ?? "").slice(0, 120)}`;
+}
+
+export async function ensureSessionStarted(
+  productDefinitionId: string
+): Promise<{ aiUnavailable: boolean }> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -226,19 +234,28 @@ export async function ensureSessionStarted(productDefinitionId: string) {
     return { definition, session, productType, library };
   });
 
-  if (!context) return;
+  if (!context) return { aiUnavailable: false };
 
-  const opening = await generateNextDiscoveryMessage({
-    idea: context.definition.idea,
-    productTypeKey: context.productType?.key,
-    known: {
-      problem: context.definition.problem,
-      users: context.definition.users,
-      outcomes: context.definition.outcomes,
-    },
-    library: context.library.map((q) => ({ pathwayKey: q.pathwayKey, area: q.area, promptText: q.promptText })),
-    transcript: [],
-  });
+  // An AI failure (bad key, outage, rate limit) must not take the whole
+  // page down: the stakeholder still sees their definition and gets a
+  // banner. Because this runs on every page load, reloading retries it.
+  let opening: string;
+  try {
+    opening = await generateNextDiscoveryMessage({
+      idea: context.definition.idea,
+      productTypeKey: context.productType?.key,
+      known: {
+        problem: context.definition.problem,
+        users: context.definition.users,
+        outcomes: context.definition.outcomes,
+      },
+      library: context.library.map((q) => ({ pathwayKey: q.pathwayKey, area: q.area, promptText: q.promptText })),
+      transcript: [],
+    });
+  } catch (err) {
+    console.error("ensureSessionStarted: AI call failed", describeAiError(err));
+    return { aiUnavailable: true };
+  }
 
   await withRlsContext(user.id, async (tx) => {
     await tx.insert(messagesTable).values({
@@ -247,6 +264,8 @@ export async function ensureSessionStarted(productDefinitionId: string) {
       content: opening,
     });
   });
+
+  return { aiUnavailable: false };
 }
 
 /**
@@ -378,36 +397,45 @@ export async function sendDiscoveryMessage(formData: FormData) {
     };
   });
 
-  const [reply, extraction] = await Promise.all([
-    generateNextDiscoveryMessage({
-      idea: context.definition.idea,
-      productTypeKey: context.productType?.key,
-      known: {
-        problem: context.definition.problem,
-        users: context.definition.users,
-        outcomes: context.definition.outcomes,
-      },
-      library: context.library.map((q) => ({ pathwayKey: q.pathwayKey, area: q.area, promptText: q.promptText })),
-      transcript: context.priorMessages.map((m) => ({
-        role: m.role as "AI" | "STAKEHOLDER",
-        content: m.content,
-      })),
-    }),
-    extractDiscoveryState({
-      idea: context.definition.idea,
-      known: {
-        problem: context.definition.problem,
-        users: context.definition.users,
-        outcomes: context.definition.outcomes,
-        currentTopic: context.definition.currentTopic,
-      },
-      existingRequirements: context.requirementContexts,
-      existingOpenQuestions: context.existingOpenQuestions.map((q) => ({ id: q.id, question: q.question })),
-      existingAssumptions: context.existingAssumptions.map((a) => ({ id: a.id, statement: a.statement })),
-      aiQuestion: context.lastAiMessage?.content ?? null,
-      stakeholderAnswer: content,
-    }),
-  ]);
+  // The stakeholder's message is already saved above, so an AI failure
+  // here loses nothing: it is included in the transcript on the next turn.
+  let reply: string;
+  let extraction: Awaited<ReturnType<typeof extractDiscoveryState>>;
+  try {
+    [reply, extraction] = await Promise.all([
+      generateNextDiscoveryMessage({
+        idea: context.definition.idea,
+        productTypeKey: context.productType?.key,
+        known: {
+          problem: context.definition.problem,
+          users: context.definition.users,
+          outcomes: context.definition.outcomes,
+        },
+        library: context.library.map((q) => ({ pathwayKey: q.pathwayKey, area: q.area, promptText: q.promptText })),
+        transcript: context.priorMessages.map((m) => ({
+          role: m.role as "AI" | "STAKEHOLDER",
+          content: m.content,
+        })),
+      }),
+      extractDiscoveryState({
+        idea: context.definition.idea,
+        known: {
+          problem: context.definition.problem,
+          users: context.definition.users,
+          outcomes: context.definition.outcomes,
+          currentTopic: context.definition.currentTopic,
+        },
+        existingRequirements: context.requirementContexts,
+        existingOpenQuestions: context.existingOpenQuestions.map((q) => ({ id: q.id, question: q.question })),
+        existingAssumptions: context.existingAssumptions.map((a) => ({ id: a.id, statement: a.statement })),
+        aiQuestion: context.lastAiMessage?.content ?? null,
+        stakeholderAnswer: content,
+      }),
+    ]);
+  } catch (err) {
+    console.error("sendDiscoveryMessage: AI call failed", describeAiError(err));
+    redirect(`/product-definitions/${productDefinitionId}/discovery?aiError=1`);
+  }
 
   await withRlsContext(user.id, async (tx) => {
     await tx.insert(messagesTable).values({
