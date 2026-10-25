@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useOptimistic, useRef, useState } from "react";
+import { useEffect, useOptimistic, useRef } from "react";
 
 type ChatMessage = { id: string; role: string; content: string };
 
@@ -24,18 +24,25 @@ export function DiscoveryChat({
   messages: ChatMessage[];
   action: (formData: FormData) => void | Promise<void>;
 }) {
-  const [pending, setPending] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
+  // Both the sent message and the "thinking" placeholder are optimistic
+  // state, not useState: a form action runs inside a React transition,
+  // and ordinary setState calls made there are held back until the whole
+  // (slow) server action finishes -- which is exactly when we no longer
+  // need them. Optimistic state renders immediately and reverts on its
+  // own once the real messages arrive.
   const [optimisticMessages, addOptimistic] = useOptimistic(
     messages,
     (current: ChatMessage[], content: string) => [
       ...current,
-      { id: `pending-${current.length}`, role: "STAKEHOLDER", content },
+      { id: `pending-user-${current.length}`, role: "STAKEHOLDER", content },
+      { id: "pending-ai", role: "PENDING", content: "" },
     ]
   );
+  const pending = optimisticMessages[optimisticMessages.length - 1]?.role === "PENDING";
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -43,57 +50,53 @@ export function DiscoveryChat({
 
   // Real messages arriving means the round trip finished.
   useEffect(() => {
-    setPending(false);
     textareaRef.current?.focus();
   }, [messages.length]);
 
   async function handleSubmit(formData: FormData) {
     const content = String(formData.get("content") ?? "").trim();
     if (!content || pending) return;
-    setPending(true);
     addOptimistic(content);
     formRef.current?.reset();
-    try {
-      await action(formData);
-    } finally {
-      // On success the page re-renders with new messages (effect above);
-      // on failure the server redirects back with a banner. Either way,
-      // stop showing "thinking".
-      setPending(false);
-    }
+    // On success the page re-renders with the real messages; on failure
+    // the server redirects back with a banner. Either way the optimistic
+    // entries are discarded automatically when this action settles.
+    await action(formData);
   }
 
   return (
     <div className="flex min-h-[65vh] flex-1 flex-col gap-4">
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto rounded-lg border border-neutral-300 bg-white p-4 shadow-sm">
-        {optimisticMessages.map((m) => (
-          <div
-            key={m.id}
-            className={`max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm ${
-              m.role === "AI"
-                ? "self-start bg-neutral-100 text-neutral-900"
-                : "self-end bg-neutral-900 text-white"
-            }`}
-          >
-            {m.content}
-          </div>
-        ))}
-        {pending && (
-          <div
-            role="status"
-            aria-live="polite"
-            className="self-start rounded-lg bg-neutral-100 px-3 py-2 text-sm text-neutral-600"
-          >
-            Thinking about your answer
-            <span className="ml-1 inline-flex gap-0.5" aria-hidden="true">
-              <span className="animate-pulse">.</span>
-              <span className="animate-pulse [animation-delay:150ms]">.</span>
-              <span className="animate-pulse [animation-delay:300ms]">.</span>
-            </span>
-            <span className="mt-0.5 block text-xs text-neutral-500">
-              This can take up to half a minute.
-            </span>
-          </div>
+        {optimisticMessages.map((m) =>
+          m.role === "PENDING" ? (
+            <div
+              key={m.id}
+              role="status"
+              aria-live="polite"
+              className="self-start rounded-lg bg-neutral-100 px-3 py-2 text-sm text-neutral-600"
+            >
+              Thinking about your answer
+              <span className="ml-1 inline-flex gap-0.5" aria-hidden="true">
+                <span className="animate-pulse">.</span>
+                <span className="animate-pulse [animation-delay:150ms]">.</span>
+                <span className="animate-pulse [animation-delay:300ms]">.</span>
+              </span>
+              <span className="mt-0.5 block text-xs text-neutral-500">
+                This can take up to half a minute.
+              </span>
+            </div>
+          ) : (
+            <div
+              key={m.id}
+              className={`max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm ${
+                m.role === "AI"
+                  ? "self-start bg-neutral-100 text-neutral-900"
+                  : "self-end bg-neutral-900 text-white"
+              }`}
+            >
+              {m.content}
+            </div>
+          )
         )}
         <div ref={endRef} />
       </div>
