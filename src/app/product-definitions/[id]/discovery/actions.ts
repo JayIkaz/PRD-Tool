@@ -24,6 +24,7 @@ import {
 } from "@/lib/ai/extraction";
 import type { Tx } from "@/db/rls";
 import { logAuditEvent } from "@/lib/audit/log";
+import { deriveOverallStatus } from "@/lib/definition/dimensions";
 
 /**
  * Known limitation: no locking against two concurrent calls for the
@@ -43,20 +44,6 @@ async function getOrCreateActiveSession(tx: Tx, productDefinitionId: string, use
     .values({ productDefinitionId, stakeholderId: userId })
     .returning();
   return created;
-}
-
-/**
- * Derives a requirement's overall completeness from whatever dimension
- * rows exist for it. A dimension with no row yet counts as MISSING —
- * a requirement is never "complete" just because the dimensions it
- * happens to have rows for are DEFINED (Section 7/19).
- */
-function deriveOverallStatus(dimensionStates: string[]): "MISSING" | "PARTIAL" | "DEFINED" {
-  const missingCount = DIMENSION_KEYS.length - dimensionStates.length;
-  const definedOrConfirmed = dimensionStates.filter((s) => s === "DEFINED" || s === "CONFIRMED").length;
-  if (missingCount === 0 && definedOrConfirmed === DIMENSION_KEYS.length) return "DEFINED";
-  if (definedOrConfirmed > 0 || dimensionStates.some((s) => s === "PARTIAL")) return "PARTIAL";
-  return "MISSING";
 }
 
 /**

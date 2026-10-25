@@ -9,7 +9,14 @@ export type AuditEventType =
   | "ASSUMPTION_REJECTED"
   | "PARTICIPANT_JOINED"
   | "REVIEW_DECISION_RECORDED"
-  | "AI_CHALLENGE_RUN";
+  | "AI_CHALLENGE_RUN"
+  | "REQUIREMENT_EDITED"
+  | "RISK_ADDED"
+  | "RISK_REMOVED"
+  | "DEPENDENCY_ADDED"
+  | "DEPENDENCY_REMOVED"
+  | "OPEN_QUESTION_ADDED"
+  | "OPEN_QUESTION_RESOLVED";
 
 /**
  * Single write path for the audit trail (src/db/schema/audit.ts) --

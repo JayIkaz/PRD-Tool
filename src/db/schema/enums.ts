@@ -119,6 +119,13 @@ export const auditEventTypeEnum = pgEnum("audit_event_type", [
   "PARTICIPANT_JOINED",
   "REVIEW_DECISION_RECORDED",
   "AI_CHALLENGE_RUN", // Section 21/22 -- one "Challenge this definition" run
+  "REQUIREMENT_EDITED", // PM edited a requirement during review
+  "RISK_ADDED",
+  "RISK_REMOVED",
+  "DEPENDENCY_ADDED",
+  "DEPENDENCY_REMOVED",
+  "OPEN_QUESTION_ADDED",
+  "OPEN_QUESTION_RESOLVED",
 ]);
 
 // --- AI Challenge mode (Section 21/22) ---

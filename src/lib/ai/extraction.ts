@@ -47,24 +47,9 @@ import { generateStructured } from "./client";
  * prompt: CONFIRMED isn't a legal value in ExtractedState.
  */
 
-export type DimensionKey =
-  | "USER"
-  | "NEED"
-  | "CONTEXT"
-  | "BEHAVIOUR"
-  | "OUTCOME"
-  | "CONSTRAINTS"
-  | "ACCEPTANCE_CONDITIONS";
-
-export const DIMENSION_KEYS: DimensionKey[] = [
-  "USER",
-  "NEED",
-  "CONTEXT",
-  "BEHAVIOUR",
-  "OUTCOME",
-  "CONSTRAINTS",
-  "ACCEPTANCE_CONDITIONS",
-];
+import { DIMENSION_KEYS, type DimensionKey } from "@/lib/definition/dimensions";
+export { DIMENSION_KEYS };
+export type { DimensionKey };
 
 type ExtractedState = "PARTIAL" | "DEFINED";
 

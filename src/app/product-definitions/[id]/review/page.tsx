@@ -1,4 +1,4 @@
-import { eq, and, inArray, desc } from "drizzle-orm";
+import { eq, and, inArray, desc, asc } from "drizzle-orm";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server-client";
@@ -12,6 +12,8 @@ import {
   openQuestions as openQuestionsTable,
   assumptions as assumptionsTable,
   evidence as evidenceTable,
+  risks as risksTable,
+  dependencies as dependenciesTable,
   challengeReviews as challengeReviewsTable,
   challengeFindings as challengeFindingsTable,
 } from "@/db/schema";
@@ -20,6 +22,8 @@ import { AppShell } from "@/components/AppShell";
 import { ProductDefinitionNav } from "@/components/ProductDefinitionNav";
 import { startReview, addDecision, approveDefinition, sendBackToDiscovery } from "../review-actions";
 import { runChallenge, reviewFinding } from "../challenge-actions";
+import { recordFindingAs } from "../pm-workspace-actions";
+import { PmWorkspace } from "@/components/PmWorkspace";
 import { CHALLENGE_DISPLAY_GROUPS, type ChallengeFindingCategory } from "@/lib/ai/challenge";
 
 export default async function ReviewPage({
@@ -54,6 +58,7 @@ export default async function ReviewPage({
 
     const reqs = await tx.query.requirements.findMany({
       where: eq(requirementsTable.productDefinitionId, id),
+      orderBy: [asc(requirementsTable.displayCode)],
     });
     const dims =
       reqs.length === 0
@@ -69,6 +74,15 @@ export default async function ReviewPage({
     });
     const evidenceList = await tx.query.evidence.findMany({
       where: eq(evidenceTable.productDefinitionId, id),
+    });
+
+    const risksList = await tx.query.risks.findMany({
+      where: eq(risksTable.productDefinitionId, id),
+      orderBy: [asc(risksTable.createdAt)],
+    });
+    const dependenciesList = await tx.query.dependencies.findMany({
+      where: eq(dependenciesTable.productDefinitionId, id),
+      orderBy: [asc(dependenciesTable.createdAt)],
     });
 
     const challengeReviewsList = await tx.query.challengeReviews.findMany({
@@ -95,6 +109,8 @@ export default async function ReviewPage({
       openQs,
       assumptionsList,
       evidenceList,
+      risksList,
+      dependenciesList,
       challengeReviewsList,
       challengeFindingsList,
     };
@@ -110,6 +126,8 @@ export default async function ReviewPage({
     openQs,
     assumptionsList,
     evidenceList,
+    risksList,
+    dependenciesList,
     challengeReviewsList,
     challengeFindingsList,
   } = data;
@@ -195,6 +213,18 @@ export default async function ReviewPage({
       )}
 
       {definition.status !== "DISCOVERY" && (
+        <PmWorkspace
+          productDefinitionId={id}
+          canEdit={isActivePm && definition.status === "PM_REVIEW"}
+          requirements={reqs}
+          dimensions={dims}
+          risks={risksList}
+          dependencies={dependenciesList}
+          openQuestions={openQs}
+        />
+      )}
+
+      {definition.status !== "DISCOVERY" && (
         <section className="flex flex-col gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-medium text-neutral-600">
@@ -253,6 +283,24 @@ export default async function ReviewPage({
                                       Accept
                                     </button>
                                   </form>
+                                  {(f.category === "RISK" || f.category === "DEPENDENCY" || f.category === "QUESTION") && (
+                                    <form action={recordFindingAs}>
+                                      <input type="hidden" name="findingId" value={f.id} />
+                                      <input type="hidden" name="productDefinitionId" value={id} />
+                                      <input
+                                        type="hidden"
+                                        name="target"
+                                        value={f.category === "QUESTION" ? "QUESTION" : f.category}
+                                      />
+                                      <button className="rounded-lg border border-neutral-900 px-2 py-1 text-xs text-neutral-900">
+                                        {f.category === "RISK"
+                                          ? "Record as risk"
+                                          : f.category === "DEPENDENCY"
+                                            ? "Record as dependency"
+                                            : "Record as open question"}
+                                      </button>
+                                    </form>
+                                  )}
                                   <form action={reviewFinding}>
                                     <input type="hidden" name="findingId" value={f.id} />
                                     <input type="hidden" name="productDefinitionId" value={id} />
