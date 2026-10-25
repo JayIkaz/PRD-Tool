@@ -13,7 +13,7 @@ import {
   evidence as evidenceTable,
 } from "@/db/schema";
 import { ensureSessionStarted, sendDiscoveryMessage, setCurrentTopic } from "./actions";
-import { MessageInput } from "./MessageInput";
+import { DiscoveryChat } from "./DiscoveryChat";
 import { CompletenessSummary } from "@/components/CompletenessSummary";
 import { AppShell } from "@/components/AppShell";
 import { ProductDefinitionNav } from "@/components/ProductDefinitionNav";
@@ -139,33 +139,11 @@ export default async function DiscoveryPage({
         )}
 
         <div className="flex flex-1 flex-col gap-6 lg:flex-row">
-          <div className="flex min-h-[65vh] flex-1 flex-col gap-4">
-            <div className="flex flex-1 flex-col gap-3 overflow-y-auto rounded-lg border border-neutral-300 bg-white p-4 shadow-sm">
-              {data.messages.map((m) => (
-                <div
-                  key={m.id}
-                  className={`max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm ${
-                    m.role === "AI"
-                      ? "self-start bg-neutral-100 text-neutral-900"
-                      : "self-end bg-neutral-900 text-white"
-                  }`}
-                >
-                  {m.content}
-                </div>
-              ))}
-            </div>
-
-            <form action={sendDiscoveryMessage} className="flex gap-2">
-              <input type="hidden" name="productDefinitionId" value={id} />
-              <MessageInput />
-              <button
-                type="submit"
-                className="self-end rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
-              >
-                Send
-              </button>
-            </form>
-          </div>
+          <DiscoveryChat
+            productDefinitionId={id}
+            messages={data.messages.map((m) => ({ id: m.id, role: m.role, content: m.content }))}
+            action={sendDiscoveryMessage}
+          />
 
           <aside className="w-full flex-shrink-0 lg:w-80 lg:overflow-y-auto">
             <CompletenessSummary
