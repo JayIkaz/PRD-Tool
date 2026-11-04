@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { suggestTitleAction } from "./suggest-title-action";
+import { ProductTypePicker } from "@/components/ProductTypePicker";
 
 type ProductType = { key: string; label: string };
 
@@ -63,15 +64,8 @@ export function NewDefinitionForm({
         />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium">Product type</label>
-        <select name="productTypeKey" className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm">
-          <option value="">Not sure yet</option>
-          {types.map((t) => (
-            <option key={t.key} value={t.key}>
-              {t.label}
-            </option>
-          ))}
-        </select>
+        <label className="mb-1 block text-sm font-medium">Product type <span className="font-normal text-neutral-500">(hover an option for what it covers)</span></label>
+        <ProductTypePicker name="productTypeKey" types={types} />
       </div>
       <button type="submit" className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white">
         Start discovery
