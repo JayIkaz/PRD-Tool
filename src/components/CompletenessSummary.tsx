@@ -53,27 +53,29 @@ function byDisplayCode<T extends { displayCode: string }>(items: T[]): T[] {
 
 function StatusKey() {
   return (
-    <section
-      aria-label="Status key"
-      className="grid gap-2 rounded-lg border border-neutral-300 bg-white p-4 text-xs text-neutral-600 shadow-sm"
-    >
-      <h2 className="text-sm font-medium text-neutral-600">Key</h2>
-      <ul className="grid gap-1">
+    <details aria-label="Status key" className="card group text-xs text-neutral-600">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-2">
+        <span className="h2">Key</span>
+        <span aria-hidden className="text-neutral-500 transition-transform group-open:rotate-180">
+          ▾
+        </span>
+      </summary>
+      <ul className="mt-3 grid gap-1.5">
         {["MISSING", "PARTIAL", "DEFINED", "CONFIRMED"].map((s) => (
           <li key={s} className="flex items-center gap-2">
             <StatusIcon status={s} />
             <span>
-              <span className="font-medium text-neutral-700">{STATUS_LABEL[s]}</span> - {STATUS_MEANING[s]}
+              <span className="font-semibold text-neutral-800">{STATUS_LABEL[s]}</span> - {STATUS_MEANING[s]}
             </span>
           </li>
         ))}
       </ul>
-      <p>
-        <span className="font-medium text-neutral-700">0/7</span> counts how many of a requirement&apos;s seven
+      <p className="mt-3">
+        <span className="font-semibold text-neutral-800">0/7</span> counts how many of a requirement&apos;s seven
         dimensions (user, need, context, behaviour, outcome, constraints, acceptance conditions) are defined or
         confirmed. A red dot beside an open question means it is still unanswered.
       </p>
-    </section>
+    </details>
   );
 }
 
@@ -117,15 +119,15 @@ export function CompletenessSummary({
     <div className="flex flex-col gap-4">
       <StatusKey />
 
-      <section className="grid gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4 text-sm">
-        <h2 className="text-sm font-medium text-neutral-600">Captured so far</h2>
+      <section className="card grid gap-3 text-sm">
+        <h2 className="h2">Captured so far</h2>
         <FieldRow label="Problem" status={definition.problemStatus} content={definition.problem} />
         <FieldRow label="Users" status={definition.usersStatus} content={definition.users} />
         <FieldRow label="Outcomes" status={definition.outcomesStatus} content={definition.outcomes} />
       </section>
 
-      <section className="grid gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4 text-sm">
-        <h2 className="text-sm font-medium text-neutral-600">Requirements ({requirements.length})</h2>
+      <section className="card grid gap-3 text-sm">
+        <h2 className="h2">Requirements ({requirements.length})</h2>
         {requirements.length === 0 ? (
           <p className="text-neutral-600">
             None extracted yet — requirements appear here as the discovery conversation covers them.
@@ -139,7 +141,7 @@ export function CompletenessSummary({
               return (
                 <li key={r.id} className="flex items-center justify-between gap-2 border-b pb-2 last:border-b-0">
                   <span>
-                    <span className="mr-2 text-neutral-600">{r.displayCode}</span>
+                    <span className="code mr-2">{r.displayCode}</span>
                     {r.title}
                   </span>
                   <span className="whitespace-nowrap text-xs text-neutral-600">
@@ -152,8 +154,8 @@ export function CompletenessSummary({
         )}
       </section>
 
-      <section className="grid gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4 text-sm">
-        <h2 className="text-sm font-medium text-neutral-600">
+      <section className="card grid gap-3 text-sm">
+        <h2 className="h2">
           Open questions ({unresolvedQuestions.length})
         </h2>
         {unresolvedQuestions.length === 0 ? (
@@ -163,7 +165,7 @@ export function CompletenessSummary({
         ) : (
           <ul className="grid gap-2">
             {unresolvedQuestions.map((q) => (
-              <li key={q.id} className="border-b pb-2 last:border-b-0">
+              <li key={q.id} className="list-row">
                 <p>
                   <span role="img" aria-label="Unanswered" title="Unanswered">
                     🔴
@@ -180,8 +182,8 @@ export function CompletenessSummary({
         )}
       </section>
 
-      <section className="grid gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4 text-sm">
-        <h2 className="text-sm font-medium text-neutral-600">
+      <section className="card grid gap-3 text-sm">
+        <h2 className="h2">
           Assumptions ({assumptions.length}
           {showAssumptionReview && pendingAssumptions.length > 0 ? `, ${pendingAssumptions.length} to review` : ""})
         </h2>
@@ -195,9 +197,9 @@ export function CompletenessSummary({
               showAssumptionReview ? (
                 <AssumptionReviewRow key={a.id} productDefinitionId={productDefinitionId} assumption={a} />
               ) : (
-                <li key={a.id} className="border-b pb-2 last:border-b-0">
+                <li key={a.id} className="list-row">
                   <p>
-                    <span className="mr-2 text-neutral-600">{a.displayCode}</span>
+                    <span className="code mr-2">{a.displayCode}</span>
                     {a.statement}
                     <span className="ml-2 whitespace-nowrap text-xs text-neutral-600">({a.status})</span>
                   </p>
@@ -209,8 +211,8 @@ export function CompletenessSummary({
         )}
       </section>
 
-      <section className="grid gap-3 rounded-lg border border-neutral-300 bg-white shadow-sm p-4 text-sm">
-        <h2 className="text-sm font-medium text-neutral-600">Evidence ({evidence.length})</h2>
+      <section className="card grid gap-3 text-sm">
+        <h2 className="h2">Evidence ({evidence.length})</h2>
         {evidence.length === 0 ? (
           <p className="text-neutral-600">No supporting material attached yet.</p>
         ) : (
@@ -235,7 +237,7 @@ export function CompletenessSummary({
             <label className="text-xs text-neutral-600" htmlFor="evidence-type">
               Add evidence
             </label>
-            <select id="evidence-type" name="type" defaultValue="FREE_TEXT_NOTE" className="rounded-lg border border-neutral-300 px-2 py-1 text-sm">
+            <select id="evidence-type" name="type" defaultValue="FREE_TEXT_NOTE" className="field field-sm">
               <option value="FREE_TEXT_NOTE">Note</option>
               <option value="URL">Link</option>
             </select>
@@ -244,9 +246,9 @@ export function CompletenessSummary({
               required
               rows={2}
               placeholder="Paste a link or write a note..."
-              className="rounded-lg border border-neutral-300 px-2 py-1 text-sm"
+              className="field field-sm"
             />
-            <button type="submit" className="self-start rounded-lg bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white">
+            <button type="submit" className="btn btn-primary btn-sm self-start">
               Add
             </button>
           </form>

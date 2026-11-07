@@ -9,69 +9,89 @@ export default async function LoginPage({
   const params = await searchParams;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-8">
-      <div className="w-full max-w-sm space-y-6">
-        <h1 className="text-xl font-semibold">Log in</h1>
+    <main className="auth-wrap">
+      <div className="auth-card">
+        <div>
+          <p className="eyebrow">Product Discovery</p>
+          <h1 className="h1 mt-1">Log in</h1>
+        </div>
 
         {params.error && (
-          <p className="rounded-lg border border-red-300 bg-red-50 p-2 text-sm text-red-700">
+          <p role="alert" className="alert alert-error">
             {params.error}
           </p>
         )}
         {params.magicLinkSent && (
-          <p className="rounded-lg border border-emerald-300 bg-emerald-50 p-2 text-sm text-emerald-700">
-            Magic link sent to {params.magicLinkSent} — check your inbox.
+          <p role="status" className="alert alert-success">
+            Magic link sent to {params.magicLinkSent}. Check your inbox.
           </p>
         )}
 
-        <form action={signInWithPassword} className="space-y-3">
+        <form action={signInWithPassword} className="grid gap-3">
           <input type="hidden" name="next" value={params.next ?? "/dashboard"} />
-          <input
-            name="email"
-            type="email"
-            required
-            placeholder="Email"
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
-          />
-          <input
-            name="password"
-            type="password"
-            required
-            placeholder="Password"
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
-          />
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white"
-          >
+          <div>
+            <label htmlFor="login-email" className="label">
+              Email
+            </label>
+            <input
+              id="login-email"
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              inputMode="email"
+              className="field"
+            />
+          </div>
+          <div>
+            <label htmlFor="login-password" className="label">
+              Password
+            </label>
+            <input
+              id="login-password"
+              name="password"
+              type="password"
+              required
+              autoComplete="current-password"
+              className="field"
+            />
+          </div>
+          <button type="submit" className="btn btn-primary btn-block">
             Log in with password
           </button>
         </form>
 
-        <div className="flex items-center gap-2 text-xs text-neutral-600">
+        <div className="flex items-center gap-3 text-xs text-neutral-600">
           <div className="h-px flex-1 bg-neutral-200" />
           or
           <div className="h-px flex-1 bg-neutral-200" />
         </div>
 
-        <form action={signInWithMagicLink} className="space-y-3">
-          <input
-            name="email"
-            type="email"
-            required
-            placeholder="Email"
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
-          />
-          <button
-            type="submit"
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium"
-          >
+        <form action={signInWithMagicLink} className="grid gap-3">
+          <div>
+            <label htmlFor="magic-email" className="label">
+              Email for a magic link
+            </label>
+            <input
+              id="magic-email"
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              inputMode="email"
+              className="field"
+            />
+          </div>
+          <button type="submit" className="btn btn-secondary btn-block">
             Send a magic link instead
           </button>
         </form>
 
         <p className="text-center text-sm text-neutral-600">
-          No account? <Link href="/signup" className="underline">Sign up</Link>
+          No account?{" "}
+          <Link href="/signup" className="font-semibold text-brand-700 underline underline-offset-2">
+            Sign up
+          </Link>
         </p>
       </div>
     </main>

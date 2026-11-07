@@ -1,14 +1,45 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
+
+// Variable fonts committed to the repo (SIL OFL, latin subset) and loaded
+// with next/font/local: no runtime request to a font CDN, and the build
+// does not depend on reaching Google Fonts. Figtree = body,
+// Bricolage Grotesque = headings, JetBrains Mono = codes (REQ-001 etc).
+const body = localFont({
+  src: "./fonts/figtree-latin-wght-normal.woff2",
+  variable: "--font-body",
+  weight: "300 900",
+  display: "swap",
+});
+const heading = localFont({
+  src: "./fonts/bricolage-grotesque-latin-wght-normal.woff2",
+  variable: "--font-heading",
+  weight: "200 800",
+  display: "swap",
+});
+const code = localFont({
+  src: "./fonts/jetbrains-mono-latin-wght-normal.woff2",
+  variable: "--font-code",
+  weight: "100 800",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Product Discovery & Definition Tool",
   description: "Turn a vague idea into a defined, traceable product requirement.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#f7f5f0",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en-GB" className={`${body.variable} ${heading.variable} ${code.variable}`}>
       <body className="antialiased">{children}</body>
     </html>
   );

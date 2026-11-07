@@ -2,21 +2,29 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
-      <h1 className="text-2xl font-semibold">Product Discovery &amp; Definition Tool</h1>
-      <p className="max-w-xl text-center text-sm text-neutral-600">
-        Turn a vague idea into a defined, traceable product requirement.
-      </p>
-      <div className="flex gap-3">
-        <Link href="/login" className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium">
-          Log in
-        </Link>
-        <Link
-          href="/signup"
-          className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+    <main className="auth-wrap">
+      <div className="flex w-full max-w-xl flex-col items-center gap-6 text-center">
+        <span
+          aria-hidden
+          className="grid size-12 place-items-center rounded-2xl bg-brand-600 font-display text-lg font-bold text-white shadow-card"
         >
-          Sign up
-        </Link>
+          PD
+        </span>
+        <h1 className="font-display text-3xl font-semibold leading-tight text-neutral-900 sm:text-4xl">
+          Turn a vague idea into a defined product requirement
+        </h1>
+        <p className="max-w-md text-base text-neutral-600">
+          Guided discovery, evidence and assumptions kept apart, and a definition a product manager
+          can review before anything is built.
+        </p>
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+          <Link href="/signup" className="btn btn-primary">
+            Sign up
+          </Link>
+          <Link href="/login" className="btn btn-secondary">
+            Log in
+          </Link>
+        </div>
       </div>
     </main>
   );

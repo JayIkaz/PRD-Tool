@@ -87,31 +87,31 @@ export default async function DiscoveryPage({
         { label: "Discovery" },
       ]}
     >
-      <main className="mx-auto flex max-w-5xl flex-col gap-4 px-8 py-8">
+      <main className="page page-wide">
         <ProductDefinitionNav productDefinitionId={id} active="discovery" />
 
         <div>
-          <p className="text-xs uppercase tracking-wide text-neutral-600">Discovery</p>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold">
+          <p className="eyebrow">Discovery</p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <h1 className="h1">
               {data.definition.currentTopic ?? data.definition.title}
             </h1>
-            <details className="group">
-              <summary className="cursor-pointer list-none text-xs text-neutral-600 underline hover:text-neutral-600">
+            <details className="group w-full sm:w-auto">
+              <summary className="btn btn-ghost btn-sm cursor-pointer list-none underline underline-offset-2">
                 Rename
               </summary>
-              <form action={setCurrentTopic} className="mt-2 flex gap-2">
+              <form action={setCurrentTopic} className="mt-2 flex gap-2 sm:min-w-80">
                 <input type="hidden" name="productDefinitionId" value={id} />
                 <input
                   name="topic"
                   defaultValue={data.definition.currentTopic ?? data.definition.title}
                   required
                   autoFocus
-                  className="rounded-lg border border-neutral-300 px-2 py-1 text-sm"
+                  className="field flex-1"
                 />
                 <button
                   type="submit"
-                  className="rounded-lg bg-neutral-900 px-3 py-1 text-xs font-medium text-white"
+                  className="btn btn-primary btn-sm"
                 >
                   Save
                 </button>
@@ -126,7 +126,7 @@ export default async function DiscoveryPage({
         {showAiBanner && (
           <div
             role="alert"
-            className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900"
+            className="alert alert-warning"
           >
             <p className="font-medium">The AI assistant is unavailable right now.</p>
             <p className="mt-1">
@@ -138,23 +138,43 @@ export default async function DiscoveryPage({
           </div>
         )}
 
-        <div className="flex flex-1 flex-col gap-6 lg:flex-row">
+        <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:gap-6">
           <DiscoveryChat
             productDefinitionId={id}
             messages={data.messages.map((m) => ({ id: m.id, role: m.role, content: m.content }))}
             action={sendDiscoveryMessage}
           />
 
-          <aside className="w-full flex-shrink-0 lg:w-80 lg:overflow-y-auto">
-            <CompletenessSummary
-              productDefinitionId={id}
-              definition={data.definition}
-              requirements={data.reqs}
-              dimensions={data.dims}
-              openQuestions={data.openQs}
-              assumptions={data.assumptionsList}
-              evidence={data.evidenceList}
-            />
+          <aside className="w-full flex-shrink-0 lg:w-80">
+            {/* Collapsed on phones so the conversation stays the focus; always open on desktop. */}
+            <details className="group lg:hidden">
+              <summary className="btn btn-secondary btn-block cursor-pointer list-none justify-between">
+                <span>Progress so far</span>
+                <span aria-hidden className="transition-transform group-open:rotate-180">▾</span>
+              </summary>
+              <div className="mt-3">
+                <CompletenessSummary
+                  productDefinitionId={id}
+                  definition={data.definition}
+                  requirements={data.reqs}
+                  dimensions={data.dims}
+                  openQuestions={data.openQs}
+                  assumptions={data.assumptionsList}
+                  evidence={data.evidenceList}
+                />
+              </div>
+            </details>
+            <div className="hidden lg:block lg:max-h-[calc(100dvh-14rem)] lg:overflow-y-auto">
+              <CompletenessSummary
+                productDefinitionId={id}
+                definition={data.definition}
+                requirements={data.reqs}
+                dimensions={data.dims}
+                openQuestions={data.openQs}
+                assumptions={data.assumptionsList}
+                evidence={data.evidenceList}
+              />
+            </div>
           </aside>
         </div>
       </main>

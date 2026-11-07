@@ -83,12 +83,12 @@ export default async function HistoryPage({
         { label: "History" },
       ]}
     >
-      <main className="mx-auto flex max-w-2xl flex-col gap-6 px-8 py-8">
+      <main className="page page-narrow">
         <ProductDefinitionNav productDefinitionId={id} active="history" />
 
         <header>
-          <p className="text-xs uppercase tracking-wide text-neutral-600">History</p>
-          <h1 className="text-xl font-semibold">{definition.currentTopic ?? definition.title}</h1>
+          <p className="eyebrow">History</p>
+          <h1 className="h1">{definition.currentTopic ?? definition.title}</h1>
           <p className="mt-1 text-sm text-neutral-600">
             Every status change, rename, assumption decision and review decision recorded
             against this Product Definition, most recent first.
@@ -96,7 +96,7 @@ export default async function HistoryPage({
         </header>
 
         {entries.length === 0 ? (
-          <p className="rounded-lg border border-neutral-300 border-dashed p-6 text-center text-sm text-neutral-600">
+          <p className="card-dashed text-sm">
             Nothing recorded yet -- this fills in as the definition moves through discovery
             and review. Anything that happened before History was added won&apos;t appear
             here.
@@ -106,10 +106,10 @@ export default async function HistoryPage({
             {entries.map((e) => (
               <li
                 key={e.id}
-                className="rounded-lg border border-neutral-300 bg-white p-4 text-sm shadow-sm"
+                className="card text-sm"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-medium uppercase tracking-wide text-neutral-600">
+                  <span className="eyebrow">
                     {EVENT_LABEL[e.eventType] ?? e.eventType}
                   </span>
                   <span className="whitespace-nowrap text-xs text-neutral-600">

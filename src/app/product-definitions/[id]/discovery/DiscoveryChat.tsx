@@ -11,7 +11,8 @@ type ChatMessage = { id: string; role: string; content: string };
  * while (reply + extraction + DB writes), and without this the page
  * looks frozen after pressing Enter.
  *
- * Enter sends, Shift+Enter inserts a newline. The textarea is cleared
+ * Enter sends on desktop (Shift+Enter inserts a newline); on touch devices Enter
+ * inserts a newline and the Send button submits. The textarea is cleared
  * and disabled as soon as a message is sent, so it is obvious the send
  * registered and it cannot be double-submitted.
  */
@@ -65,16 +66,15 @@ export function DiscoveryChat({
   }
 
   return (
-    <div className="flex min-h-[65vh] flex-1 flex-col gap-4">
-      <div className="flex flex-1 flex-col gap-3 overflow-y-auto rounded-lg border border-neutral-300 bg-white p-4 shadow-sm">
+    <div className="flex h-[calc(100dvh-15rem)] min-h-[24rem] min-w-0 flex-1 flex-col gap-3 lg:h-[calc(100dvh-14rem)]">
+      <div
+        className="card flex flex-1 flex-col gap-3 overflow-y-auto overscroll-contain !p-3 sm:!p-4"
+        role="log"
+        aria-label="Discovery conversation"
+      >
         {optimisticMessages.map((m) =>
           m.role === "PENDING" ? (
-            <div
-              key={m.id}
-              role="status"
-              aria-live="polite"
-              className="self-start rounded-lg bg-neutral-100 px-3 py-2 text-sm text-neutral-600"
-            >
+            <div key={m.id} role="status" aria-live="polite" className="bubble bubble-ai text-neutral-600">
               Thinking about your answer
               <span className="ml-1 inline-flex gap-0.5" aria-hidden="true">
                 <span className="animate-pulse">.</span>
@@ -86,14 +86,7 @@ export function DiscoveryChat({
               </span>
             </div>
           ) : (
-            <div
-              key={m.id}
-              className={`max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm ${
-                m.role === "AI"
-                  ? "self-start bg-neutral-100 text-neutral-900"
-                  : "self-end bg-neutral-900 text-white"
-              }`}
-            >
+            <div key={m.id} className={`bubble ${m.role === "AI" ? "bubble-ai" : "bubble-user"}`}>
               {m.content}
             </div>
           )
@@ -101,31 +94,42 @@ export function DiscoveryChat({
         <div ref={endRef} />
       </div>
 
-      <form ref={formRef} action={handleSubmit} className="flex gap-2">
+      <form
+        ref={formRef}
+        action={handleSubmit}
+        className="flex items-end gap-2 pb-[env(safe-area-inset-bottom)]"
+      >
         <input type="hidden" name="productDefinitionId" value={productDefinitionId} />
+        <label htmlFor="chat-input" className="sr-only">
+          Your answer
+        </label>
         <textarea
+          id="chat-input"
           ref={textareaRef}
           name="content"
           required
           rows={2}
           disabled={pending}
-          placeholder="Type your answer... (Enter to send, Shift+Enter for a new line)"
-          className="flex-1 rounded-lg border border-neutral-300 px-3 py-2 text-sm disabled:bg-neutral-100"
+          enterKeyHint="send"
+          placeholder="Type your answer…"
+          className="field flex-1"
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+            // Enter sends on desktop; on touch keyboards Enter should add a line,
+            // so the Send button is the way to submit there.
+            const touch = window.matchMedia("(pointer: coarse)").matches;
+            if (!touch && e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
               e.preventDefault();
               if (e.currentTarget.value.trim()) formRef.current?.requestSubmit();
             }
           }}
         />
-        <button
-          type="submit"
-          disabled={pending}
-          className="self-end rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-        >
-          {pending ? "Sending..." : "Send"}
+        <button type="submit" disabled={pending} className="btn btn-primary">
+          {pending ? "Sending…" : "Send"}
         </button>
       </form>
+      <p className="-mt-1 hidden text-xs text-neutral-500 sm:block [@media(pointer:coarse)]:hidden">
+        Enter to send, Shift+Enter for a new line.
+      </p>
     </div>
   );
 }

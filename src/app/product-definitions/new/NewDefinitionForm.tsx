@@ -32,15 +32,16 @@ export function NewDefinitionForm({
   }
 
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="card grid gap-5">
       <div>
-        <label className="mb-1 block text-sm font-medium">
+        <label htmlFor="nd-title" className="label">
           Title{" "}
           <span className="font-normal text-neutral-500">
-            {suggesting ? "(suggesting a title...)" : "(optional, suggested from your idea)"}
+            {suggesting ? "(suggesting a title…)" : "(optional, suggested from your idea)"}
           </span>
         </label>
         <input
+          id="nd-title"
           ref={titleRef}
           name="title"
           type="text"
@@ -49,25 +50,30 @@ export function NewDefinitionForm({
             e.currentTarget.dataset.touched = "1";
             setTouched(true);
           }}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+          className="field"
         />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium">What&apos;s the idea?</label>
+        <label htmlFor="nd-idea" className="label">
+          What&apos;s the idea?
+        </label>
         <textarea
+          id="nd-idea"
           name="idea"
           required
           rows={6}
           onBlur={onIdeaBlur}
-          placeholder="Describe it however it currently exists in your head — it doesn't need to be polished."
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm"
+          placeholder="Describe it however it currently exists in your head. It doesn't need to be polished."
+          className="field"
         />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium">Product type <span className="font-normal text-neutral-500">(hover an option for what it covers)</span></label>
+        <span id="nd-type-label" className="label">
+          Product type <span className="font-normal text-neutral-500">(tap or hover an option for what it covers)</span>
+        </span>
         <ProductTypePicker name="productTypeKey" types={types} />
       </div>
-      <button type="submit" className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white">
+      <button type="submit" className="btn btn-primary w-full sm:w-auto sm:self-start">
         Start discovery
       </button>
     </form>
