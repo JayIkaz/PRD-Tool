@@ -24,11 +24,11 @@ export function ProductTypePicker({ name, types }: { name: string; types: Option
 
   useEffect(() => {
     if (!open) return;
-    function onDown(e: MouseEvent) {
+    function onDown(e: PointerEvent) {
       if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
     }
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
   }, [open]);
 
   function choose(i: number) {
@@ -72,16 +72,18 @@ export function ProductTypePicker({ name, types }: { name: string; types: Option
           setActive(Math.max(0, options.findIndex((o) => o.key === value)));
           setOpen((o) => !o);
         }}
-        className="flex w-full items-center justify-between rounded-lg border border-neutral-300 bg-white px-3 py-2 text-left text-sm"
+        className="field flex items-center justify-between gap-2 text-left"
       >
         <span>{selected.label}</span>
-        <span aria-hidden className="text-neutral-500">▾</span>
+        <span aria-hidden className={`text-neutral-500 transition-transform ${open ? "rotate-180" : ""}`}>
+          ▾
+        </span>
       </button>
-      <p className="mt-1 text-xs text-neutral-600">{describe(selected.key)}</p>
+      <p className="mt-1.5 text-xs text-neutral-600">{describe(selected.key)}</p>
 
       {open && (
-        <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-lg border border-neutral-300 bg-white shadow-sm">
-          <ul id={listId} role="listbox" className="max-h-64 overflow-auto py-1">
+        <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-pop">
+          <ul id={listId} role="listbox" className="max-h-[55dvh] overflow-auto overscroll-contain py-1">
             {options.map((o, i) => (
               <li
                 key={o.key || "none"}
@@ -89,17 +91,18 @@ export function ProductTypePicker({ name, types }: { name: string; types: Option
                 aria-selected={o.key === value}
                 onMouseEnter={() => setActive(i)}
                 onClick={() => choose(i)}
-                className={`cursor-pointer px-3 py-2 text-sm ${
-                  i === active ? "bg-neutral-100" : ""
-                } ${o.key === value ? "font-medium" : ""}`}
+                className={`cursor-pointer border-l-2 px-3 py-2.5 ${
+                  i === active ? "bg-brand-50" : ""
+                } ${o.key === value ? "border-brand-600" : "border-transparent"}`}
               >
-                {o.label}
+                <span className={`block text-sm ${o.key === value ? "font-semibold" : "font-medium"}`}>
+                  {o.label}
+                </span>
+                {/* Shown inline for every option so touch users (no hover) can read them too. */}
+                <span className="mt-0.5 block text-xs leading-snug text-neutral-600">{describe(o.key)}</span>
               </li>
             ))}
           </ul>
-          <p className="border-t border-neutral-200 bg-neutral-50 px-3 py-2 text-xs text-neutral-700">
-            {describe(options[active].key)}
-          </p>
         </div>
       )}
     </div>

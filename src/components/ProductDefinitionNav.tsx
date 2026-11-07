@@ -22,7 +22,7 @@ export function ProductDefinitionNav({
   active: (typeof TABS)[number]["key"];
 }) {
   return (
-    <nav className="flex gap-1 border-b border-neutral-200">
+    <nav aria-label="Product definition sections" className="tabs">
       {TABS.map((tab) => {
         const href =
           tab.key === "overview"
@@ -33,11 +33,8 @@ export function ProductDefinitionNav({
           <Link
             key={tab.key}
             href={href}
-            className={`border-b-2 px-3 py-2 text-sm font-medium transition-colors ${
-              isActive
-                ? "border-neutral-900 text-neutral-900"
-                : "border-transparent text-neutral-600 hover:text-neutral-700"
-            }`}
+            aria-current={isActive ? "page" : undefined}
+            className="tab"
           >
             {tab.label}
           </Link>

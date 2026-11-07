@@ -32,9 +32,9 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
 
   if (assumption.status !== "PENDING" && !editing) {
     return (
-      <li className="border-b pb-2 last:border-b-0">
+      <li className="list-row">
         <p>
-          <span className="mr-2 text-neutral-600">{assumption.displayCode}</span>
+          <span className="code mr-2">{assumption.displayCode}</span>
           {assumption.statement}
           <span className="ml-2 whitespace-nowrap text-xs text-neutral-600">
             ({STATUS_LABEL[assumption.status] ?? assumption.status})
@@ -48,9 +48,9 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
   }
 
   return (
-    <li className="border-b pb-2 last:border-b-0">
+    <li className="list-row">
       <p>
-        <span className="mr-2 text-neutral-600">{assumption.displayCode}</span>
+        <span className="code mr-2">{assumption.displayCode}</span>
         {editing ? null : assumption.statement}
       </p>
       {assumption.reasoning && !editing && (
@@ -63,7 +63,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={2}
-            className="rounded-lg border border-neutral-300 px-2 py-1 text-sm"
+            className="field field-sm"
             autoFocus
           />
           {error && <p className="text-xs text-red-600">{error}</p>}
@@ -82,7 +82,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
                   }
                 });
               }}
-              className="rounded-lg bg-neutral-900 px-2.5 py-1 text-xs font-medium text-white disabled:opacity-50"
+              className="btn btn-primary btn-sm"
             >
               Save and confirm
             </button>
@@ -94,7 +94,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
                 setEditing(false);
                 setError(null);
               }}
-              className="rounded-lg border border-neutral-300 px-2.5 py-1 text-xs font-medium"
+              className="btn btn-secondary btn-sm"
             >
               Cancel
             </button>
@@ -106,7 +106,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
             type="button"
             disabled={isPending}
             onClick={() => startTransition(() => confirmAssumption(assumption.id, productDefinitionId))}
-            className="rounded-lg bg-neutral-900 px-2.5 py-1 text-xs font-medium text-white disabled:opacity-50"
+            className="btn btn-primary btn-sm"
           >
             Confirm
           </button>
@@ -114,7 +114,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
             type="button"
             disabled={isPending}
             onClick={() => setEditing(true)}
-            className="rounded-lg border border-neutral-300 px-2.5 py-1 text-xs font-medium disabled:opacity-50"
+            className="btn btn-secondary btn-sm"
           >
             Edit
           </button>
@@ -122,7 +122,7 @@ export function AssumptionReviewRow({ productDefinitionId, assumption }: Assumpt
             type="button"
             disabled={isPending}
             onClick={() => startTransition(() => rejectAssumption(assumption.id, productDefinitionId))}
-            className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-medium text-red-700 disabled:opacity-50"
+            className="btn btn-danger btn-sm"
           >
             Reject
           </button>

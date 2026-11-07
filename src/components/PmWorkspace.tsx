@@ -26,9 +26,9 @@ const STATUS_ICON: Record<string, string> = {
 
 const RISK_CATEGORIES = ["delivery", "customer", "data", "operational", "compliance"];
 
-const inputCls = "rounded-lg border border-neutral-300 px-2 py-1 text-sm";
-const smallBtn = "self-start rounded-lg bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white";
-const ghostBtn = "rounded-lg border border-neutral-300 px-2 py-1 text-xs text-neutral-600";
+const inputCls = "field field-sm";
+const smallBtn = "btn btn-primary btn-sm self-start";
+const ghostBtn = "btn btn-secondary btn-sm";
 
 export interface PmWorkspaceProps {
   productDefinitionId: string;
@@ -72,8 +72,8 @@ export function PmWorkspace({
 
   return (
     <>
-      <section className="flex flex-col gap-3 rounded-lg border border-neutral-300 bg-white p-4 shadow-sm">
-        <h2 className="text-sm font-medium text-neutral-600">Requirements ({requirements.length})</h2>
+      <section className="card flex flex-col gap-3">
+        <h2 className="h2">Requirements ({requirements.length})</h2>
         {requirements.length === 0 ? (
           <p className="text-sm text-neutral-600">No requirements have been captured yet.</p>
         ) : (
@@ -83,7 +83,7 @@ export function PmWorkspace({
                 dimensions.filter((d) => d.requirementId === r.id).map((d) => [d.dimensionType, d])
               );
               return (
-                <li key={r.id} className="rounded-lg border border-neutral-200 p-3 text-sm">
+                <li key={r.id} className="rounded-xl border border-neutral-200 bg-neutral-50 p-3 text-sm">
                   <details>
                     <summary className="cursor-pointer list-none">
                       <span className="mr-1">{STATUS_ICON[r.overallStatus] ?? ""}</span>
@@ -113,7 +113,7 @@ export function PmWorkspace({
                                 <select
                                   name={`dim_${key}_state`}
                                   defaultValue={d?.state ?? "MISSING"}
-                                  className="rounded-lg border border-neutral-300 px-1 py-0.5 text-xs"
+                                  className="field"
                                   aria-label={`${DIMENSION_LABELS[key]} status`}
                                 >
                                   <option value="MISSING">Missing</option>
@@ -171,12 +171,12 @@ export function PmWorkspace({
         )}
       </section>
 
-      <section className="flex flex-col gap-3 rounded-lg border border-neutral-300 bg-white p-4 shadow-sm">
-        <h2 className="text-sm font-medium text-neutral-600">Risks ({risks.length})</h2>
+      <section className="card flex flex-col gap-3">
+        <h2 className="h2">Risks ({risks.length})</h2>
         {risks.length === 0 && <p className="text-sm text-neutral-600">No risks recorded yet.</p>}
         <ul className="grid gap-2">
           {risks.map((r) => (
-            <li key={r.id} className="flex items-start justify-between gap-2 rounded-lg border border-neutral-200 p-3 text-sm">
+            <li key={r.id} className="rounded-xl border border-neutral-200 bg-neutral-50 p-3 text-sm flex items-start justify-between gap-2">
               <p>
                 {r.category && (
                   <span className="mr-1 rounded bg-neutral-100 px-1.5 py-0.5 text-xs uppercase text-neutral-600">
@@ -217,12 +217,12 @@ export function PmWorkspace({
         )}
       </section>
 
-      <section className="flex flex-col gap-3 rounded-lg border border-neutral-300 bg-white p-4 shadow-sm">
-        <h2 className="text-sm font-medium text-neutral-600">Dependencies ({dependencies.length})</h2>
+      <section className="card flex flex-col gap-3">
+        <h2 className="h2">Dependencies ({dependencies.length})</h2>
         {dependencies.length === 0 && <p className="text-sm text-neutral-600">No dependencies recorded yet.</p>}
         <ul className="grid gap-2">
           {dependencies.map((d) => (
-            <li key={d.id} className="flex items-start justify-between gap-2 rounded-lg border border-neutral-200 p-3 text-sm">
+            <li key={d.id} className="rounded-xl border border-neutral-200 bg-neutral-50 p-3 text-sm flex items-start justify-between gap-2">
               <p>{d.statement}</p>
               {canEdit && (
                 <form action={removeDependency}>
@@ -248,14 +248,14 @@ export function PmWorkspace({
         )}
       </section>
 
-      <section className="flex flex-col gap-3 rounded-lg border border-neutral-300 bg-white p-4 shadow-sm">
-        <h2 className="text-sm font-medium text-neutral-600">
+      <section className="card flex flex-col gap-3">
+        <h2 className="h2">
           Open questions ({unresolved.length} open, {resolved.length} resolved)
         </h2>
         {openQuestions.length === 0 && <p className="text-sm text-neutral-600">No open questions.</p>}
         <ul className="grid gap-2">
           {unresolved.map((q) => (
-            <li key={q.id} className="rounded-lg border border-neutral-200 p-3 text-sm">
+            <li key={q.id} className="rounded-xl border border-neutral-200 bg-neutral-50 p-3 text-sm">
               <p>{q.question}</p>
               {q.whyItMatters && <p className="mt-0.5 text-xs text-neutral-600">Why it matters: {q.whyItMatters}</p>}
               {canEdit && (

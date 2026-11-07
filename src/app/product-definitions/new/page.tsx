@@ -17,9 +17,9 @@ export default async function NewProductDefinitionPage({
 
   return (
     <AppShell crumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "New Product Definition" }]}>
-      <main className="mx-auto flex max-w-xl flex-col gap-6 px-8 py-8">
+      <main className="page page-form">
         <div>
-          <h1 className="text-xl font-semibold">New Product Definition</h1>
+          <h1 className="h1">New Product Definition</h1>
           <p className="mt-1 text-sm text-neutral-600">
             Start with whatever you&apos;ve got — a rough idea, a request from
             someone else, a problem you&apos;ve noticed. Discovery is what turns
@@ -28,7 +28,7 @@ export default async function NewProductDefinitionPage({
         </div>
 
         {params.error && (
-          <p className="rounded-lg border border-red-300 bg-red-50 p-2 text-sm text-red-700">
+          <p className="alert alert-error">
             {params.error}
           </p>
         )}

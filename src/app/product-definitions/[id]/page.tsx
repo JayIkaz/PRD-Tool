@@ -78,17 +78,17 @@ export default async function ProductDefinitionPage({
     <AppShell
       crumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: definition.currentTopic ?? definition.title }]}
     >
-      <main className="mx-auto flex max-w-2xl flex-col gap-6 px-8 py-8">
+      <main className="page page-narrow">
         <ProductDefinitionNav productDefinitionId={definition.id} active="overview" />
 
         <header>
-          <p className="text-xs uppercase tracking-wide text-neutral-600">
+          <p className="eyebrow">
             {definition.status.replace(/_/g, " ")}
           </p>
-          <h1 className="text-xl font-semibold">{definition.currentTopic ?? definition.title}</h1>
+          <h1 className="h1">{definition.currentTopic ?? definition.title}</h1>
         </header>
         <section>
-          <h2 className="text-sm font-medium text-neutral-600">Original idea</h2>
+          <h2 className="h2">Original idea</h2>
           <p className="mt-1 whitespace-pre-wrap text-sm">{definition.idea}</p>
         </section>
 
@@ -107,7 +107,7 @@ export default async function ProductDefinitionPage({
         <div className="flex flex-wrap gap-3">
           <Link
             href={`/product-definitions/${definition.id}/discovery`}
-            className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+            className="btn btn-primary"
           >
             {definition.status === "DISCOVERY" ? "Continue discovery" : "Open discovery"}
           </Link>
@@ -115,7 +115,7 @@ export default async function ProductDefinitionPage({
           {definition.status === "DISCOVERY" && isActiveStakeholder && (
             <form action={submitForReview}>
               <input type="hidden" name="productDefinitionId" value={definition.id} />
-              <button className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium">
+              <button className="btn btn-secondary">
                 Submit for PM review
               </button>
             </form>
@@ -124,7 +124,7 @@ export default async function ProductDefinitionPage({
           {definition.status !== "DISCOVERY" && (
             <Link
               href={`/product-definitions/${definition.id}/review`}
-              className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium"
+              className="btn btn-secondary"
             >
               View PM review
             </Link>
@@ -132,7 +132,7 @@ export default async function ProductDefinitionPage({
         </div>
 
         {assumptionsList.some((a) => a.status === "PENDING") && (
-          <p className="rounded-lg border border-neutral-300 border-dashed p-4 text-sm text-neutral-600">
+          <p className="card-dashed text-sm">
             Some assumptions above are AI-generated and still need review —
             confirm, edit or reject each one.
           </p>
