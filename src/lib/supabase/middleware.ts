@@ -47,7 +47,9 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const isProtected = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
-  const isAuthOnly = AUTH_ONLY_PATHS.some((p) => pathname.startsWith(p));
+  // "/" is the public first page; signed-in users skip it. Exact match only,
+  // because every path starts with "/".
+  const isAuthOnly = pathname === "/" || AUTH_ONLY_PATHS.some((p) => pathname.startsWith(p));
 
   if (!user && isProtected) {
     const url = request.nextUrl.clone();
