@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { HowItHelpsStory } from "@/components/HowItHelpsStory";
 import { Reveal } from "@/components/Reveal";
 
 /*
@@ -117,17 +118,6 @@ const PRINCIPLES = [
     body: "A product manager reviews and can run an AI challenge for gaps, conflicts and risks. Nothing is approved until they say so.",
   },
 ];
-
-function StatusDot({ s }: { s: "defined" | "partial" | "missing" }) {
-  const c = s === "defined" ? "bg-emerald-500" : s === "partial" ? "bg-amber-400" : "bg-red-500";
-  const label = s === "defined" ? "Defined" : s === "partial" ? "Partial" : "Missing";
-  return (
-    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-700">
-      <span aria-hidden className={`size-2.5 rounded-full ${c}`} />
-      {label}
-    </span>
-  );
-}
 
 export default function Home() {
   return (
@@ -249,55 +239,7 @@ export default function Home() {
               <p className="mt-3 text-sm text-brand-100">Illustrative example.</p>
             </Reveal>
 
-            <div className="mt-10 grid items-stretch gap-4 lg:grid-cols-[1fr_auto_1.4fr]">
-              <Reveal className="rounded-2xl bg-white p-5 text-neutral-900 sm:p-6">
-                <p className="eyebrow !text-neutral-600">What arrives</p>
-                <p className="mt-3 font-display text-xl leading-snug text-neutral-900">
-                  &ldquo;Finance spend two days a month chasing late invoices. Can we automate it?&rdquo;
-                </p>
-                <p className="mt-4 text-sm text-neutral-600">Who gets chased? When? What counts as late? Unknown.</p>
-              </Reveal>
-
-              <div aria-hidden className="grid place-items-center text-2xl text-white lg:rotate-0">
-                <span className="rotate-90 lg:rotate-0">→</span>
-              </div>
-
-              <Reveal delay={200} className="rounded-2xl bg-brand-50 p-5 text-neutral-900 sm:p-6">
-                <p className="eyebrow">What a review gets</p>
-                <dl className="mt-3 grid gap-3 text-sm">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <dt className="font-semibold text-neutral-900">Problem</dt>
-                      <dd className="text-neutral-700">Manual invoice chasing takes two days a month.</dd>
-                    </div>
-                    <StatusDot s="defined" />
-                  </div>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <dt className="font-semibold text-neutral-900">
-                        <span className="code mr-2">REQ-001</span>Send a reminder before the due date
-                      </dt>
-                      <dd className="text-neutral-700">4 of 7 dimensions defined</dd>
-                    </div>
-                    <StatusDot s="partial" />
-                  </div>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <dt className="font-semibold text-neutral-900">Assumption</dt>
-                      <dd className="text-neutral-700">Invoices live in the CRM. Needs confirming.</dd>
-                    </div>
-                    <StatusDot s="partial" />
-                  </div>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <dt className="font-semibold text-neutral-900">Open question</dt>
-                      <dd className="text-neutral-700">Who approves the reminder wording?</dd>
-                    </div>
-                    <StatusDot s="missing" />
-                  </div>
-                </dl>
-              </Reveal>
-            </div>
+            <HowItHelpsStory />
 
             <ul className="mt-10 grid gap-4 md:grid-cols-3">
               {PRINCIPLES.map((p, i) => (
