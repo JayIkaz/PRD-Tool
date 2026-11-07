@@ -162,11 +162,11 @@ export default function Home() {
                 From vague idea to buildable requirement
               </p>
               <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
-                Know what you are building before anyone builds it
+                Clarity before commitment
               </h1>
               <p className="mt-5 max-w-xl text-base text-brand-50 sm:text-lg">
-                Most delivery problems start as unclear requests. This tool talks an idea through with you, keeps track
-                of what is known and what is not, and hands a product manager something they can review and approve.
+                Turn a vague idea into a definition your team can review, challenge and approve before development
+                starts.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/signup" className="btn !rounded-full !bg-white !text-brand-800 hover:!bg-brand-50 sm:!px-6">
