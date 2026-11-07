@@ -27,7 +27,7 @@ const code = localFont({
 
 export const metadata: Metadata = {
   title: "Product Discovery & Definition Tool",
-  description: "Turn a vague idea into a defined, traceable product requirement.",
+  description: "Turn a vague idea into a definition your team can review, challenge and approve before development starts.",
 };
 
 export const viewport: Viewport = {
