@@ -113,8 +113,10 @@
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
+      animation-delay: 0s !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
       scroll-behavior: auto !important;
     }
   }
@@ -462,5 +464,161 @@
   }
   .list-row:first-child {
     padding-top: 0;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * Motion (first page). All of it is decorative; with
+ * prefers-reduced-motion the base rule above collapses durations, and
+ * every animation here uses fill-mode "both" so the end state is shown.
+ * ------------------------------------------------------------------ */
+@layer components {
+  /* ---------- scroll reveal ---------- */
+  .reveal {
+    transition: opacity 600ms ease, transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      background-color 900ms ease, border-color 900ms ease;
+    transition-delay: var(--d, 0ms);
+  }
+  .reveal[data-state="hidden"] {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  /* Covered steps "light up" when they arrive. */
+  .step-covered {
+    background: #fff;
+    border-color: var(--color-neutral-200);
+  }
+  .step-covered[data-state="shown"] {
+    background: var(--color-brand-50);
+    border-color: var(--color-brand-200);
+  }
+
+  /* ---------- hero ring: seven dimensions being defined ---------- */
+  /* Not ".ring": that name is a Tailwind utility (box-shadow ring). */
+  .dimring {
+    --size: min(20rem, 70vw);
+    --r: calc(var(--size) * 0.4);
+    position: relative;
+    width: var(--size);
+    height: var(--size);
+    margin-inline: auto;
+  }
+  .ring-orbit {
+    position: absolute;
+    inset: 0;
+    animation: ring-spin 90s linear infinite;
+  }
+  .ring-slot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    transform: rotate(var(--a)) translateY(calc(var(--r) * -1));
+  }
+  /* Slot rotation is cancelled so labels stay upright; the orbit's own spin
+   * is cancelled by the reverse spin on .ring-badge. */
+  .ring-upright {
+    transform: rotate(calc(var(--a) * -1));
+  }
+  .ring-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    translate: -50% -50%;
+    border-radius: 999px;
+    background: #fff;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-neutral-900);
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.18);
+    animation:
+      badge-in 600ms cubic-bezier(0.2, 0.9, 0.2, 1) both,
+      ring-unspin 90s linear infinite;
+    animation-delay: calc(var(--i) * 350ms + 300ms), 0s;
+  }
+  @media (max-width: 639px) {
+    .ring-badge {
+      gap: 0.3rem;
+      padding: 0.28rem 0.5rem;
+      font-size: 0.6875rem;
+    }
+  }
+  .ring-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 999px;
+    background: #ef4444;
+    animation: dot-defined 2.2s ease both;
+    animation-delay: calc(var(--i) * 350ms + 1400ms);
+  }
+  .ring-dot.is-partial {
+    animation-name: dot-partial;
+  }
+  .ring-dot.is-missing {
+    animation-name: none;
+  }
+  .ring-centre {
+    position: absolute;
+    inset: 30%;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.1);
+    border: 1px dashed rgb(255 255 255 / 0.45);
+    padding: 0.75rem;
+    text-align: center;
+    animation: centre-pulse 5s ease-in-out infinite;
+  }
+
+  @keyframes ring-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes ring-unspin {
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+  @keyframes badge-in {
+    from {
+      opacity: 0;
+      scale: 0.5;
+    }
+    to {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+  @keyframes dot-defined {
+    0%,
+    30% {
+      background: #ef4444;
+    }
+    55%,
+    70% {
+      background: #fbbf24;
+    }
+    100% {
+      background: #22c55e;
+    }
+  }
+  @keyframes dot-partial {
+    0%,
+    35% {
+      background: #ef4444;
+    }
+    100% {
+      background: #fbbf24;
+    }
+  }
+  @keyframes centre-pulse {
+    50% {
+      background: rgb(255 255 255 / 0.18);
+    }
   }
 }
