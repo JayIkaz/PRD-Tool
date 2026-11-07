@@ -1,4 +1,6 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
+import { Reveal } from "@/components/Reveal";
 
 /*
  * First page. Modelled on the structure of the reference site: one scrolling
@@ -52,6 +54,54 @@ const STEPS: { n: string; name: string; line: string; help?: string; status: Ste
   { n: "07", name: "Build and test", line: "Engineers deliver, QA checks it.", status: "team" },
   { n: "08", name: "Launch", line: "Release it and learn what happens.", status: "team" },
 ];
+
+// The seven requirement dimensions the tool tracks. The end state of each
+// badge is illustrative: most get defined, one stays partial, one stays open,
+// because a real definition is rarely complete after one conversation.
+const DIMENSIONS: { label: string; end: "defined" | "partial" | "missing" }[] = [
+  { label: "User", end: "defined" },
+  { label: "Need", end: "defined" },
+  { label: "Context", end: "partial" },
+  { label: "Behaviour", end: "defined" },
+  { label: "Outcome", end: "defined" },
+  { label: "Constraints", end: "missing" },
+  { label: "Acceptance", end: "partial" },
+];
+
+function DimensionRing() {
+  return (
+    <div
+      className="dimring"
+      role="img"
+      aria-label="Seven requirement dimensions around an idea, each moving from missing to partial to defined as the conversation goes on"
+    >
+      <div className="ring-orbit" aria-hidden>
+        {DIMENSIONS.map((d, i) => (
+          <div
+            key={d.label}
+            className="ring-slot"
+            style={{ "--a": `${(360 / DIMENSIONS.length) * i}deg`, "--i": i } as CSSProperties}
+          >
+            <div className="ring-upright">
+              <span className="ring-badge">
+                <span className={`ring-dot ${d.end === "partial" ? "is-partial" : d.end === "missing" ? "is-missing" : ""}`} />
+                {d.label}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="ring-centre" aria-hidden>
+        <div>
+          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-brand-100">Your idea</p>
+          <p className="mt-1 font-display text-xs leading-snug text-white sm:text-sm">
+            &ldquo;Can we automate invoice chasing?&rdquo;
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const PRINCIPLES = [
   {
@@ -114,35 +164,36 @@ export default function Home() {
       </header>
 
       <main>
-        {/* ---------- hero: large colour field ---------- */}
+        {/* ---------- hero: large colour field with the dimension ring ---------- */}
         <section className="px-3 sm:px-6">
-          <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl bg-brand-600 px-5 py-14 text-white sm:px-12 sm:py-20 lg:py-24">
-            <p className="text-xs font-semibold uppercase tracking-widest text-brand-100">
-              From vague idea to buildable requirement
-            </p>
-            <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
-              Know what you are building before anyone builds it
-            </h1>
-            <p className="mt-5 max-w-xl text-base text-brand-50 sm:text-lg">
-              Most delivery problems start as unclear requests. This tool talks an idea through with you, keeps track
-              of what is known and what is not, and hands a product manager something they can review and approve.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/signup" className="btn !rounded-full !bg-white !text-brand-800 hover:!bg-brand-50 sm:!px-6">
-                Start with an idea
-              </Link>
-              <a
-                href="#lifecycle"
-                className="btn !rounded-full !border-white/40 !text-white hover:!bg-white/10 sm:!px-6"
-              >
-                See where it fits
-              </a>
+          <div className="mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-3xl bg-brand-600 px-5 py-14 text-white sm:px-12 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:py-24">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-brand-100">
+                From vague idea to buildable requirement
+              </p>
+              <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+                Know what you are building before anyone builds it
+              </h1>
+              <p className="mt-5 max-w-xl text-base text-brand-50 sm:text-lg">
+                Most delivery problems start as unclear requests. This tool talks an idea through with you, keeps track
+                of what is known and what is not, and hands a product manager something they can review and approve.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link href="/signup" className="btn !rounded-full !bg-white !text-brand-800 hover:!bg-brand-50 sm:!px-6">
+                  Start with an idea
+                </Link>
+                <a href="#lifecycle" className="btn !rounded-full !border-white/40 !text-white hover:!bg-white/10 sm:!px-6">
+                  See where it fits
+                </a>
+              </div>
             </div>
+            <DimensionRing />
           </div>
         </section>
 
         {/* ---------- lifecycle ---------- */}
         <section id="lifecycle" className="mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
+          <Reveal>
           <p className="eyebrow">The usual path</p>
           <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-neutral-900 sm:text-4xl">
             Eight steps from idea to launch. The first few decide whether the rest goes well.
@@ -151,17 +202,20 @@ export default function Home() {
             Teams usually jump from idea straight to design or build, and pay for it later in rework. This tool covers
             the early steps, where a misunderstanding is cheapest to fix.
           </p>
+          </Reveal>
 
           <ol className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s) => {
+            {STEPS.map((s, idx) => {
               const covered = s.status === "covered";
               const next = s.status === "next";
               return (
-                <li
+                <Reveal
+                  as="li"
                   key={s.n}
+                  delay={(idx % 4) * 110}
                   className={`flex flex-col gap-2 rounded-2xl border p-4 sm:p-5 ${
                     covered
-                      ? "border-brand-200 bg-brand-50"
+                      ? "step-covered"
                       : next
                         ? "border-dashed border-brand-500 bg-white"
                         : "border-neutral-200 bg-white/60"
@@ -178,35 +232,37 @@ export default function Home() {
                   {s.help && (
                     <p className="mt-auto border-t border-neutral-200/80 pt-3 text-sm text-neutral-800">{s.help}</p>
                   )}
-                </li>
+                </Reveal>
               );
             })}
           </ol>
         </section>
 
         {/* ---------- how it helps: before / after ---------- */}
-        <section id="how" className="bg-white py-16 sm:py-24">
+        <section id="how" className="bg-brand-600 py-16 text-white sm:py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-8">
-            <p className="eyebrow">How it helps</p>
-            <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-neutral-900 sm:text-4xl">
-              A sentence in, a reviewable definition out
-            </h2>
-            <p className="mt-3 text-sm text-neutral-600">Illustrative example.</p>
+            <Reveal>
+              <p className="text-xs font-semibold uppercase tracking-widest text-brand-100">How it helps</p>
+              <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-white sm:text-4xl">
+                A sentence in, a reviewable definition out
+              </h2>
+              <p className="mt-3 text-sm text-brand-100">Illustrative example.</p>
+            </Reveal>
 
             <div className="mt-10 grid items-stretch gap-4 lg:grid-cols-[1fr_auto_1.4fr]">
-              <div className="rounded-2xl border border-neutral-200 bg-background p-5 sm:p-6">
+              <Reveal className="rounded-2xl bg-white p-5 text-neutral-900 sm:p-6">
                 <p className="eyebrow !text-neutral-600">What arrives</p>
                 <p className="mt-3 font-display text-xl leading-snug text-neutral-900">
                   &ldquo;Finance spend two days a month chasing late invoices. Can we automate it?&rdquo;
                 </p>
                 <p className="mt-4 text-sm text-neutral-600">Who gets chased? When? What counts as late? Unknown.</p>
-              </div>
+              </Reveal>
 
-              <div aria-hidden className="grid place-items-center text-2xl text-brand-600 lg:rotate-0">
+              <div aria-hidden className="grid place-items-center text-2xl text-white lg:rotate-0">
                 <span className="rotate-90 lg:rotate-0">→</span>
               </div>
 
-              <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 sm:p-6">
+              <Reveal delay={200} className="rounded-2xl bg-brand-50 p-5 text-neutral-900 sm:p-6">
                 <p className="eyebrow">What a review gets</p>
                 <dl className="mt-3 grid gap-3 text-sm">
                   <div className="flex items-start justify-between gap-3">
@@ -240,15 +296,15 @@ export default function Home() {
                     <StatusDot s="missing" />
                   </div>
                 </dl>
-              </div>
+              </Reveal>
             </div>
 
             <ul className="mt-10 grid gap-4 md:grid-cols-3">
-              {PRINCIPLES.map((p) => (
-                <li key={p.title} className="rounded-2xl border border-neutral-200 p-5">
-                  <h3 className="font-display text-lg font-semibold text-neutral-900">{p.title}</h3>
+              {PRINCIPLES.map((p, i) => (
+                <Reveal as="li" key={p.title} delay={i * 120} className="rounded-2xl bg-white p-5 text-neutral-900">
+                  <h3 className="font-display text-lg font-semibold">{p.title}</h3>
                   <p className="mt-2 text-sm text-neutral-600">{p.body}</p>
-                </li>
+                </Reveal>
               ))}
             </ul>
           </div>
@@ -261,7 +317,7 @@ export default function Home() {
             One definition, two people working on it
           </h2>
           <div className="mt-10 grid gap-4 md:grid-cols-2">
-            <div className="card flex flex-col gap-3 !p-6">
+            <Reveal className="card flex flex-col gap-3 !p-6">
               <span className="badge badge-brand self-start">Stakeholders</span>
               <h3 className="font-display text-xl font-semibold text-neutral-900">You have an idea, not a spec</h3>
               <ul className="grid gap-2 text-sm text-neutral-700">
@@ -269,8 +325,8 @@ export default function Home() {
                 <li>See what has been captured and what is still missing, at a glance.</li>
                 <li>Add evidence such as links and notes, and confirm or correct what the AI assumed.</li>
               </ul>
-            </div>
-            <div className="card flex flex-col gap-3 !p-6">
+            </Reveal>
+            <Reveal delay={120} className="card flex flex-col gap-3 !p-6">
               <span className="badge badge-brand self-start">Product managers</span>
               <h3 className="font-display text-xl font-semibold text-neutral-900">You are accountable for what gets built</h3>
               <ul className="grid gap-2 text-sm text-neutral-700">
@@ -278,7 +334,7 @@ export default function Home() {
                 <li>Run an AI challenge to surface gaps and conflicts, then decide what to act on.</li>
                 <li>Full history of who said what and what changed, for every definition.</li>
               </ul>
-            </div>
+            </Reveal>
           </div>
         </section>
 
