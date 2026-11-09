@@ -33,9 +33,7 @@ export default async function DashboardPage() {
     return (
       <main className="auth-wrap text-center">
         <p className="alert alert-warning max-w-sm">
-          Signed in, but no organisation is provisioned for this account yet.
-          If you just signed up, confirm your email first — provisioning
-          happens on that click.
+          You are signed in, but your account has no organisation yet. If you have just signed up, confirm your email first. That is what sets it up.
         </p>
       </main>
     );
@@ -45,15 +43,15 @@ export default async function DashboardPage() {
     <AppShell>
       <main className="page page-wide">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="h1">Product Definitions</h1>
+          <h1 className="h1">Product definitions</h1>
           <Link href="/product-definitions/new" className="btn btn-primary">
-            New Product Definition
+            New product definition
           </Link>
         </div>
 
         {data.definitions.length === 0 ? (
           <p className="card-dashed text-sm">
-            No Product Definitions yet. Start with whatever idea you&apos;ve got.
+            Nothing here yet. Start with whatever idea you&apos;ve got.
           </p>
         ) : (
           <ul className="grid gap-3">

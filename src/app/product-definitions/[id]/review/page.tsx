@@ -179,8 +179,7 @@ export default async function ReviewPage({
 
       {isStakeholder && definition.status !== "DISCOVERY" && (
         <p className="alert alert-warning">
-          You&apos;re the active stakeholder on this definition, so you can&apos;t also review
-          it — someone else on your organisation needs to take this one.
+          You&apos;re the stakeholder on this definition, so you can&apos;t review it too. Someone else in your organisation needs to.
         </p>
       )}
 
@@ -244,9 +243,7 @@ export default async function ReviewPage({
 
           {!latestChallengeReview ? (
             <p className="text-sm text-neutral-600">
-              Not run yet. The AI will critique the whole definition for gaps, contradictions,
-              weak outcomes, unconfirmed assumptions, risks and more — more assertively than it
-              does during stakeholder discovery.
+              Not run yet. The AI will go through the whole definition looking for gaps, contradictions, weak outcomes, unconfirmed assumptions and risks. It is blunter here than it is in discovery.
             </p>
           ) : (
             <>
@@ -338,8 +335,7 @@ export default async function ReviewPage({
           </h2>
           {decisionsList.length === 0 ? (
             <p className="text-neutral-600">
-              Nothing recorded yet — anything the PM confirms, challenges or flags while
-              reviewing goes here.
+              Nothing yet. Anything the PM confirms, challenges or flags during review will appear here.
             </p>
           ) : (
             <ul className="grid gap-2">
@@ -412,7 +408,7 @@ export default async function ReviewPage({
 
       {definition.status === "APPROVED" && (
         <p className="alert alert-success">
-          Approved — this Product Definition is now the source of truth for PRD generation.
+          Approved. This definition is now the source of truth for PRD generation.
         </p>
       )}
 

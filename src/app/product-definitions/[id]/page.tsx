@@ -133,8 +133,7 @@ export default async function ProductDefinitionPage({
 
         {assumptionsList.some((a) => a.status === "PENDING") && (
           <p className="card-dashed text-sm">
-            Some assumptions above are AI-generated and still need review —
-            confirm, edit or reject each one.
+            The AI made some of the assumptions above, and they still need a decision. Confirm, edit or reject each one.
           </p>
         )}
       </main>

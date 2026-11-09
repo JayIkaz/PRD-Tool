@@ -134,7 +134,7 @@ export function HowItHelpsStory() {
         </p>
 
         <p className="st mt-5 text-xs font-semibold uppercase tracking-widest text-neutral-600" style={t(2000)}>
-          Questions the tool asks
+          Questions the assistant asks
         </p>
         <ul className="mt-2 grid gap-3 text-sm">
           {QUESTIONS.map((x) => (
@@ -176,7 +176,7 @@ export function HowItHelpsStory() {
         style={t(0, { "--from": "translateY(20px)" })}
       >
         <p className="eyebrow st" style={t(300)}>
-          What a review gets
+          What the reviewer sees
         </p>
         <dl className="mt-3 grid gap-3 text-sm">
           {ROWS.map((row, i) => {

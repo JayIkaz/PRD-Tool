@@ -130,7 +130,7 @@ export function CompletenessSummary({
         <h2 className="h2">Requirements ({requirements.length})</h2>
         {requirements.length === 0 ? (
           <p className="text-neutral-600">
-            None extracted yet — requirements appear here as the discovery conversation covers them.
+            Nothing yet. Requirements appear here as the conversation covers them.
           </p>
         ) : (
           <ul className="grid gap-2">
@@ -160,7 +160,7 @@ export function CompletenessSummary({
         </h2>
         {unresolvedQuestions.length === 0 ? (
           <p className="text-neutral-600">
-            None open — questions appear here when the stakeholder genuinely doesn&apos;t know something yet.
+            Nothing open. A question appears here when the stakeholder doesn&apos;t know something yet.
           </p>
         ) : (
           <ul className="grid gap-2">
@@ -189,7 +189,7 @@ export function CompletenessSummary({
         </h2>
         {assumptions.length === 0 ? (
           <p className="text-neutral-600">
-            None yet — only added when the AI is inferring something rather than being told it directly.
+            None yet. An assumption is added when the AI infers something it was not told directly.
           </p>
         ) : (
           <ul className="grid gap-2">
