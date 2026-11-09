@@ -51,7 +51,7 @@ export async function AppShell({
 
   return (
     <div className="min-h-dvh">
-      <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+      <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-2.5 sm:px-8">
           <Link
             href="/dashboard"
@@ -80,13 +80,13 @@ export async function AppShell({
         {crumbs && crumbs.length > 0 && (
           <nav
             aria-label="Breadcrumb"
-            className="mx-auto max-w-5xl overflow-x-auto px-4 pb-2 text-xs text-neutral-600 [scrollbar-width:none] sm:px-8"
+            className="mx-auto max-w-5xl px-4 pb-2 text-xs text-neutral-600 sm:px-8"
           >
-            <ol className="flex items-center whitespace-nowrap">
+            <ol className="flex flex-wrap items-center">
               {crumbs.map((c, i) => {
                 const last = i === crumbs.length - 1;
                 return (
-                  <li key={i} className="flex items-center">
+                  <li key={i} className="flex min-w-0 items-center">
                     {i > 0 && (
                       <span aria-hidden className="mx-1.5 text-neutral-400">
                         /
@@ -99,7 +99,7 @@ export async function AppShell({
                     ) : (
                       <span
                         aria-current={last ? "page" : undefined}
-                        className={`block max-w-[16rem] truncate py-1 ${last ? "font-medium text-neutral-900" : ""}`}
+                        className={`block max-w-[12rem] truncate py-1 sm:max-w-[16rem] ${last ? "font-medium text-neutral-900" : ""}`}
                       >
                         {c.label}
                       </span>

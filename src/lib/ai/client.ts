@@ -4,7 +4,16 @@ if (!process.env.ANTHROPIC_API_KEY) {
   throw new Error("ANTHROPIC_API_KEY is not set — copy .env.example to .env.local and fill it in.");
 }
 
-export const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// Bounded so a stalled request fails (and the caller shows its error banner)
+// instead of hanging until the platform kills the function. 45s sits inside
+// the 60s maxDuration set on the discovery page. No automatic retry: a retry
+// after a 45s timeout would outlast the function; the message is already saved
+// and the stakeholder can resend.
+export const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  timeout: 45_000,
+  maxRetries: 0,
+});
 
 /**
  * AI modes (Section 37) — pass one of these into the system prompt

@@ -18,6 +18,11 @@ import { CompletenessSummary } from "@/components/CompletenessSummary";
 import { AppShell } from "@/components/AppShell";
 import { ProductDefinitionNav } from "@/components/ProductDefinitionNav";
 
+// The send-message action makes two AI calls and several DB writes. Without an
+// explicit limit the platform default can cut it off mid-reply, leaving the
+// phone waiting on a response that never arrives.
+export const maxDuration = 60;
+
 export default async function DiscoveryPage({
   params,
   searchParams,
