@@ -45,6 +45,8 @@ export async function generateNextDiscoveryMessage(params: {
   known: { problem?: string | null; users?: string | null; outcomes?: string | null };
   library: DiscoveryQuestionLibraryItem[];
   transcript: DiscoveryTranscriptMessage[];
+  /** Rendered output of renderFocus(): where the definition is thinnest. */
+  focus?: string;
 }): Promise<string> {
   const activePathways = ["DISCOVERY", "PROBLEM_VALUE", "USER_CUSTOMER", "REQUIREMENTS_BEHAVIOUR"];
   if (params.productTypeKey) activePathways.push(params.productTypeKey);
@@ -82,11 +84,12 @@ Rules:
 - Never invent facts, requirements or assumptions on the stakeholder's behalf — if you're inferring something, ask them to confirm it rather than stating it as established.
 - Don't repeat a question that's already been answered earlier in this conversation.
 - If you genuinely believe the four core areas above have been covered reasonably well, say so plainly and suggest the stakeholder can wrap up the session, rather than continuing to probe indefinitely.
+- Use the "thinnest right now" list below to choose your next question. Take the first item, unless the stakeholder's latest message has already covered it (the list was prepared before that message was processed), in which case take the next one. Ask in plain everyday language. Never use internal labels such as "dimension", "requirement" or the capitalised field names with the stakeholder.
 
 What's already known about this idea:
 - Original idea: ${params.idea}
 ${knownSoFar}
-
+${params.focus ? `\n${params.focus}\n` : ""}
 Respond with your next message to the stakeholder only — no preamble, no labels, just what you'd actually say to them.`;
 
   const conversationMessages = params.transcript.map((m) => ({

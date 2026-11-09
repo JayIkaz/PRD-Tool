@@ -25,6 +25,7 @@ import {
 import type { Tx } from "@/db/rls";
 import { logAuditEvent } from "@/lib/audit/log";
 import { deriveOverallStatus } from "@/lib/definition/dimensions";
+import { computeFocus, renderFocus } from "@/lib/definition/gaps";
 
 /**
  * Known limitation: no locking against two concurrent calls for the
@@ -238,6 +239,18 @@ export async function ensureSessionStarted(
       },
       library: context.library.map((q) => ({ pathwayKey: q.pathwayKey, area: q.area, promptText: q.promptText })),
       transcript: [],
+      focus: renderFocus(
+        computeFocus({
+          fields: {
+            problem: context.definition.problemStatus,
+            users: context.definition.usersStatus,
+            outcomes: context.definition.outcomesStatus,
+          },
+          requirements: [],
+          openQuestions: [],
+          pendingAssumptions: [],
+        })
+      ),
     });
   } catch (err) {
     console.error("ensureSessionStarted: AI call failed", describeAiError(err));
@@ -403,6 +416,23 @@ export async function sendDiscoveryMessage(formData: FormData) {
           role: m.role as "AI" | "STAKEHOLDER",
           content: m.content,
         })),
+        focus: renderFocus(
+          computeFocus({
+            fields: {
+              problem: context.definition.problemStatus,
+              users: context.definition.usersStatus,
+              outcomes: context.definition.outcomesStatus,
+            },
+            requirements: context.requirementContexts.map((r) => ({
+              title: r.title,
+              dimensions: r.dimensions as Partial<Record<DimensionKey, "MISSING" | "PARTIAL" | "DEFINED" | "CONFIRMED">>,
+            })),
+            openQuestions: context.existingOpenQuestions.map((q) => ({ question: q.question })),
+            pendingAssumptions: context.existingAssumptions
+              .filter((a) => a.status === "PENDING")
+              .map((a) => ({ statement: a.statement })),
+          })
+        ),
       }),
       extractDiscoveryState({
         idea: context.definition.idea,
