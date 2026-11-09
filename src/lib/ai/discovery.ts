@@ -1,4 +1,5 @@
 import { anthropic } from "./client";
+import { SPECIALIST_PATHWAYS } from "./pathways";
 
 /**
  * Short, hand-written grounding for each pathway (Section 9-11 + addendum
@@ -49,13 +50,23 @@ export async function generateNextDiscoveryMessage(params: {
   const activePathways = ["DISCOVERY", "PROBLEM_VALUE", "USER_CUSTOMER", "REQUIREMENTS_BEHAVIOUR"];
   if (params.productTypeKey) activePathways.push(params.productTypeKey);
 
+  const specialist = params.productTypeKey ? SPECIALIST_PATHWAYS[params.productTypeKey] : undefined;
+  const guidanceFor = (key: string) =>
+    PATHWAY_GUIDANCE[key] ?? (key === params.productTypeKey ? specialist?.guidance : undefined);
+
   const pathwayBlurb = activePathways
-    .filter((key) => PATHWAY_GUIDANCE[key])
-    .map((key) => `- ${key}: ${PATHWAY_GUIDANCE[key]}`)
+    .filter((key) => guidanceFor(key))
+    .map((key) => `- ${key}: ${guidanceFor(key)}`)
     .join("\n");
 
-  const libraryBlurb = params.library
-    .filter((q) => activePathways.includes(q.pathwayKey))
+  const dbLibrary = params.library.filter((q) => activePathways.includes(q.pathwayKey));
+  // Questions kept in code are used only when the database has none for this type.
+  const codeLibrary =
+    specialist && params.productTypeKey && !dbLibrary.some((q) => q.pathwayKey === params.productTypeKey)
+      ? specialist.questions.map((q) => ({ pathwayKey: params.productTypeKey as string, area: q.area, promptText: q.promptText }))
+      : [];
+
+  const libraryBlurb = [...dbLibrary, ...codeLibrary]
     .map((q) => `- [${q.pathwayKey}/${q.area}] ${q.promptText}`)
     .join("\n");
 

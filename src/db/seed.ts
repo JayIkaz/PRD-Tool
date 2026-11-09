@@ -29,6 +29,19 @@ async function main() {
     .values({ key: "AUTOMATION", label: "Automation", category: "PRODUCT_TYPE", active: true })
     .onConflictDoNothing({ target: productTypes.key });
 
+  // Active because their question sets live in code (src/lib/ai/pathways.ts).
+  // On an existing database, run drizzle/0013_activate_integration_and_data_reporting.sql
+  // by hand: onConflictDoNothing leaves already-seeded rows as they are.
+  for (const [key, label] of [
+    ["INTEGRATION", "Integration"],
+    ["DATA_REPORTING", "Data/reporting"],
+  ] as const) {
+    await db
+      .insert(productTypes)
+      .values({ key, label, category: "PRODUCT_TYPE", active: true })
+      .onConflictDoNothing({ target: productTypes.key });
+  }
+
   // onConflictDoNothing().returning() only returns a row when it actually
   // inserted one — on a re-run it returns nothing, so fetch explicitly
   // rather than relying on the insert's own result.
@@ -41,10 +54,8 @@ async function main() {
   // addition, not a re-architecture.
   const dormantTypes = [
     ["CRM", "CRM"],
-    ["DATA_REPORTING", "Data/reporting"],
     ["UX", "UX"],
     ["TECHNICAL", "Technical"],
-    ["INTEGRATION", "Integration"],
     ["SECURITY", "Security"],
     ["COMPLIANCE", "Compliance"],
     ["RISK", "Risk"],
