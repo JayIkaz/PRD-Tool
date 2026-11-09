@@ -138,7 +138,7 @@ export default async function DiscoveryPage({
               {aiUnavailable
                 ? "Your definition is safe. Reload this page in a minute to try again."
                 : "Your message was saved, but the AI could not reply. Send another message in a minute and it will pick up from here."}{" "}
-              If this keeps happening, tell whoever runs this deployment.
+              If it keeps happening, let whoever runs this site know.
             </p>
           </div>
         )}

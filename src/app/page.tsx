@@ -20,35 +20,35 @@ const STEPS: { n: string; name: string; line: string; help?: string; status: Ste
     n: "01",
     name: "Idea",
     line: "Someone has a problem, a request or a hunch.",
-    help: "Start with whatever you have. It does not need to be polished.",
+    help: "Start with whatever you have. Rough is fine.",
     status: "covered",
   },
   {
     n: "02",
     name: "Discovery",
     line: "Find out what is really being asked, and for whom.",
-    help: "An AI-led conversation asks the next most useful question, one at a time.",
+    help: "The assistant asks one question at a time, starting with whatever is least clear.",
     status: "covered",
   },
   {
     n: "03",
     name: "Definition",
     line: "Turn answers into something precise enough to build from.",
-    help: "Problem, users, requirements, assumptions and open questions are kept apart and traced to what was said.",
+    help: "What you know, what you are assuming and what you still need to find out are kept apart, each linked to what was said.",
     status: "covered",
   },
   {
     n: "04",
     name: "Review",
-    line: "Someone accountable challenges it before money is spent.",
-    help: "A product manager edits, challenges and approves. The AI never changes the definition on its own.",
+    line: "A person who is accountable challenges it before money is spent.",
+    help: "A product manager edits, challenges and approves. The AI cannot change the definition by itself.",
     status: "covered",
   },
   {
     n: "05",
     name: "PRD and stories",
     line: "Write it up as a PRD, epics, stories and acceptance criteria.",
-    help: "Generated from the approved definition, so every story traces back to a requirement.",
+    help: "Drafted from the approved definition, so every story links back to a requirement.",
     status: "next",
   },
   { n: "06", name: "Design", line: "Shape how it looks and flows.", status: "team" },
@@ -106,16 +106,16 @@ function DimensionRing() {
 
 const PRINCIPLES = [
   {
-    title: "It asks, it does not guess",
-    body: "The conversation targets whichever area of the definition is thinnest, so gaps get questions instead of invented detail.",
+    title: "It asks before it assumes",
+    body: "It goes after whatever is least clear and asks about it, rather than filling the gap with a guess.",
   },
   {
-    title: "Facts, assumptions and unknowns stay separate",
-    body: "Each point is marked as confirmed, assumed or still open, with the evidence behind it, so nobody mistakes a guess for a decision.",
+    title: "Facts, guesses and unknowns are labelled",
+    body: "Every point is marked as confirmed, assumed or still open, with the evidence behind it. Nobody mistakes a guess for a decision.",
   },
   {
     title: "A person signs it off",
-    body: "A product manager reviews and can run an AI challenge for gaps, conflicts and risks. Nothing is approved until they say so.",
+    body: "A product manager reviews it and can ask the AI to look for gaps, conflicts and risks. Nothing is approved until they say so.",
   },
 ];
 
@@ -159,7 +159,7 @@ export default function Home() {
           <div className="mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-3xl bg-brand-600 px-5 py-14 text-white sm:px-12 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:py-24">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-brand-100">
-                From vague idea to buildable requirement
+                For ideas that are still fuzzy
               </p>
               <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
                 Clarity before commitment
@@ -186,11 +186,10 @@ export default function Home() {
           <Reveal>
           <p className="eyebrow">The usual path</p>
           <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-neutral-900 sm:text-4xl">
-            Eight steps from idea to launch. The first few decide whether the rest goes well.
+            Eight steps from idea to launch. Mistakes in the first three cost the most.
           </h2>
           <p className="mt-3 max-w-2xl text-neutral-600">
-            Teams usually jump from idea straight to design or build, and pay for it later in rework. This tool covers
-            the early steps, where a misunderstanding is cheapest to fix.
+            Teams often go from idea straight to design or build, then pay for it in rework. This tool covers the early steps, where a misunderstanding costs least to fix.
           </p>
           </Reveal>
 
@@ -234,7 +233,7 @@ export default function Home() {
             <Reveal>
               <p className="text-xs font-semibold uppercase tracking-widest text-brand-100">How it helps</p>
               <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                A sentence in, a reviewable definition out
+                From one sentence to something a PM can review
               </h2>
               <p className="mt-3 text-sm text-brand-100">Illustrative example.</p>
             </Reveal>
@@ -263,18 +262,18 @@ export default function Home() {
               <span className="badge badge-brand self-start">Stakeholders</span>
               <h3 className="font-display text-xl font-semibold text-neutral-900">You have an idea, not a spec</h3>
               <ul className="grid gap-2 text-sm text-neutral-700">
-                <li>Answer plain-language questions at your own pace and come back later.</li>
-                <li>See what has been captured and what is still missing, at a glance.</li>
-                <li>Add evidence such as links and notes, and confirm or correct what the AI assumed.</li>
+                <li>Answer in plain language, at your own pace. Come back whenever.</li>
+                <li>See what has been captured and what is still missing.</li>
+                <li>Add links and notes as evidence. Confirm or correct anything the AI assumed.</li>
               </ul>
             </Reveal>
             <Reveal delay={120} className="card flex flex-col gap-3 !p-6">
               <span className="badge badge-brand self-start">Product managers</span>
-              <h3 className="font-display text-xl font-semibold text-neutral-900">You are accountable for what gets built</h3>
+              <h3 className="font-display text-xl font-semibold text-neutral-900">You decide what gets built</h3>
               <ul className="grid gap-2 text-sm text-neutral-700">
-                <li>Edit requirements with a recorded reason, and track risks, dependencies and open questions.</li>
-                <li>Run an AI challenge to surface gaps and conflicts, then decide what to act on.</li>
-                <li>Full history of who said what and what changed, for every definition.</li>
+                <li>Edit requirements with a reason on record. Track risks, dependencies and open questions.</li>
+                <li>Run an AI challenge to find gaps and conflicts, then choose what to act on.</li>
+                <li>A full history of who said what and what changed.</li>
               </ul>
             </Reveal>
           </div>

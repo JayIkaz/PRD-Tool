@@ -90,16 +90,13 @@ export default async function HistoryPage({
           <p className="eyebrow">History</p>
           <h1 className="h1">{definition.currentTopic ?? definition.title}</h1>
           <p className="mt-1 text-sm text-neutral-600">
-            Every status change, rename, assumption decision and review decision recorded
-            against this Product Definition, most recent first.
+            Every status change, rename and decision on this definition, newest first.
           </p>
         </header>
 
         {entries.length === 0 ? (
           <p className="card-dashed text-sm">
-            Nothing recorded yet -- this fills in as the definition moves through discovery
-            and review. Anything that happened before History was added won&apos;t appear
-            here.
+            Nothing here yet. This fills in as the definition moves through discovery and review. Anything from before History was added won&apos;t appear.
           </p>
         ) : (
           <ol className="flex flex-col gap-3">

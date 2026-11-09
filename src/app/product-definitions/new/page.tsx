@@ -16,14 +16,12 @@ export default async function NewProductDefinitionPage({
   });
 
   return (
-    <AppShell crumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "New Product Definition" }]}>
+    <AppShell crumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "New product definition" }]}>
       <main className="page page-form">
         <div>
-          <h1 className="h1">New Product Definition</h1>
+          <h1 className="h1">New product definition</h1>
           <p className="mt-1 text-sm text-neutral-600">
-            Start with whatever you&apos;ve got — a rough idea, a request from
-            someone else, a problem you&apos;ve noticed. Discovery is what turns
-            this into something defined.
+            Start with whatever you&apos;ve got: a rough idea, a request from someone else, a problem you&apos;ve noticed. Discovery, a short conversation with the assistant, turns it into something defined.
           </p>
         </div>
 

@@ -63,7 +63,7 @@ export function NewDefinitionForm({
           required
           rows={6}
           onBlur={onIdeaBlur}
-          placeholder="Describe it however it currently exists in your head. It doesn't need to be polished."
+          placeholder="Describe it however it exists in your head. Rough is fine."
           className="field"
         />
       </div>
