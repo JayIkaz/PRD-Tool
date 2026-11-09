@@ -27,7 +27,7 @@ export function DiscoveryChat({
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const endRef = useRef<HTMLDivElement>(null);
+  const logRef = useRef<HTMLDivElement>(null);
 
   // Both the sent message and the "thinking" placeholder are optimistic
   // state, not useState: a form action runs inside a React transition,
@@ -46,7 +46,10 @@ export function DiscoveryChat({
   const pending = optimisticMessages[optimisticMessages.length - 1]?.role === "PENDING";
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    // Scroll only the transcript. scrollIntoView also scrolls the page, which
+    // makes the whole screen jump on phones whenever a message is added.
+    const log = logRef.current;
+    if (log) log.scrollTo({ top: log.scrollHeight, behavior: "auto" });
   }, [optimisticMessages.length, pending]);
 
   // Real messages arriving means the round trip finished.
@@ -68,7 +71,8 @@ export function DiscoveryChat({
   return (
     <div className="flex h-[calc(100dvh-15rem)] min-h-[24rem] min-w-0 flex-1 flex-col gap-3 lg:h-[calc(100dvh-14rem)]">
       <div
-        className="card flex flex-1 flex-col gap-3 overflow-y-auto overscroll-contain !p-3 sm:!p-4"
+        ref={logRef}
+        className="card flex flex-1 flex-col gap-3 overflow-y-auto !p-3 sm:!p-4"
         role="log"
         aria-label="Discovery conversation"
       >
@@ -91,7 +95,6 @@ export function DiscoveryChat({
             </div>
           )
         )}
-        <div ref={endRef} />
       </div>
 
       <form

@@ -123,7 +123,7 @@ export default function Home() {
   return (
     <div className="min-h-dvh">
       {/* ---------- nav ---------- */}
-      <header className="sticky top-0 z-30 bg-background/85 backdrop-blur">
+      <header className="sticky top-0 z-30 bg-background">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-8">
           <Link href="/" className="flex items-center gap-2 font-display text-base font-semibold text-neutral-900">
             <span aria-hidden className="grid size-7 place-items-center rounded-lg bg-brand-600 text-xs font-bold text-white">
