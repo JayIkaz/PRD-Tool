@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useOptimistic, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useOptimistic, useRef, useState } from "react";
 
 type ChatMessage = { id: string; role: string; content: string };
+
+// Longer than the server's own limits (45s AI timeout, 60s function limit), so
+// this only fires when the response is lost, for example after a dropped connection.
+const STALL_MS = 75_000;
 
 /**
  * The chat transcript plus the composer, as one client component so a
@@ -28,6 +33,10 @@ export function DiscoveryChat({
   const formRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const stallTimer = useRef<number | undefined>(undefined);
+  const wasOffline = useRef(false);
+  const [stalled, setStalled] = useState(false);
 
   // Both the sent message and the "thinking" placeholder are optimistic
   // state, not useState: a form action runs inside a React transition,
@@ -43,7 +52,13 @@ export function DiscoveryChat({
       { id: "pending-ai", role: "PENDING", content: "" },
     ]
   );
-  const pending = optimisticMessages[optimisticMessages.length - 1]?.role === "PENDING";
+  // A lost response can leave the optimistic entries in place (the hung request
+  // keeps React's transition open), so once we give up waiting, drop the
+  // "thinking" placeholder and unlock the composer ourselves.
+  const shownMessages = stalled
+    ? optimisticMessages.filter((m) => m.role !== "PENDING")
+    : optimisticMessages;
+  const pending = !stalled && optimisticMessages[optimisticMessages.length - 1]?.role === "PENDING";
 
   useEffect(() => {
     // Scroll only the transcript. scrollIntoView also scrolls the page, which
@@ -54,18 +69,59 @@ export function DiscoveryChat({
 
   // Real messages arriving means the round trip finished.
   useEffect(() => {
+    window.clearTimeout(stallTimer.current);
     textareaRef.current?.focus();
+    // Resetting the banner when new messages arrive is intentional.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setStalled(false);
   }, [messages.length]);
+
+  // After the connection drops and returns, a reply may have been saved while
+  // the phone was offline. Pull the latest messages instead of waiting on a
+  // response that was lost.
+  useEffect(() => {
+    const onOffline = () => {
+      wasOffline.current = true;
+    };
+    const onOnline = () => {
+      if (wasOffline.current) {
+        wasOffline.current = false;
+        router.refresh();
+      }
+    };
+    window.addEventListener("offline", onOffline);
+    window.addEventListener("online", onOnline);
+    return () => {
+      window.removeEventListener("offline", onOffline);
+      window.removeEventListener("online", onOnline);
+      window.clearTimeout(stallTimer.current);
+    };
+  }, [router]);
 
   async function handleSubmit(formData: FormData) {
     const content = String(formData.get("content") ?? "").trim();
     if (!content || pending) return;
     addOptimistic(content);
     formRef.current?.reset();
+    setStalled(false);
     // On success the page re-renders with the real messages; on failure
     // the server redirects back with a banner. Either way the optimistic
     // entries are discarded automatically when this action settles.
-    await action(formData);
+    //
+    // If the connection drops mid-request the action may never settle, which
+    // would leave the box disabled and "Thinking" forever. Give up waiting
+    // after STALL_MS (or on a network error) so the composer comes back. The
+    // message itself is already saved server-side before the AI is called.
+    const stall = new Promise<never>((_, reject) => {
+      stallTimer.current = window.setTimeout(() => reject(new Error("stalled")), STALL_MS);
+    });
+    try {
+      await Promise.race([action(formData), stall]);
+    } catch {
+      setStalled(true);
+    } finally {
+      window.clearTimeout(stallTimer.current);
+    }
   }
 
   return (
@@ -76,7 +132,7 @@ export function DiscoveryChat({
         role="log"
         aria-label="Discovery conversation"
       >
-        {optimisticMessages.map((m) =>
+        {shownMessages.map((m) =>
           m.role === "PENDING" ? (
             <div key={m.id} role="status" aria-live="polite" className="bubble bubble-ai text-neutral-600">
               Thinking about your answer
@@ -96,6 +152,15 @@ export function DiscoveryChat({
           )
         )}
       </div>
+
+      {stalled && (
+        <div role="alert" className="alert alert-warning flex items-center justify-between gap-3 text-sm">
+          <span>No reply came back. Your message was saved. Check your connection, then reload to see the reply.</span>
+          <button type="button" className="btn btn-secondary btn-sm shrink-0" onClick={() => router.refresh()}>
+            Reload
+          </button>
+        </div>
+      )}
 
       <form
         ref={formRef}
