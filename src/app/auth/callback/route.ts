@@ -5,7 +5,9 @@ import { safeRedirectPath } from "@/lib/auth/safe-redirect";
 
 /**
  * Handles both flows that land here: an email-confirmation link from
- * signup, and a magic-link sign-in from /login. Both use Supabase's
+ * signup, and a magic-link sign-in from /login. Both only fire if the
+ * Supabase email template still contains the link; with a `{{ .Token }}`
+ * template the user types the code instead (see login/actions.ts). Both use Supabase's
  * PKCE `code` exchange. provisionOrganisationAndUser is a no-op for an
  * existing user, so it's safe to call unconditionally rather than
  * branching on which flow this was.
