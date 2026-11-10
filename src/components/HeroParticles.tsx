@@ -129,7 +129,17 @@ function sprite(rgb: string, hard: boolean) {
   return c;
 }
 
-export function HeroParticles({ className = "" }: { className?: string }) {
+export function HeroParticles({
+  className = "",
+  base = "255,255,255",
+  tint,
+}: {
+  className?: string;
+  /** RGB triplet for the main particles. Default white, for dark backgrounds. */
+  base?: string;
+  /** RGB triplet for the second particle colour. Default: the canvas text colour. */
+  tint?: string;
+}) {
   const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -144,9 +154,9 @@ export function HeroParticles({ className = "" }: { className?: string }) {
 
     // White, plus the tint the page puts on this element (text-brand-100).
     const computed = getComputedStyle(canvas).color;
-    const tintRgb = computed.startsWith("rgb") ? (computed.match(/\d+(\.\d+)?/g) ?? []).slice(0, 3).join(",") || "207,236,230" : "207,236,230";
+    const tintRgb = tint ?? (computed.startsWith("rgb") ? (computed.match(/\d+(\.\d+)?/g) ?? []).slice(0, 3).join(",") || "207,236,230" : "207,236,230");
     const sprites = [
-      { soft: sprite("255,255,255", false), hard: sprite("255,255,255", true) },
+      { soft: sprite(base, false), hard: sprite(base, true) },
       { soft: sprite(tintRgb, false), hard: sprite(tintRgb, true) },
     ];
 

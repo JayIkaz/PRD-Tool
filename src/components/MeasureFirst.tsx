@@ -76,7 +76,7 @@ export function MeasureFirst({ className = "" }: { className?: string }) {
       <circle cx="136" cy="152" r="2" fill="#8e999e" />
       <path
         fillRule="evenodd"
-        fill="#0f766e"
+        fill="#15181d"
         d="M42 128 H100 a12 12 0 0 1 12 12 V164 a12 12 0 0 1 -12 12 H42 a12 12 0 0 1 -12 -12 V140 a12 12 0 0 1 12 -12 Z M52 152 a19 9 0 1 0 38 0 a19 9 0 1 0 -38 0 Z"
       />
     </svg>

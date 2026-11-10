@@ -119,8 +119,8 @@ function DimensionRing() {
           </div>
           <div className="ring-centre">
             <div>
-              <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-brand-100">Your idea</p>
-              <p className="mt-1 font-display text-xs leading-snug text-white sm:text-sm">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-neutral-600">Your idea</p>
+              <p className="mt-1 font-display text-xs leading-snug text-neutral-900 sm:text-sm">
                 &ldquo;Can we automate invoice chasing?&rdquo;
               </p>
             </div>
@@ -194,24 +194,24 @@ export default function Home() {
       <main>
         {/* ---------- hero: large colour field with the dimension ring ---------- */}
         <section className="px-3 sm:px-6">
-          <div className="hero-card relative isolate mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-3xl bg-brand-600 px-5 py-14 text-white sm:px-12 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:py-24">
-            <HeroParticles />
+          <div className="hero-card relative isolate mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-3xl silver-well px-5 py-14 sm:px-12 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:py-24">
+            <HeroParticles base="31,41,55" tint="100,112,130" />
             <div>
-              <p className="wipe text-xs font-semibold uppercase tracking-widest text-brand-100">
+              <p className="wipe text-xs font-semibold uppercase tracking-widest text-neutral-600">
                 For ideas that are still fuzzy
               </p>
               <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
                 <Words text="Clarity before commitment" start={250} step={90} />
               </h1>
-              <p className="mt-5 max-w-xl text-base text-brand-50 sm:text-lg">
+              <p className="mt-5 max-w-xl text-base text-neutral-700 sm:text-lg">
                 Turn a vague idea into a definition your team can review, challenge and approve before development
                 starts.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/signup" className="btn !rounded-full !bg-white !text-brand-800 hover:!bg-brand-50 sm:!px-6">
+                <Link href="/signup" className="btn !rounded-full !bg-neutral-900 !text-white hover:!bg-neutral-800 sm:!px-6">
                   Start with an idea
                 </Link>
-                <a href="#lifecycle" className="btn !rounded-full !border-white/40 !text-white hover:!bg-white/10 sm:!px-6">
+                <a href="#lifecycle" className="btn !rounded-full !border-neutral-900/40 !text-neutral-900 hover:!bg-neutral-900/10 sm:!px-6">
                   See where it fits
                 </a>
               </div>
@@ -272,7 +272,7 @@ export default function Home() {
         </section>
 
         {/* ---------- how it helps: before / after ---------- */}
-        <section id="how" className="bg-brand-600 py-16 text-white sm:py-24">
+        <section id="how" className="ink-well py-16 text-white sm:py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-8">
             <Reveal>
               <p className="wipe text-xs font-semibold uppercase tracking-widest text-brand-100">How it helps</p>
@@ -327,7 +327,7 @@ export default function Home() {
 
         {/* ---------- closing call to action ---------- */}
         <section className="px-3 pb-6 sm:px-6">
-          <Reveal variant="scale" className="mx-auto max-w-6xl rounded-3xl bg-neutral-900 px-5 py-12 text-center text-white sm:px-12 sm:py-16">
+          <Reveal variant="scale" className="mx-auto max-w-6xl rounded-3xl ink-well px-5 py-12 text-center text-white sm:px-12 sm:py-16">
             <h2 className="mx-auto max-w-2xl font-display text-3xl font-semibold leading-tight sm:text-4xl">
               <Words text="Got an idea that is still a bit fuzzy? Good. Start there." start={200} />
             </h2>
