@@ -1,9 +1,11 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { HeroParticles } from "@/components/HeroParticles";
 import { HowItHelpsStory } from "@/components/HowItHelpsStory";
 import { LensReplay } from "@/components/LensReplay";
 import { MeasureFirst } from "@/components/MeasureFirst";
 import { Reveal } from "@/components/Reveal";
+import { Words } from "@/components/Words";
 
 /*
  * First page. Modelled on the structure of the reference site: one scrolling
@@ -192,13 +194,14 @@ export default function Home() {
       <main>
         {/* ---------- hero: large colour field with the dimension ring ---------- */}
         <section className="px-3 sm:px-6">
-          <div className="mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-3xl bg-brand-600 px-5 py-14 text-white sm:px-12 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:py-24">
+          <div className="hero-card relative isolate mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-3xl bg-brand-600 px-5 py-14 text-white sm:px-12 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:py-24">
+            <HeroParticles />
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-brand-100">
+              <p className="wipe text-xs font-semibold uppercase tracking-widest text-brand-100">
                 For ideas that are still fuzzy
               </p>
               <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
-                Clarity before commitment
+                <Words text="Clarity before commitment" start={250} step={90} />
               </h1>
               <p className="mt-5 max-w-xl text-base text-brand-50 sm:text-lg">
                 Turn a vague idea into a definition your team can review, challenge and approve before development
@@ -221,9 +224,9 @@ export default function Home() {
         <section id="lifecycle" className="mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
           <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_1fr]">
             <Reveal>
-              <p className="eyebrow">The usual path</p>
+              <p className="eyebrow wipe">The usual path</p>
               <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-neutral-900 sm:text-4xl">
-                Eight steps from idea to launch. Mistakes in the first three cost the most.
+                <Words text="Eight steps from idea to launch. Mistakes in the first three cost the most." start={120} />
               </h2>
               <p className="mt-3 max-w-2xl text-neutral-600">
                 Teams often go from idea straight to design or build, then pay for it in rework. This tool covers the early steps, where a misunderstanding costs least to fix.
@@ -272,9 +275,9 @@ export default function Home() {
         <section id="how" className="bg-brand-600 py-16 text-white sm:py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-8">
             <Reveal>
-              <p className="text-xs font-semibold uppercase tracking-widest text-brand-100">How it helps</p>
+              <p className="wipe text-xs font-semibold uppercase tracking-widest text-brand-100">How it helps</p>
               <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                From one sentence to something a PM can review
+                <Words text="From one sentence to something a PM can review" start={120} />
               </h2>
               <p className="mt-3 text-sm text-brand-100">Illustrative example.</p>
             </Reveal>
@@ -294,12 +297,14 @@ export default function Home() {
 
         {/* ---------- who it is for ---------- */}
         <section id="who" className="mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
-          <p className="eyebrow">Who it is for</p>
-          <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-neutral-900 sm:text-4xl">
-            One definition, two people working on it
-          </h2>
+          <Reveal>
+            <p className="eyebrow wipe">Who it is for</p>
+            <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-neutral-900 sm:text-4xl">
+              <Words text="One definition, two people working on it" start={120} />
+            </h2>
+          </Reveal>
           <div className="mt-10 grid gap-4 md:grid-cols-2">
-            <Reveal className="card flex flex-col gap-3 !p-6">
+            <Reveal variant="scale" className="card flex flex-col gap-3 !p-6">
               <span className="badge badge-brand self-start">Stakeholders</span>
               <h3 className="font-display text-xl font-semibold text-neutral-900">You have an idea, not a spec</h3>
               <ul className="grid gap-2 text-sm text-neutral-700">
@@ -308,7 +313,7 @@ export default function Home() {
                 <li>Add links and notes as evidence. Confirm or correct anything the AI assumed.</li>
               </ul>
             </Reveal>
-            <Reveal delay={120} className="card flex flex-col gap-3 !p-6">
+            <Reveal variant="scale" delay={120} className="card flex flex-col gap-3 !p-6">
               <span className="badge badge-brand self-start">Product managers</span>
               <h3 className="font-display text-xl font-semibold text-neutral-900">You decide what gets built</h3>
               <ul className="grid gap-2 text-sm text-neutral-700">
@@ -322,9 +327,9 @@ export default function Home() {
 
         {/* ---------- closing call to action ---------- */}
         <section className="px-3 pb-6 sm:px-6">
-          <div className="mx-auto max-w-6xl rounded-3xl bg-neutral-900 px-5 py-12 text-center text-white sm:px-12 sm:py-16">
+          <Reveal variant="scale" className="mx-auto max-w-6xl rounded-3xl bg-neutral-900 px-5 py-12 text-center text-white sm:px-12 sm:py-16">
             <h2 className="mx-auto max-w-2xl font-display text-3xl font-semibold leading-tight sm:text-4xl">
-              Got an idea that is still a bit fuzzy? Good. Start there.
+              <Words text="Got an idea that is still a bit fuzzy? Good. Start there." start={200} />
             </h2>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link href="/signup" className="btn !rounded-full !bg-white !text-neutral-900 hover:!bg-brand-50 sm:!px-6">
@@ -334,7 +339,7 @@ export default function Home() {
                 Log in
               </Link>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
 

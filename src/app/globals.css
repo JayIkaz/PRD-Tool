@@ -982,6 +982,76 @@
 }
 
 /* ------------------------------------------------------------------
+ * Motion language (first page). One set of moves, used everywhere:
+ *   .word          headings arrive word by word (Words.tsx): rise and fade
+ *   .wipe          short labels draw in left to right
+ *   .reveal        blocks rise 16px as they scroll in (Reveal.tsx)
+ *   .reveal-scale  large panels grow from 98.5% instead
+ *   .hero-card     the hero recedes as it scrolls away (scroll-driven CSS,
+ *                  where supported)
+ * One easing curve throughout. Inside a .reveal, word and wipe animations
+ * hold back until it is shown, so they play when scrolled to, not at load.
+ * Reduced motion: the base rule collapses every duration, so everything
+ * simply appears; the scroll-driven effect is switched off.
+ * ------------------------------------------------------------------ */
+@layer components {
+  .word {
+    display: inline-block;
+    animation: word-in 700ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--w, 0ms) both;
+  }
+  .reveal[data-state="hidden"] .word {
+    animation: none;
+    opacity: 0;
+  }
+  .wipe {
+    animation: wipe-in 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 150ms both;
+  }
+  .reveal[data-state="hidden"] .wipe {
+    animation: none;
+    clip-path: inset(-6px 100% -6px -6px);
+  }
+  .reveal.reveal-scale[data-state="hidden"] {
+    opacity: 0;
+    transform: scale(0.985) translateY(10px);
+  }
+
+  @keyframes word-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.3em);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes wipe-in {
+    from {
+      clip-path: inset(-6px 100% -6px -6px);
+    }
+    to {
+      clip-path: inset(-6px);
+    }
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-card {
+      animation: hero-recede linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 80%;
+    }
+    @keyframes hero-recede {
+      to {
+        scale: 0.965;
+        opacity: 0.3;
+      }
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
  * "How it helps" story. Plays once. Default (no JS, or finished) is the
  * end state. data-story="waiting" hides everything; "playing" runs the
  * keyframes below, staggered by --t. fill-mode keeps the end state.

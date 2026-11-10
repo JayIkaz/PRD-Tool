@@ -11,6 +11,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
  * the viewport (or are scrolled past). Under prefers-reduced-motion the transition is
  * effectively instant (see globals.css).
  *
+ * `variant="scale"` is for large panels: they grow from 98.5% instead of rising.
  * `delay` (ms) staggers siblings. Extra classes can key off
  * `.reveal[data-state="shown"]` for state-driven effects.
  */
@@ -19,11 +20,14 @@ export function Reveal({
   className = "",
   delay = 0,
   as: Tag = "div",
+  variant = "lift",
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
   as?: "div" | "li" | "section";
+  /** "lift" rises 16px (default). "scale" grows from 98.5%, for large panels. */
+  variant?: "lift" | "scale";
 }) {
   const ref = useRef<HTMLElement | null>(null);
   const [state, setState] = useState<"shown" | "hidden">("shown");
@@ -63,7 +67,7 @@ export function Reveal({
     <Tag
       ref={ref as never}
       data-state={state}
-      className={`reveal ${className}`}
+      className={`reveal ${variant === "scale" ? "reveal-scale" : ""} ${className}`}
       style={{ "--d": `${delay}ms` } as CSSProperties}
     >
       {children}
