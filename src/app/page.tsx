@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { HeroParticles } from "@/components/HeroParticles";
 import { HowItHelpsStory } from "@/components/HowItHelpsStory";
 import { LensReplay } from "@/components/LensReplay";
+import { LogoMark } from "@/components/LogoMark";
 import { MeasureFirst } from "@/components/MeasureFirst";
 import { Reveal } from "@/components/Reveal";
 import { Words } from "@/components/Words";
@@ -168,9 +169,7 @@ export default function Home() {
       <header className="sticky top-0 z-30 bg-background">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-8">
           <Link href="/" className="flex items-center gap-2 font-display text-base font-semibold text-neutral-900">
-            <span aria-hidden className="grid size-7 place-items-center rounded-lg bg-brand-600 text-xs font-bold text-white">
-              PD
-            </span>
+            <LogoMark className="size-7 shrink-0 text-brand-600" />
             Product Discovery
           </Link>
           <nav aria-label="Main" className="hidden items-center gap-6 text-sm font-medium text-neutral-700 md:flex">
