@@ -1015,6 +1015,79 @@
     transform: scale(0.985) translateY(10px);
   }
 
+  /* Lifecycle steps. Covered steps (01 to 04) light up in turn: a sheen
+   * crosses the card and a dark rail fills along its bottom edge. The
+   * "coming next" step then pulses. Cards hover-lift. --sd is the start time. */
+  .step-live::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: #15181d;
+    transform-origin: left center;
+    animation: step-rail 900ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--sd, 400ms) both;
+    pointer-events: none;
+  }
+  .step-live::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / 0.85) 50%, transparent 62%);
+    transform: translateX(-120%);
+    animation: step-sheen 1100ms ease-out var(--sd, 400ms) both;
+    pointer-events: none;
+  }
+  .reveal.step-live[data-state="hidden"]::before {
+    animation: none;
+    transform: scaleX(0);
+  }
+  .reveal.step-live[data-state="hidden"]::after {
+    animation: none;
+  }
+  .step-next {
+    animation: step-pulse 2.8s ease-out 2s infinite;
+  }
+  .reveal.step-next[data-state="hidden"] {
+    animation: none;
+  }
+  /* Keeps Reveal's transitions and adds hover ones that skip its stagger delay. */
+  .reveal.step-live,
+  .reveal.step-next {
+    transition-property: opacity, transform, background-color, border-color, translate, box-shadow;
+    transition-duration: 600ms, 600ms, 900ms, 900ms, 200ms, 200ms;
+    transition-delay: var(--d, 0ms), var(--d, 0ms), 0ms, 0ms, 0ms, 0ms;
+  }
+  .step-live:hover,
+  .step-next:hover {
+    translate: 0 -3px;
+    box-shadow: 0 10px 24px -12px rgb(21 24 29 / 0.35);
+  }
+
+  @keyframes step-rail {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes step-sheen {
+    to {
+      transform: translateX(120%);
+    }
+  }
+  @keyframes step-pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgb(21 24 29 / 0.28);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 12px rgb(21 24 29 / 0);
+    }
+  }
+
   @keyframes word-in {
     from {
       opacity: 0;

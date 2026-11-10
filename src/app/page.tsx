@@ -19,6 +19,10 @@ import { Words } from "@/components/Words";
 
 type StepStatus = "covered" | "next" | "team";
 
+// Start time (ms) for each covered step's sheen and progress rail, so 01 to 04
+// light up one after another. Literal strings so Tailwind can see them.
+const STEP_START = ["[--sd:400ms]", "[--sd:640ms]", "[--sd:880ms]", "[--sd:1120ms]"];
+
 const STEPS: { n: string; name: string; line: string; help?: string; status: StepStatus }[] = [
   {
     n: "01",
@@ -246,11 +250,11 @@ export default function Home() {
                   as="li"
                   key={s.n}
                   delay={(idx % 4) * 110}
-                  className={`flex flex-col gap-2 rounded-2xl border p-4 sm:p-5 ${
+                  className={`relative flex flex-col gap-2 overflow-hidden rounded-2xl border p-4 sm:p-5 ${
                     covered
-                      ? "step-covered"
+                      ? `step-covered step-live ${STEP_START[idx] ?? ""}`
                       : next
-                        ? "border-dashed border-brand-500 bg-white"
+                        ? "step-next border-dashed border-brand-500 bg-white"
                         : "border-neutral-200 bg-white/60"
                   }`}
                 >
