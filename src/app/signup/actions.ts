@@ -44,5 +44,5 @@ export async function signUp(formData: FormData) {
     redirect("/dashboard");
   }
 
-  redirect(`/login?magicLinkSent=${encodeURIComponent(email)}`);
+  redirect(`/login?codeSent=${encodeURIComponent(email)}&type=signup`);
 }
