@@ -148,7 +148,7 @@ export function HowItHelpsStory() {
                 >
                   Unknown
                 </span>
-                <span className="st st-answer text-brand-700 [grid-area:1/1]" style={t(x.ta + 100)}>
+                <span className="st st-answer text-emerald-700 [grid-area:1/1]" style={t(x.ta + 100)}>
                   {x.a}
                 </span>
               </div>
