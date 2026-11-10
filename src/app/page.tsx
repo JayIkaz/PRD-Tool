@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { HowItHelpsStory } from "@/components/HowItHelpsStory";
+import { LensReplay } from "@/components/LensReplay";
+import { MeasureFirst } from "@/components/MeasureFirst";
 import { Reveal } from "@/components/Reveal";
 
 /*
@@ -69,37 +71,71 @@ const DIMENSIONS: { label: string; end: "defined" | "partial" | "missing" }[] = 
   { label: "Acceptance", end: "partial" },
 ];
 
+/*
+ * Hero visual: a camera lens pulling focus on the idea. Plays once on load,
+ * pure CSS (see "Hero lens" in globals.css). Three stages:
+ *   1. Vague idea      - small, heavily blurred, nothing around it yet
+ *   2. Questions asked - zooms in, dimensions appear, still soft
+ *   3. Defined         - sharp, viewfinder brackets lock green
+ * The finished state is the base style, so no-JS and reduced-motion visitors
+ * see the sharp, defined version straight away.
+ */
+const LENS_STAGES = ["Vague idea", "Questions asked", "Defined"];
+
 function DimensionRing() {
   return (
     <div
-      className="dimring"
+      className="lens"
       role="img"
-      aria-label="Seven requirement dimensions around an idea, each moving from missing to partial to defined as the conversation goes on"
+      aria-label="A camera lens pulling focus on an idea. It starts as a blurred, vague idea, zooms in as questions are asked, and ends sharp and defined, with seven requirement dimensions around it, each moving from missing to partial to defined"
     >
-      <div className="ring-orbit" aria-hidden>
-        {DIMENSIONS.map((d, i) => (
-          <div
-            key={d.label}
-            className="ring-slot"
-            style={{ "--a": `${(360 / DIMENSIONS.length) * i}deg`, "--i": i } as CSSProperties}
-          >
-            <div className="ring-upright">
-              <span className="ring-badge">
-                <span className={`ring-dot ${d.end === "partial" ? "is-partial" : d.end === "missing" ? "is-missing" : ""}`} />
-                {d.label}
-              </span>
+      <div className="lens-frame" aria-hidden>
+        <span className="lens-bracket lens-bracket-tl" />
+        <span className="lens-bracket lens-bracket-tr" />
+        <span className="lens-bracket lens-bracket-bl" />
+        <span className="lens-bracket lens-bracket-br" />
+      </div>
+
+      <div className="dimring" aria-hidden>
+        <div className="lens-scene">
+          <div className="lens-track" />
+          <div className="ring-orbit">
+            {DIMENSIONS.map((d, i) => (
+              <div
+                key={d.label}
+                className="ring-slot"
+                style={{ "--a": `${(360 / DIMENSIONS.length) * i}deg`, "--i": i } as CSSProperties}
+              >
+                <div className="ring-upright">
+                  <span className="ring-badge">
+                    <span className={`ring-dot ${d.end === "partial" ? "is-partial" : d.end === "missing" ? "is-missing" : ""}`} />
+                    {d.label}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="ring-centre">
+            <div>
+              <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-brand-100">Your idea</p>
+              <p className="mt-1 font-display text-xs leading-snug text-white sm:text-sm">
+                &ldquo;Can we automate invoice chasing?&rdquo;
+              </p>
             </div>
           </div>
-        ))}
-      </div>
-      <div className="ring-centre" aria-hidden>
-        <div>
-          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-brand-100">Your idea</p>
-          <p className="mt-1 font-display text-xs leading-snug text-white sm:text-sm">
-            &ldquo;Can we automate invoice chasing?&rdquo;
-          </p>
         </div>
       </div>
+
+      <div className="lens-stages" aria-hidden>
+        {LENS_STAGES.map((label, i) => (
+          <span key={label} className={`lens-stage lens-stage-${i + 1}`}>
+            {label}
+          </span>
+        ))}
+        <span className="lens-bar" />
+      </div>
+
+      <LensReplay />
     </div>
   );
 }
@@ -183,15 +219,20 @@ export default function Home() {
 
         {/* ---------- lifecycle ---------- */}
         <section id="lifecycle" className="mx-auto max-w-6xl px-4 py-16 sm:px-8 sm:py-24">
-          <Reveal>
-          <p className="eyebrow">The usual path</p>
-          <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-neutral-900 sm:text-4xl">
-            Eight steps from idea to launch. Mistakes in the first three cost the most.
-          </h2>
-          <p className="mt-3 max-w-2xl text-neutral-600">
-            Teams often go from idea straight to design or build, then pay for it in rework. This tool covers the early steps, where a misunderstanding costs least to fix.
-          </p>
-          </Reveal>
+          <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_1fr]">
+            <Reveal>
+              <p className="eyebrow">The usual path</p>
+              <h2 className="mt-2 max-w-2xl font-display text-3xl font-semibold leading-tight text-neutral-900 sm:text-4xl">
+                Eight steps from idea to launch. Mistakes in the first three cost the most.
+              </h2>
+              <p className="mt-3 max-w-2xl text-neutral-600">
+                Teams often go from idea straight to design or build, then pay for it in rework. This tool covers the early steps, where a misunderstanding costs least to fix.
+              </p>
+            </Reveal>
+            <Reveal delay={150}>
+              <MeasureFirst className="mx-auto w-full max-w-md lg:max-w-none" />
+            </Reveal>
+          </div>
 
           <ol className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s, idx) => {
