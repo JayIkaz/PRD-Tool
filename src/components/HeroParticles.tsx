@@ -347,7 +347,7 @@ export function HeroParticles({
       document.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("visibilitychange", onVis);
     };
-  }, []);
+  }, [base, tint]);
 
   return <canvas ref={ref} aria-hidden className={`pointer-events-none absolute inset-0 size-full text-brand-100 ${className}`} />;
 }
