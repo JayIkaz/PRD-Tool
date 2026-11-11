@@ -56,7 +56,7 @@ export async function AppShell({
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-2.5 sm:px-8">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 font-display text-base font-semibold tracking-tight text-neutral-900"
+            className="flex items-center gap-2 font-display text-base font-semibold text-neutral-900"
           >
             <LogoMark className="size-7 shrink-0 text-brand-600" />
             <span className="hidden min-[380px]:inline">Product Discovery</span>
