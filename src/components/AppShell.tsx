@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server-client";
 import { withRlsContext } from "@/db/rls";
 import { users, organisations } from "@/db/schema";
 import { signOut } from "@/app/dashboard/actions";
+import { LogoMark } from "@/components/LogoMark";
 
 /**
  * Shared chrome for every signed-in page: a top bar (app name, org,
@@ -57,12 +58,7 @@ export async function AppShell({
             href="/dashboard"
             className="flex items-center gap-2 font-display text-base font-semibold tracking-tight text-neutral-900"
           >
-            <span
-              aria-hidden
-              className="grid size-7 place-items-center rounded-lg bg-brand-600 text-xs font-bold text-white"
-            >
-              PD
-            </span>
+            <LogoMark className="size-7 shrink-0 text-brand-600" />
             <span className="hidden min-[380px]:inline">Product Discovery</span>
           </Link>
 
