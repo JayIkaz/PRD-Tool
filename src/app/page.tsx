@@ -203,7 +203,7 @@ export default function Home() {
               <p className="wipe text-xs font-semibold uppercase tracking-widest text-neutral-600">
                 For ideas that are still fuzzy
               </p>
-              <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+              <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] sm:text-7xl">
                 <Words text="Clarity before commitment" start={250} step={90} />
               </h1>
               <p className="mt-5 max-w-xl text-base text-neutral-700 sm:text-lg">
