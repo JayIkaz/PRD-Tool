@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 // Fonts committed to the repo (SIL OFL, latin subset) and loaded with
 // next/font/local: no runtime request to a font CDN, and the build does not
@@ -29,7 +30,8 @@ const code = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Product Discovery & Definition Tool",
+  metadataBase: new URL(SITE_URL),
+  title: { default: "Product Discovery & Definition Tool", template: `%s | ${SITE_NAME}` },
   description: "Turn a vague idea into a definition your team can review, challenge and approve before development starts.",
 };
 
