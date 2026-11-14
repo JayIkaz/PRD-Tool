@@ -8,6 +8,7 @@ import {
   addOpenQuestion,
   resolveOpenQuestion,
 } from "@/app/product-definitions/[id]/pm-workspace-actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 /**
  * PM workspace (Section 20): requirements the PM can edit, plus risks,
@@ -141,9 +142,9 @@ export function PmWorkspace({
                           Leaving a box empty marks that dimension as missing. Confirmed dimensions are
                           never overwritten by later AI discovery.
                         </p>
-                        <button type="submit" className={smallBtn}>
+                        <SubmitButton type="submit" className={smallBtn}>
                           Save changes
-                        </button>
+                        </SubmitButton>
                       </form>
                     ) : (
                       <dl className="mt-3 grid gap-2 text-xs">
@@ -189,7 +190,7 @@ export function PmWorkspace({
                 <form action={removeRisk}>
                   <input type="hidden" name="productDefinitionId" value={productDefinitionId} />
                   <input type="hidden" name="riskId" value={r.id} />
-                  <button className={ghostBtn}>Remove</button>
+                  <SubmitButton className={ghostBtn}>Remove</SubmitButton>
                 </form>
               )}
             </li>
@@ -210,9 +211,9 @@ export function PmWorkspace({
                 </option>
               ))}
             </select>
-            <button type="submit" className={smallBtn}>
+            <SubmitButton type="submit" className={smallBtn}>
               Add risk
-            </button>
+            </SubmitButton>
           </form>
         )}
       </section>
@@ -228,7 +229,7 @@ export function PmWorkspace({
                 <form action={removeDependency}>
                   <input type="hidden" name="productDefinitionId" value={productDefinitionId} />
                   <input type="hidden" name="dependencyId" value={d.id} />
-                  <button className={ghostBtn}>Remove</button>
+                  <SubmitButton className={ghostBtn}>Remove</SubmitButton>
                 </form>
               )}
             </li>
@@ -241,9 +242,9 @@ export function PmWorkspace({
               Add a dependency (external system, team, data or process)
             </label>
             <textarea id="dep-statement" name="statement" required rows={2} maxLength={2000} className={inputCls} />
-            <button type="submit" className={smallBtn}>
+            <SubmitButton type="submit" className={smallBtn}>
               Add dependency
-            </button>
+            </SubmitButton>
           </form>
         )}
       </section>
@@ -270,7 +271,7 @@ export function PmWorkspace({
                     aria-label="Resolving answer"
                     className={`${inputCls} flex-1`}
                   />
-                  <button className={smallBtn}>Resolve</button>
+                  <SubmitButton className={smallBtn}>Resolve</SubmitButton>
                 </form>
               )}
             </li>
@@ -290,9 +291,9 @@ export function PmWorkspace({
             </label>
             <textarea id="oq-question" name="question" required rows={2} maxLength={2000} className={inputCls} />
             <input name="whyItMatters" maxLength={2000} placeholder="Why it matters (optional)" className={inputCls} />
-            <button type="submit" className={smallBtn}>
+            <SubmitButton type="submit" className={smallBtn}>
               Add question
-            </button>
+            </SubmitButton>
           </form>
         )}
       </section>

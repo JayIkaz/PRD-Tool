@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { signUp } from "./actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function SignupPage({
   searchParams,
@@ -80,9 +81,9 @@ export default async function SignupPage({
               className="field"
             />
           </div>
-          <button type="submit" className="btn btn-primary btn-block">
+          <SubmitButton type="submit" className="btn btn-primary btn-block">
             Create account
-          </button>
+          </SubmitButton>
         </form>
 
         <p className="text-center text-sm text-neutral-600">

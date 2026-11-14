@@ -5,21 +5,19 @@ import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 // Fonts committed to the repo (SIL OFL, latin subset) and loaded with
 // next/font/local: no runtime request to a font CDN, and the build does not
-// depend on reaching Google Fonts. Hanken Grotesk = body (variable weight),
-// Instrument Serif = headings (one weight, regular), IBM Plex Mono = codes
-// (REQ-001 etc). Instrument Serif has no bold, so globals.css turns off
-// synthesised weight rather than letting the browser fake one.
+// depend on reaching Google Fonts. Red Hat Text = body, Red Hat Display =
+// headings (both variable weight, 300 to 900), IBM Plex Mono = codes
+// (REQ-001 etc).
 const body = localFont({
-  src: "./fonts/hanken-grotesk-latin-wght-normal.woff2",
+  src: "./fonts/red-hat-text-latin-wght-normal.woff2",
   variable: "--font-body",
-  weight: "100 900",
+  weight: "300 700",
   display: "swap",
 });
 const heading = localFont({
-  src: "./fonts/instrument-serif-latin-400-normal.woff2",
+  src: "./fonts/red-hat-display-latin-wght-normal.woff2",
   variable: "--font-heading",
-  weight: "400",
-  style: "normal",
+  weight: "300 900",
   display: "swap",
 });
 const code = localFont({

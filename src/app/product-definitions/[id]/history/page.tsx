@@ -78,7 +78,7 @@ export default async function HistoryPage({
   return (
     <AppShell
       crumbs={[
-        { label: "Dashboard", href: "/dashboard" },
+        { label: "Definitions", href: "/dashboard" },
         { label: definition.currentTopic ?? definition.title, href: `/product-definitions/${id}` },
         { label: "History" },
       ]}

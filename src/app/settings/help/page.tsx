@@ -6,6 +6,7 @@ import { AppShell } from "@/components/AppShell";
 import { getCurrentMember } from "@/lib/auth/current-member";
 import { SITE_NAME } from "@/lib/site";
 import { sendSupportRequest } from "./actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export const metadata = { title: "Contact us" };
 
@@ -30,13 +31,7 @@ export default async function HelpPage({
   const error = params.error ? ERRORS[params.error] : undefined;
 
   return (
-    <AppShell
-      crumbs={[
-        { label: "Product definitions", href: "/dashboard" },
-        { label: "Members", href: "/settings/members" },
-        { label: "Contact us" },
-      ]}
-    >
+    <AppShell>
       <main className="page page-narrow">
         <header>
           <p className="eyebrow">{me.organisation.name}</p>
@@ -61,7 +56,11 @@ export default async function HelpPage({
         {otherAdmins.length > 0 && (
           <p className="card text-sm text-neutral-700">
             For invites and permissions, ask an admin first:{" "}
-            {otherAdmins.map((a) => a.displayName || a.email).join(", ")}.
+            {otherAdmins.map((a) => a.displayName || a.email).join(", ")}. They&apos;re listed under{" "}
+            <Link href="/settings/members" className="font-semibold text-brand-700 underline underline-offset-2">
+              Organisation
+            </Link>
+            .
           </p>
         )}
 
@@ -76,12 +75,9 @@ export default async function HelpPage({
             We&apos;ll see your name, email address and organisation with the message. Before we change who the admin
             is, we&apos;ll check with you that the request is genuine.
           </p>
-          <div className="flex flex-wrap gap-2">
-            <button className="btn btn-primary">Send message</button>
-            <Link href="/settings/members" className="btn btn-secondary">
-              Back to members
-            </Link>
-          </div>
+          <SubmitButton className="btn btn-primary justify-self-start" pendingLabel="Sending…">
+            Send message
+          </SubmitButton>
         </form>
       </main>
     </AppShell>
