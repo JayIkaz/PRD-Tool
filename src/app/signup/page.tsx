@@ -4,9 +4,10 @@ import { signUp } from "./actions";
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; invited?: string }>;
 }) {
   const params = await searchParams;
+  const invited = params.invited === "1";
 
   return (
     <main className="auth-wrap">
@@ -15,7 +16,9 @@ export default async function SignupPage({
           <p className="eyebrow">Product Discovery</p>
           <h1 className="h1 mt-1">Sign up</h1>
           <p className="mt-1 text-sm text-neutral-600">
-            Creates a new organisation with you as its first member.
+            {invited
+              ? "Use the email address your invite was sent to. That is what puts you in the right organisation."
+              : "Creates a new organisation with you as its admin. To join one that already exists, ask its admin to invite you."}
           </p>
         </div>
 
@@ -26,19 +29,23 @@ export default async function SignupPage({
         )}
 
         <form action={signUp} className="grid gap-3">
-          <div>
-            <label htmlFor="su-org" className="label">
-              Organisation name
-            </label>
-            <input
-              id="su-org"
-              name="organisationName"
-              type="text"
-              required
-              autoComplete="organization"
-              className="field"
-            />
-          </div>
+          {invited ? (
+            <input type="hidden" name="invited" value="1" />
+          ) : (
+            <div>
+              <label htmlFor="su-org" className="label">
+                Organisation name
+              </label>
+              <input
+                id="su-org"
+                name="organisationName"
+                type="text"
+                required
+                autoComplete="organization"
+                className="field"
+              />
+            </div>
+          )}
           <div>
             <label htmlFor="su-name" className="label">
               Your name <span className="font-normal text-neutral-500">(optional)</span>

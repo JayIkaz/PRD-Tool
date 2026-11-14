@@ -10,6 +10,7 @@ import {
   productDefinitions,
   productDefinitionParticipants,
   decisions as decisionsTable,
+  users,
 } from "@/db/schema";
 import { logAuditEvent } from "@/lib/audit/log";
 
@@ -110,6 +111,13 @@ export async function startReview(formData: FormData) {
     const role = await getActiveParticipantRole(tx, productDefinitionId, userId);
     if (role === "STAKEHOLDER") {
       throw new Error("The active stakeholder on this definition can't also review it.");
+    }
+
+    // Reviewing is a permission an admin grants (users.is_pm, drizzle/0014),
+    // not something any member can pick up.
+    const reviewer = await tx.query.users.findFirst({ where: eq(users.id, userId) });
+    if (!reviewer?.isPm) {
+      throw new Error("Only product managers can review a definition. Ask an admin to make you one.");
     }
 
     const definition = await tx.query.productDefinitions.findFirst({

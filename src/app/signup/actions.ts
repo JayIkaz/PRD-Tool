@@ -10,8 +10,13 @@ export async function signUp(formData: FormData) {
   const organisationName = String(formData.get("organisationName") ?? "").trim();
   const displayName = String(formData.get("displayName") ?? "").trim();
 
-  if (!organisationName) {
-    redirect(`/signup?error=${encodeURIComponent("Organisation name is required.")}`);
+  // Someone following an invite joins an existing organisation, so they are
+  // not asked to name one. Whether an invite really exists is decided at
+  // provisioning, against the verified email, never from this flag.
+  const invited = formData.get("invited") === "1";
+
+  if (!organisationName && !invited) {
+    redirect(`/signup?error=${encodeURIComponent("Add your organisation's name to continue.")}`);
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -26,7 +31,7 @@ export async function signUp(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/signup?error=${encodeURIComponent(error.message)}`);
+    redirect(`/signup?error=${encodeURIComponent(error.message)}${invited ? "&invited=1" : ""}`);
   }
 
   // Email confirmation is Supabase's default — normally there's no
@@ -38,6 +43,9 @@ export async function signUp(formData: FormData) {
     await provisionOrganisationAndUser({
       userId: data.user.id,
       email: data.user.email ?? email,
+      // With confirmation off nobody has proved they own this address, so an
+      // invite must not be honoured here.
+      emailVerified: Boolean(data.user.email_confirmed_at),
       organisationName,
       displayName,
     });

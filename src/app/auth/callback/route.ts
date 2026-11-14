@@ -30,6 +30,8 @@ export async function GET(request: Request) {
       await provisionOrganisationAndUser({
         userId: data.user.id,
         email: data.user.email ?? "",
+        // exchangeCodeForSession only succeeds for a link sent to this address.
+        emailVerified: true,
         // A magic-link sign-in (as opposed to signup) carries no
         // organisation_name metadata — provisionOrganisationAndUser
         // falls back to a per-user default name in that case.

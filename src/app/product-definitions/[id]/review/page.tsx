@@ -16,6 +16,7 @@ import {
   dependencies as dependenciesTable,
   challengeReviews as challengeReviewsTable,
   challengeFindings as challengeFindingsTable,
+  users as usersTable,
 } from "@/db/schema";
 import { CompletenessSummary } from "@/components/CompletenessSummary";
 import { AppShell } from "@/components/AppShell";
@@ -43,6 +44,8 @@ export default async function ReviewPage({
       where: eq(productDefinitions.id, id),
     });
     if (!definition) return null;
+
+    const viewer = await tx.query.users.findFirst({ where: eq(usersTable.id, user.id) });
 
     const participants = await tx.query.productDefinitionParticipants.findMany({
       where: and(
@@ -101,6 +104,7 @@ export default async function ReviewPage({
           });
 
     return {
+      viewer,
       definition,
       participants,
       decisionsList,
@@ -117,6 +121,7 @@ export default async function ReviewPage({
   });
 
   if (!data) notFound();
+  const viewerIsPm = data.viewer?.isPm ?? false;
   const {
     definition,
     participants,
@@ -136,7 +141,9 @@ export default async function ReviewPage({
   const activePm = participants.find((p) => p.role === "PM");
   const isStakeholder = activeStakeholder?.userId === user.id;
   const isActivePm = activePm?.userId === user.id;
-  const canActAsReviewer = !isStakeholder;
+  // Claiming a review needs the organisation's PM permission (set by an admin
+  // on the Members page). Whoever already holds the review keeps it.
+  const canActAsReviewer = !isStakeholder && (viewerIsPm || isActivePm);
 
   const latestChallengeReview = challengeReviewsList[0] ?? null;
   const latestFindings = latestChallengeReview
@@ -180,6 +187,16 @@ export default async function ReviewPage({
       {isStakeholder && definition.status !== "DISCOVERY" && (
         <p className="alert alert-warning">
           You&apos;re the stakeholder on this definition, so you can&apos;t review it too. Someone else in your organisation needs to.
+        </p>
+      )}
+
+      {!isStakeholder && !viewerIsPm && !isActivePm && definition.status !== "DISCOVERY" && (
+        <p className="alert alert-warning">
+          Only product managers can review a definition. An admin can make you one on the{" "}
+          <Link href="/settings/members" className="underline underline-offset-2">
+            Members page
+          </Link>
+          .
         </p>
       )}
 
