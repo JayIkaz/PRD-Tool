@@ -74,7 +74,7 @@
     line-height: 1.55;
     -webkit-tap-highlight-color: transparent;
     overflow-wrap: break-word;
-    /* Instrument Serif has one weight. Never let the browser fake a bold or italic. */
+    /* Neither Red Hat face ships an italic here. Never let the browser fake one. */
     font-synthesis: none;
   }
 
@@ -82,7 +82,7 @@
   h2,
   h3 {
     font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
-    letter-spacing: 0; /* Instrument Serif is already condensed; negative tracking makes it cramped */
+    letter-spacing: -0.01em;
     text-wrap: balance;
   }
 
