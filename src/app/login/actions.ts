@@ -104,6 +104,8 @@ export async function verifyEmailCode(formData: FormData) {
   await provisionOrganisationAndUser({
     userId: data.user.id,
     email: data.user.email ?? email,
+    // verifyOtp only succeeds with the code sent to this address.
+    emailVerified: true,
     organisationName: metadata.organisation_name,
     displayName: metadata.display_name,
   });

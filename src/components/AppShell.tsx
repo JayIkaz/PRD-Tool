@@ -67,6 +67,9 @@ export async function AppShell({
               {personName && <p className="truncate font-medium text-neutral-800">{personName}</p>}
               {orgName && <p className="truncate text-xs">{orgName}</p>}
             </div>
+            <Link href="/settings/members" className="btn btn-ghost btn-sm">
+              Members
+            </Link>
             <form action={signOut}>
               <button className="btn btn-secondary btn-sm">Sign out</button>
             </form>
