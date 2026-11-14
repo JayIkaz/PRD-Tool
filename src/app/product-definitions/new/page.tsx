@@ -16,7 +16,7 @@ export default async function NewProductDefinitionPage({
   });
 
   return (
-    <AppShell crumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "New product definition" }]}>
+    <AppShell crumbs={[{ label: "Definitions", href: "/dashboard" }, { label: "New product definition" }]}>
       <main className="page page-form">
         <div>
           <h1 className="h1">New product definition</h1>

@@ -6,6 +6,7 @@ import { users } from "@/db/schema";
 import { AppShell } from "@/components/AppShell";
 import { getCurrentMember } from "@/lib/auth/current-member";
 import { requestAdminChangeCode, confirmAdminChange } from "../actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export const metadata = { title: "Confirm admin change" };
 
@@ -61,9 +62,8 @@ export default async function AdminChangePage({
   return (
     <AppShell
       crumbs={[
-        { label: "Product definitions", href: "/dashboard" },
         { label: "Members", href: "/settings/members" },
-        { label: "Confirm" },
+        { label: "Confirm admin change" },
       ]}
     >
       <main className="page page-narrow">
@@ -87,7 +87,7 @@ export default async function AdminChangePage({
               To make sure it&apos;s you, we&apos;ll email a code to {me.profile.email}. Nothing changes until you enter it.
             </p>
             <div className="flex flex-wrap gap-2">
-              <button className="btn btn-primary">Email me a code</button>
+              <SubmitButton className="btn btn-primary" pendingLabel="Sending code…">Email me a code</SubmitButton>
               <Link href="/settings/members" className="btn btn-secondary">
                 Cancel
               </Link>
@@ -132,7 +132,7 @@ export default async function AdminChangePage({
                 </div>
               )}
               <div className="flex flex-wrap gap-2">
-                <button className={`btn ${change === "grant" ? "btn-primary" : "btn-danger"}`}>{copy.button}</button>
+                <SubmitButton className={`btn ${change === "grant" ? "btn-primary" : "btn-danger"}`}>{copy.button}</SubmitButton>
                 <Link href="/settings/members" className="btn btn-secondary">
                   Cancel
                 </Link>
@@ -142,7 +142,7 @@ export default async function AdminChangePage({
             <form action={requestAdminChangeCode}>
               <input type="hidden" name="change" value={change} />
               <input type="hidden" name="userId" value={targetId} />
-              <button className="btn btn-ghost btn-sm">Send a new code</button>
+              <SubmitButton className="btn btn-ghost btn-sm">Send a new code</SubmitButton>
             </form>
           </>
         )}

@@ -26,6 +26,7 @@ import { runChallenge, reviewFinding } from "../challenge-actions";
 import { recordFindingAs } from "../pm-workspace-actions";
 import { PmWorkspace } from "@/components/PmWorkspace";
 import { CHALLENGE_DISPLAY_GROUPS, type ChallengeFindingCategory } from "@/lib/ai/challenge";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function ReviewPage({
   params,
@@ -159,7 +160,7 @@ export default async function ReviewPage({
   return (
     <AppShell
       crumbs={[
-        { label: "Dashboard", href: "/dashboard" },
+        { label: "Definitions", href: "/dashboard" },
         { label: definition.currentTopic ?? definition.title, href: `/product-definitions/${id}` },
         { label: "Review" },
       ]}
@@ -203,9 +204,9 @@ export default async function ReviewPage({
       {canActAsReviewer && definition.status === "AWAITING_PM_REVIEW" && (
         <form action={startReview}>
           <input type="hidden" name="productDefinitionId" value={id} />
-          <button className="btn btn-primary self-start">
+          <SubmitButton className="btn btn-primary self-start">
             Start reviewing
-          </button>
+          </SubmitButton>
         </form>
       )}
 
@@ -251,9 +252,9 @@ export default async function ReviewPage({
             {isActivePm && definition.status === "PM_REVIEW" && (
               <form action={runChallenge}>
                 <input type="hidden" name="productDefinitionId" value={id} />
-                <button className="btn btn-secondary btn-sm">
+                <SubmitButton className="btn btn-secondary btn-sm">
                   Challenge this definition
-                </button>
+                </SubmitButton>
               </form>
             )}
           </div>
@@ -293,9 +294,9 @@ export default async function ReviewPage({
                                     <input type="hidden" name="findingId" value={f.id} />
                                     <input type="hidden" name="productDefinitionId" value={id} />
                                     <input type="hidden" name="decision" value="ACCEPTED" />
-                                    <button className="btn btn-primary btn-sm">
+                                    <SubmitButton className="btn btn-primary btn-sm">
                                       Accept
-                                    </button>
+                                    </SubmitButton>
                                   </form>
                                   {(f.category === "RISK" || f.category === "DEPENDENCY" || f.category === "QUESTION") && (
                                     <form action={recordFindingAs}>
@@ -306,22 +307,22 @@ export default async function ReviewPage({
                                         name="target"
                                         value={f.category === "QUESTION" ? "QUESTION" : f.category}
                                       />
-                                      <button className="btn btn-secondary btn-sm">
+                                      <SubmitButton className="btn btn-secondary btn-sm">
                                         {f.category === "RISK"
                                           ? "Record as risk"
                                           : f.category === "DEPENDENCY"
                                             ? "Record as dependency"
                                             : "Record as open question"}
-                                      </button>
+                                      </SubmitButton>
                                     </form>
                                   )}
                                   <form action={reviewFinding}>
                                     <input type="hidden" name="findingId" value={f.id} />
                                     <input type="hidden" name="productDefinitionId" value={id} />
                                     <input type="hidden" name="decision" value="REJECTED" />
-                                    <button className="btn btn-secondary btn-sm">
+                                    <SubmitButton className="btn btn-secondary btn-sm">
                                       Reject
-                                    </button>
+                                    </SubmitButton>
                                   </form>
                                 </div>
                               ) : (
@@ -384,12 +385,12 @@ export default async function ReviewPage({
                 placeholder="Why (optional)"
                 className="field field-sm"
               />
-              <button
+              <SubmitButton
                 type="submit"
                 className="btn btn-primary btn-sm self-start"
               >
                 Add
-              </button>
+              </SubmitButton>
             </form>
           )}
         </section>
@@ -400,9 +401,9 @@ export default async function ReviewPage({
           <h2 className="h2">Decide</h2>
           <form action={approveDefinition}>
             <input type="hidden" name="productDefinitionId" value={id} />
-            <button className="btn btn-primary">
+            <SubmitButton className="btn btn-primary">
               Approve
-            </button>
+            </SubmitButton>
           </form>
           <form action={sendBackToDiscovery} className="grid gap-2">
             <input type="hidden" name="productDefinitionId" value={id} />
@@ -413,12 +414,12 @@ export default async function ReviewPage({
               placeholder="Why is this going back to discovery?"
               className="field field-sm"
             />
-            <button
+            <SubmitButton
               type="submit"
               className="btn btn-danger self-start"
             >
               Send back to discovery
-            </button>
+            </SubmitButton>
           </form>
         </section>
       )}

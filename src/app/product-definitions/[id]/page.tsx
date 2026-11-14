@@ -16,6 +16,7 @@ import { CompletenessSummary } from "@/components/CompletenessSummary";
 import { AppShell } from "@/components/AppShell";
 import { ProductDefinitionNav } from "@/components/ProductDefinitionNav";
 import { submitForReview } from "./review-actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function ProductDefinitionPage({
   params,
@@ -76,7 +77,7 @@ export default async function ProductDefinitionPage({
 
   return (
     <AppShell
-      crumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: definition.currentTopic ?? definition.title }]}
+      crumbs={[{ label: "Definitions", href: "/dashboard" }, { label: definition.currentTopic ?? definition.title }]}
     >
       <main className="page page-narrow">
         <ProductDefinitionNav productDefinitionId={definition.id} active="overview" />
@@ -115,9 +116,9 @@ export default async function ProductDefinitionPage({
           {definition.status === "DISCOVERY" && isActiveStakeholder && (
             <form action={submitForReview}>
               <input type="hidden" name="productDefinitionId" value={definition.id} />
-              <button className="btn btn-secondary">
+              <SubmitButton className="btn btn-secondary">
                 Submit for PM review
-              </button>
+              </SubmitButton>
             </form>
           )}
 

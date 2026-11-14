@@ -17,6 +17,7 @@ import { DiscoveryChat } from "./DiscoveryChat";
 import { CompletenessSummary } from "@/components/CompletenessSummary";
 import { AppShell } from "@/components/AppShell";
 import { ProductDefinitionNav } from "@/components/ProductDefinitionNav";
+import { SubmitButton } from "@/components/SubmitButton";
 
 // The send-message action makes two AI calls and several DB writes. Without an
 // explicit limit the platform default can cut it off mid-reply, leaving the
@@ -87,7 +88,7 @@ export default async function DiscoveryPage({
   return (
     <AppShell
       crumbs={[
-        { label: "Dashboard", href: "/dashboard" },
+        { label: "Definitions", href: "/dashboard" },
         { label: data.definition.title, href: `/product-definitions/${id}` },
         { label: "Discovery" },
       ]}
@@ -114,12 +115,12 @@ export default async function DiscoveryPage({
                   autoFocus
                   className="field flex-1"
                 />
-                <button
+                <SubmitButton
                   type="submit"
                   className="btn btn-primary btn-sm"
                 >
                   Save
-                </button>
+                </SubmitButton>
               </form>
             </details>
           </div>

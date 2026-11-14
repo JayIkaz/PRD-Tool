@@ -6,10 +6,16 @@ import { withRlsContext } from "@/db/rls";
 import { users, organisations } from "@/db/schema";
 import { signOut } from "@/app/dashboard/actions";
 import { LogoMark } from "@/components/LogoMark";
+import { AppNav } from "@/components/AppNav";
+import { SubmitButton } from "@/components/SubmitButton";
 
 /**
- * Shared chrome for every signed-in page: a top bar (app name, org,
- * who's signed in, sign out) plus an optional breadcrumb trail. Not a
+ * Shared chrome for every signed-in page: a top bar (app name, the main
+ * areas, who's signed in, sign out) plus an optional breadcrumb trail.
+ * The main areas (AppNav) are how people move between Definitions,
+ * Organisation and Help; breadcrumbs are only for real containment, such as
+ * a definition and its tabs. On a phone the areas sit in their own row under
+ * the bar, always visible, rather than behind a menu button. Not a
  * page pattern itself (page-patterns skill: "app chrome is not a
  * page") — every route still owns its own content and layout inside
  * this, just without re-deriving "who am I, what org" and redrawing a
@@ -62,24 +68,25 @@ export async function AppShell({
             <span className="hidden min-[380px]:inline">Product Discovery</span>
           </Link>
 
+          <AppNav className="hidden sm:block" />
+
           <div className="flex min-w-0 items-center gap-3 text-sm text-neutral-600">
             <div className="hidden min-w-0 text-right leading-tight sm:block">
               {personName && <p className="truncate font-medium text-neutral-800">{personName}</p>}
               {orgName && <p className="truncate text-xs">{orgName}</p>}
             </div>
-            <Link href="/settings/members" className="btn btn-ghost btn-sm">
-              Members
-            </Link>
             <form action={signOut}>
-              <button className="btn btn-secondary btn-sm">Sign out</button>
+              <SubmitButton className="btn btn-secondary btn-sm" pendingLabel="Signing out…">Sign out</SubmitButton>
             </form>
           </div>
         </div>
 
+        <AppNav className="border-t border-neutral-200 px-2 sm:hidden" />
+
         {crumbs && crumbs.length > 0 && (
           <nav
             aria-label="Breadcrumb"
-            className="mx-auto max-w-5xl px-4 pb-2 text-xs text-neutral-600 sm:px-8"
+            className="mx-auto max-w-5xl border-t border-neutral-200 px-4 py-1 text-xs text-neutral-600 sm:border-t-0 sm:px-8 sm:pt-0 sm:pb-2"
           >
             <ol className="flex flex-wrap items-center">
               {crumbs.map((c, i) => {

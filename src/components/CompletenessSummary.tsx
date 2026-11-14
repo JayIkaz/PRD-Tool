@@ -1,5 +1,6 @@
 import { addEvidence } from "@/app/product-definitions/[id]/evidence-actions";
 import { AssumptionReviewRow } from "@/components/AssumptionReviewRow";
+import { SubmitButton } from "@/components/SubmitButton";
 
 /**
  * Live summary of the structured state extracted so far for a Product
@@ -248,9 +249,9 @@ export function CompletenessSummary({
               placeholder="Paste a link or write a note..."
               className="field field-sm"
             />
-            <button type="submit" className="btn btn-primary btn-sm self-start">
+            <SubmitButton type="submit" className="btn btn-primary btn-sm self-start">
               Add
-            </button>
+            </SubmitButton>
           </form>
         )}
       </section>

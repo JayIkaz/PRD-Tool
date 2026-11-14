@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { suggestTitleAction } from "./suggest-title-action";
 import { ProductTypePicker } from "@/components/ProductTypePicker";
+import { SubmitButton } from "@/components/SubmitButton";
 
 type ProductType = { key: string; label: string };
 
@@ -73,9 +74,9 @@ export function NewDefinitionForm({
         </span>
         <ProductTypePicker name="productTypeKey" types={types} />
       </div>
-      <button type="submit" className="btn btn-primary w-full sm:w-auto sm:self-start">
+      <SubmitButton className="btn btn-primary w-full sm:w-auto sm:self-start" pendingLabel="Starting…">
         Start discovery
-      </button>
+      </SubmitButton>
     </form>
   );
 }

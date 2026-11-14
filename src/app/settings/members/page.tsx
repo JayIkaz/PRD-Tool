@@ -7,6 +7,7 @@ import { getCurrentMember, MEMBERSHIP_ERROR_COPY } from "@/lib/auth/current-memb
 import { emailConfigured } from "@/lib/email/send";
 import { SITE_URL } from "@/lib/site";
 import { inviteMember, revokeInvite, setMemberPm } from "./actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export const metadata = { title: "Members" };
 
@@ -64,7 +65,7 @@ export default async function MembersPage({
     : undefined;
 
   return (
-    <AppShell crumbs={[{ label: "Product definitions", href: "/dashboard" }, { label: "Members" }]}>
+    <AppShell>
       <main className="page page-narrow">
         <header>
           <p className="eyebrow">{me.organisation.name}</p>
@@ -121,9 +122,9 @@ export default async function MembersPage({
                       <form action={setMemberPm}>
                         <input type="hidden" name="userId" value={m.id} />
                         <input type="hidden" name="isPm" value={m.isPm ? "false" : "true"} />
-                        <button className="btn btn-secondary btn-sm">
+                        <SubmitButton className="btn btn-secondary btn-sm">
                           {m.isPm ? "Remove as PM" : "Make PM"}
-                        </button>
+                        </SubmitButton>
                       </form>
                       {!isMe && !m.isAdmin && (
                         <>
@@ -191,7 +192,7 @@ export default async function MembersPage({
                   </>
                 )}
               </p>
-              <button className="btn btn-primary justify-self-start">Send invite</button>
+              <SubmitButton className="btn btn-primary justify-self-start" pendingLabel="Sending…">Send invite</SubmitButton>
             </form>
 
             {invites.length > 0 && (
@@ -206,7 +207,7 @@ export default async function MembersPage({
                     </div>
                     <form action={revokeInvite}>
                       <input type="hidden" name="inviteId" value={inv.id} />
-                      <button className="btn btn-secondary btn-sm">Cancel invite</button>
+                      <SubmitButton className="btn btn-secondary btn-sm">Cancel invite</SubmitButton>
                     </form>
                   </li>
                 ))}

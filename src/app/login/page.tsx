@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { signInWithPassword, signInWithCode, resendCode, verifyEmailCode } from "./actions";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function LoginPage({
   searchParams,
@@ -49,18 +50,18 @@ export default async function LoginPage({
                 className="field text-center text-lg tracking-[0.35em]"
               />
             </div>
-            <button type="submit" className="btn btn-primary btn-block">
+            <SubmitButton type="submit" className="btn btn-primary btn-block">
               Log in
-            </button>
+            </SubmitButton>
           </form>
 
           <form action={resendCode} className="grid gap-3">
             <input type="hidden" name="email" value={params.codeSent} />
             <input type="hidden" name="type" value={type} />
             <input type="hidden" name="next" value={next} />
-            <button type="submit" className="btn btn-secondary btn-block">
+            <SubmitButton type="submit" className="btn btn-secondary btn-block">
               Send a new code
-            </button>
+            </SubmitButton>
           </form>
 
           <p className="text-center text-sm text-neutral-600">
@@ -117,9 +118,9 @@ export default async function LoginPage({
               className="field"
             />
           </div>
-          <button type="submit" className="btn btn-primary btn-block">
+          <SubmitButton type="submit" className="btn btn-primary btn-block">
             Log in with password
-          </button>
+          </SubmitButton>
         </form>
 
         <div className="flex items-center gap-3 text-xs text-neutral-600">
@@ -144,9 +145,9 @@ export default async function LoginPage({
               className="field"
             />
           </div>
-          <button type="submit" className="btn btn-secondary btn-block">
+          <SubmitButton type="submit" className="btn btn-secondary btn-block">
             Email me a code instead
-          </button>
+          </SubmitButton>
         </form>
 
         <p className="text-center text-sm text-neutral-600">
